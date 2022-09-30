@@ -1,6 +1,6 @@
 # Identification of AD-specific *cis* regulatory elements regulated by ZEB1 and MAFB in neurons and microglia using single nuclei multiomics
 
-
+![Figrue1](https://github.com/aanderson54/scMultiomics_AD/blob/main/images/Figure1-2.png)
 
 
 Cell type-specific transcriptional differences between brain tissues from donors with Alzheimer’s

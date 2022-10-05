@@ -173,7 +173,8 @@ dev.off()
 ```
 
 
-## filter, norm, scale, dim reduc
+## Filter, Norm, Scale, Dim Reduc
+
 ```{r,eval=F}
 ###################################################################################
 #                     Filtering, norm, scale, dim reduc
@@ -398,42 +399,7 @@ write.csv(Ctrl, "~/myers/scAnalysis/22_restart/barcodes_Ctrl.csv", row.names=F, 
 
 
 
-#  S2: STATS
-```{r,eval=F}
-num<-t(t(table(data$id)))
-colnames(num)<-"Total"
-ct<-t(t(table(data$id, data$predicted.id)))
-r1<-aggregate(nCount_RNA~id, data@meta.data, mean)
-r2<-aggregate(nFeature_RNA~id, data@meta.data, mean)
-t1<-aggregate(percent.mt~id, data@meta.data, mean)
-a1<-aggregate(nCount_ATAC~id, data@meta.data, mean)
-a2<-aggregate(nFeature_ATAC~id, data@meta.data, mean)
-t2<-aggregate(TSS.enrichment~id, data@meta.data, mean)
-
-c<-cbind(r1,r2,t1,a1,a2,t2)
-c<-c[,c(1,2,4,6,8,10,12)]
-
-c$Total<-num
-c$Astrocytes      <-ct[,1]
-c$Endothelial     <-ct[,2]
-c$Excitatory      <-ct[,3]
-c$Inhibitory      <-ct[,4]
-c$Microglia       <-ct[,5]
-c$Oligodendrocytes<-ct[,6]
-c$OPCs            <-ct[,7]
-c$Pericytes       <-ct[,8]
-
-
-meta<-read.csv("~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv")
-meta$ID[16]<-"HCTZZT"
-meta2<-merge(meta, c, by.x="ID",by.y="id")
-
-write.csv(meta2, "~/myers/scAnalysis/RINdrop/Sample_stats.csv", quote=F, row.names=F)
-```
-
-
-# Peaks
-## Peak-annot: encode
+### Peak-annot: encode
 ```{r,eval=F}
 load("/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar")
 enc=full_annot_encode_cre_def_GR
@@ -486,7 +452,8 @@ dev.off()
 
 
 
-## k27 overlap
+### H3K27ac overlap
+H3K27ac from Nott et al. 2019 and Kolzlenkov et al. 2018
 ```{r,eval=F}
 
 peaks<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_annotated.csv")
@@ -544,7 +511,10 @@ write.csv(tmp, "~/myers/scAnalysis/RINdrop/CTpeaks_wK27olap.csv")
 
 ```
 
-### CT-spec
+### Cell type-spec
+
+If peak was called in a cell type, does it overlap H3K27ac of that cell type?
+For peaks that were called in multiple cell types, they may overlap H3K27ac of only one cell type. (ie. peak called in microglia and astrocytes but only overlaps microglia H3K27ac)
 ```{r,eval=F}
 
 tmp<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_wK27olap.csv")
@@ -660,6 +630,40 @@ for (i in seq(2,nrow(df),by=2)){
 ```
 
 
+#  S2: STATS
+```{r,eval=F}
+num<-t(t(table(data$id)))
+colnames(num)<-"Total"
+ct<-t(t(table(data$id, data$predicted.id)))
+r1<-aggregate(nCount_RNA~id, data@meta.data, mean)
+r2<-aggregate(nFeature_RNA~id, data@meta.data, mean)
+t1<-aggregate(percent.mt~id, data@meta.data, mean)
+a1<-aggregate(nCount_ATAC~id, data@meta.data, mean)
+a2<-aggregate(nFeature_ATAC~id, data@meta.data, mean)
+t2<-aggregate(TSS.enrichment~id, data@meta.data, mean)
+
+c<-cbind(r1,r2,t1,a1,a2,t2)
+c<-c[,c(1,2,4,6,8,10,12)]
+
+c$Total<-num
+c$Astrocytes      <-ct[,1]
+c$Endothelial     <-ct[,2]
+c$Excitatory      <-ct[,3]
+c$Inhibitory      <-ct[,4]
+c$Microglia       <-ct[,5]
+c$Oligodendrocytes<-ct[,6]
+c$OPCs            <-ct[,7]
+c$Pericytes       <-ct[,8]
+
+
+meta<-read.csv("~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv")
+meta$ID[16]<-"HCTZZT"
+meta2<-merge(meta, c, by.x="ID",by.y="id")
+
+write.csv(meta2, "~/myers/scAnalysis/RINdrop/Sample_stats.csv", quote=F, row.names=F)
+```
+
+
 
 # DEGs
 
@@ -766,93 +770,6 @@ opc_up<-enrichr(degs[which(degs$celltype=="OPCs" & degs$cat=="up"),]$gene, dbs)
 ```
 
 
-#### Fig2E bottom) UP
-```{r,eval=F}
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-#            BP UP
-a<-ast_up[["GO_Biological_Process_2021"]]
-b<-mic_up[["GO_Biological_Process_2021"]]
-c<-ex_up[["GO_Biological_Process_2021"]]
-d<-in_up[["GO_Biological_Process_2021"]]
-e<-oli_up[["GO_Biological_Process_2021"]]
-f<-opc_up[["GO_Biological_Process_2021"]]
-
-a$celltype<-"Astrocytes"
-b$celltype<-"Microglia"
-c$celltype<-"Excitatory"
-d$celltype<-"Inhibitory"
-e$celltype<-"Oligodendrocytes"
-f$celltype<-"OPC"
-
-df<-rbind(a,b,c,d,e,f)
-df_all<-df
-df2<-df[which(df$Adjusted.P.value<0.05),]
-df2<-df2[order(df2$Adjusted.P.value),]
-top<-df2[c(1:10),1]
-
-
-write.csv(df2, "~/myers/scAnalysis/RINdrop/enrichr/top_BP_upAD_across_ct_MAST.csv")
-# up
- t<-table(df2$Term)
-topup<-head(df2$Term, n=10)
-topup<-df2 %>% group_by(celltype) %>% top_n(n=5, wt=Combined.Score)
-topup<-topup[order(topup$celltype),]
-topup<-topup$Term
-tD<-df[which(df$Term %in% topup),]
-
-mat<-matrix(nrow=length(unique(topup)), ncol=6)
-colnames(mat)<-unique(df$celltype)
-for (j in 1:length(unique(topup))){
-  for (i in 1:6){
-    termTmp<-unique(topup)[j]
-    ctTmp<-colnames(mat)[i]
-    sub<-df[which(df$Term==termTmp & df$celltype==ctTmp),]
-    if (nrow(sub)>0){
-      mat[j,i]<- sub$Odds.Ratio
-    }
-    else{
-      mat[j,i]<-0
-    }
-  }  
-}
-
-rownames(mat)<-sapply(strsplit(unique(topup), " (", fixed=T), `[`, 1)
-colnames(mat)<-substr(colnames(mat),start=1,stop=3)
-
-sig_mat<-matrix(nrow=length(unique(topup)), ncol=6)
-colnames(sig_mat)<-unique(df$celltype)
-for (j in 1:length(unique(topup))){
-  for (i in 1:6){
-    termTmp<-unique(topup)[j]
-    ctTmp<-colnames(sig_mat)[i]
-    sub<-df[which(df$Term==termTmp & df$celltype==ctTmp),]
-    if (nrow(sub)>0){
-      sig_mat[j,i]<-sub$Adjusted.P.value}
-    else{
-      sig_mat[j,i]<-1}  }}
-
-mat<-mat[,c(1,3,4,2,5,6)]
-sig_mat<-sig_mat[,c(1,3,4,2,5,6)]
-
-ha2<-HeatmapAnnotation(celltype=colnames(mat)
-, col= list(celltype=c("Ast"="darkgoldenrod1","Exc"="cornflowerblue","Inh"="seagreen3","Mic"="mediumorchid3","Oli"="coral3","OPC"="firebrick")), show_legend=F,annotation_label="")
-
-ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c("grey95","red","red4")),  top_annotation=ha2, name="Odds.Ratio",  show_column_names=T, show_row_names=T, column_title=NULL,row_names_side="left", row_title_gp=gpar(fontsize=14),row_names_max_width = max_text_width(
-        rownames(mat), 
-        gp = gpar(fontsize = 12)
-    ), cell_fun = function(j, i, x, y, w, h, fill) {
-    if(sig_mat[i, j] <0.05) {
-        grid.text("*", x, y, gp=gpar(fontsize=20, col="white"), vjust="center")
-    } })
-
-pdf("~/myers/scAnalysis/plots/RINdrop/Top_upDEG_GObp.pdf", width=10, height=5)
-ht
-dev.off()
-
-```
-
-
-
 #### Fig2E top) DOWN
 ```{r,eval=F}
 
@@ -945,6 +862,94 @@ ht
 dev.off()
 
 ```
+
+
+
+#### Fig2E bottom) UP
+```{r,eval=F}
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#            BP UP
+a<-ast_up[["GO_Biological_Process_2021"]]
+b<-mic_up[["GO_Biological_Process_2021"]]
+c<-ex_up[["GO_Biological_Process_2021"]]
+d<-in_up[["GO_Biological_Process_2021"]]
+e<-oli_up[["GO_Biological_Process_2021"]]
+f<-opc_up[["GO_Biological_Process_2021"]]
+
+a$celltype<-"Astrocytes"
+b$celltype<-"Microglia"
+c$celltype<-"Excitatory"
+d$celltype<-"Inhibitory"
+e$celltype<-"Oligodendrocytes"
+f$celltype<-"OPC"
+
+df<-rbind(a,b,c,d,e,f)
+df_all<-df
+df2<-df[which(df$Adjusted.P.value<0.05),]
+df2<-df2[order(df2$Adjusted.P.value),]
+top<-df2[c(1:10),1]
+
+
+write.csv(df2, "~/myers/scAnalysis/RINdrop/enrichr/top_BP_upAD_across_ct_MAST.csv")
+# up
+ t<-table(df2$Term)
+topup<-head(df2$Term, n=10)
+topup<-df2 %>% group_by(celltype) %>% top_n(n=5, wt=Combined.Score)
+topup<-topup[order(topup$celltype),]
+topup<-topup$Term
+tD<-df[which(df$Term %in% topup),]
+
+mat<-matrix(nrow=length(unique(topup)), ncol=6)
+colnames(mat)<-unique(df$celltype)
+for (j in 1:length(unique(topup))){
+  for (i in 1:6){
+    termTmp<-unique(topup)[j]
+    ctTmp<-colnames(mat)[i]
+    sub<-df[which(df$Term==termTmp & df$celltype==ctTmp),]
+    if (nrow(sub)>0){
+      mat[j,i]<- sub$Odds.Ratio
+    }
+    else{
+      mat[j,i]<-0
+    }
+  }  
+}
+
+rownames(mat)<-sapply(strsplit(unique(topup), " (", fixed=T), `[`, 1)
+colnames(mat)<-substr(colnames(mat),start=1,stop=3)
+
+sig_mat<-matrix(nrow=length(unique(topup)), ncol=6)
+colnames(sig_mat)<-unique(df$celltype)
+for (j in 1:length(unique(topup))){
+  for (i in 1:6){
+    termTmp<-unique(topup)[j]
+    ctTmp<-colnames(sig_mat)[i]
+    sub<-df[which(df$Term==termTmp & df$celltype==ctTmp),]
+    if (nrow(sub)>0){
+      sig_mat[j,i]<-sub$Adjusted.P.value}
+    else{
+      sig_mat[j,i]<-1}  }}
+
+mat<-mat[,c(1,3,4,2,5,6)]
+sig_mat<-sig_mat[,c(1,3,4,2,5,6)]
+
+ha2<-HeatmapAnnotation(celltype=colnames(mat)
+, col= list(celltype=c("Ast"="darkgoldenrod1","Exc"="cornflowerblue","Inh"="seagreen3","Mic"="mediumorchid3","Oli"="coral3","OPC"="firebrick")), show_legend=F,annotation_label="")
+
+ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c("grey95","red","red4")),  top_annotation=ha2, name="Odds.Ratio",  show_column_names=T, show_row_names=T, column_title=NULL,row_names_side="left", row_title_gp=gpar(fontsize=14),row_names_max_width = max_text_width(
+        rownames(mat), 
+        gp = gpar(fontsize = 12)
+    ), cell_fun = function(j, i, x, y, w, h, fill) {
+    if(sig_mat[i, j] <0.05) {
+        grid.text("*", x, y, gp=gpar(fontsize=20, col="white"), vjust="center")
+    } })
+
+pdf("~/myers/scAnalysis/plots/RINdrop/Top_upDEG_GObp.pdf", width=10, height=5)
+ht
+dev.off()
+
+```
+
 
 
 ### Fig2A) Heatmap 
@@ -1181,8 +1186,8 @@ dev.off()
 
 
 
-# subcluster
-## ast
+# Subcluster
+## Ast
 ```{r,eval=F}
 
 
@@ -1429,6 +1434,8 @@ dev.off()
 
 
 ### sadick scores
+
+This analysis was not shown in publication
 ```{r,eval=F}
 
 sad<-read.csv("~/myers/scAnalysis/Sadick/Sadick_Ast_subDEGs.csv")
@@ -1463,7 +1470,7 @@ dev.off()
 
 
 
-## In
+## Inh
 
 ```{r,eval=F}
    DefaultAssay(Inhibitory)<-"PC"
@@ -1831,7 +1838,7 @@ Inh_6  305  380
 Inh_7  154  219
 
 
-## Ex
+## Exc
 ```{r,eval=F}
    DefaultAssay(Excitatory)<-"PC"
      Excitatory <- SCTransform(Excitatory,assay="PC",new.assay.name="SCT",vars.to.regress = c("percent.mt"),verbose=F) %>%      RunPCA(ndims=30)
@@ -2929,7 +2936,7 @@ dev.off()
 ```
 
 
-## E)coverage
+## E) ATAC signal
 ```{r,eval=F}
 DefaultAssay(data)<-"ATAC"
 annot<-Annotation(data)
@@ -2993,7 +3000,7 @@ dev.off()
 
 
 
-## C)subcluster prop plot
+## C) Subcluster prop plot
 ```{r,eval=F}
 
 
@@ -3050,7 +3057,7 @@ dev.off()
 
 
 
-## F)CorPlot
+## F) CorPlot
 ```{r,eval=F}
 Idents(data)<-data$id
 df2<-data@meta.data[,c("id","Status")]
@@ -3125,7 +3132,7 @@ dev.off()
 
 
 
-# motifs
+# Motifs
 ```{r,eval=F}
 
 library(Signac)
@@ -3157,672 +3164,6 @@ data <- AddMotifs(
 
 motifs<-Motifs(data)
 saveRDS(motifs, "~/myers/scAnalysis/RINdrop/motifs_object.rds")
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
-DefaultAssay(data)<-"CTpeaks"
-peaks<-granges(data)
-peaks<-resize(peaks, width=500, fix="center")
-counts<-FeatureMatrix(fragments=Fragments(data), features=peaks,cells=colnames(data))
-data[["peaks500"]]<-CreateChromatinAssay(counts=macs2_counts,  fragments=Fragments(data))
-
-DefaultAssay(data)<-"ATAC"
-annotation<-Annotation(data)
-DefaultAssay(data)<-"peaks500"
-Annotation(data)<-annotation
-#  add motif information
-data <- AddMotifs(
-  object = data,
-  genome = BSgenome.Hsapiens.UCSC.hg38,
-  pfm = pfm2
-)
-
-motifs<-Motifs(data)
-saveRDS(motifs, "~/myers/scAnalysis/RINdrop/motifs500_object.rds")
-
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-peaks<-names(Peak2)
-df<-data.frame(chr=sapply(strsplit(peaks,"-"), `[`,1),
-               start=sapply(strsplit(peaks,"-"), `[`,2),
-               end=sapply(strsplit(peaks,"-"), `[`,3))
-
-gr<-GRanges(df)
-peaks<-resize(gr, width=500, fix="center")
-counts<-FeatureMatrix(fragments=Fragments(data), features=peaks,cells=colnames(data))
-data[["peaks500"]]<-CreateChromatinAssay(counts=counts,  fragments=Fragments(data))
-saveRDS(counts, "~/myers/scAnalysis/RINdrop/FilteredPeaks500b_assay.rds")
-
-DefaultAssay(data)<-"ATAC"
-annotation<-Annotation(data)
-DefaultAssay(data)<-"peaks500"
-Annotation(data)<-annotation
-#  add motif information
-data <- AddMotifs(
-  object = data,
-  genome = BSgenome.Hsapiens.UCSC.hg38,
-  pfm = pfm2
-)
-
-motifs<-Motifs(data)
-saveRDS(motifs, "~/myers/scAnalysis/RINdrop/FilteredPeaks500b_motifs.rds")
-
-```
-
-
-
-
-## AD &CT Links
-```{r,eval=F}
-
-motif<-readRDS("~/myers/scAnalysis/RINdrop/motif/FilteredPeaks500b_motif_families.rds")
-Motifs(data)<-motif
-open.peaks <- AccessiblePeaks(data, idents = "Microglia")
-data<-RegionStats(data, assay="peaks500", genome=BSgenome.Hsapiens.UCSC.hg38)
-rn<-rownames(data)
-
-
-
-
-links200<-resize(GRanges(c2), width=500, fix="center")
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1508
-tmp<-links200[which(links200$CT=="Astrocytes" & links200$group=="Ctrl"),]
-tmp<-unique(tmp) # 2705
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks <- AccessiblePeaks(data, idents = "Astrocytes")
-
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-acm<-FindMotifs(data, features=og, background=background)
-acm$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Tacm<-FindMotifs(data, features=og, background=background)
-  Tacm$i<-i
-  acm<-rbind(acm,Tacm)
-}
-tab<-table(acm$motif)
-acm_sig<-acm[which(acm$motif %in% names(tab[tab>95])),]
-
-
-acm_sig2<-acm %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 606
-tmp<-links200[which(links200$CT=="Astrocytes" & links200$group=="AD"),]
-tmp<-unique(tmp) # 961
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-aam<-FindMotifs(data, features=og, background=background)
-aam$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Taam<-FindMotifs(data, features=og, background=background)
-  Taam$i<-i
-  aam<-rbind(aam,Taam)
-}
-tab<-table(aam$motif)
-aam_sig<-aam[which(aam$motif %in% names(tab[tab>95])),]
-
-aam_sig2<-aam_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-aam_sig2<-aam %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 4311
-tmp<-links200[which(links200$CT=="Microglia" & links200$group=="AD"),]
-tmp<-unique(tmp) # 5754
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks <- AccessiblePeaks(data, idents = "Microglia")
-
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-mam<-FindMotifs(data, features=og, background=background)
-mam$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Tmam<-FindMotifs(data, features=og, background=background)
-  Tmam$i<-i
-  mam<-rbind(mam,Tmam)
-}
-tab<-table(mam$motif)
-mam_sig<-mam[which(mam$motif %in% names(tab[tab>95])),]
-
-mam_sig2<-mam_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-mam_sig2<-mam_sig2[order(mam_sig2$fold.enrichment, decreasing=T),]
-
-mam_sig2<-mam %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1536
-tmp<-links200[which(links200$CT=="Microglia" & links200$group=="Ctrl"),]
-tmp<-unique(tmp) # 2705
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-mcm<-FindMotifs(data, features=og, background=background)
-mcm$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Tmcm<-FindMotifs(data, features=og, background=background)
-  Tmcm$i<-i
-  mcm<-rbind(mcm,Tmcm)
-}
-tab<-table(mcm$motif)
-mcm_sig<-mcm[which(mcm$motif %in% names(tab[tab>95])),]
-
-mcm_sig2<-mcm_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-mcm_sig2<-mcm_sig2[order(mcm_sig2$fold.enrichment, decreasing=T),]
-
-mcm_sig2<-mcm %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1349
-tmp<-links200[which(links200$CT=="Inhibitory" & links200$group=="Ctrl"),]
-tmp<-unique(tmp) 
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks <- AccessiblePeaks(data, idents = "Inhibitory")
-
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-icm<-FindMotifs(data, features=og, background=background)
-icm$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Ticm<-FindMotifs(data, features=og, background=background)
-   Ticm$i<-i
-  icm<-rbind(icm,Ticm)
-}
-tab<-table(icm$motif)
-icm_sig<-icm[which(icm$motif %in% names(tab[tab>95])),]
-
-icm_sig2<-icm_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-icm_sig2<-icm_sig2[order(icm_sig2$fold.enrichment, decreasing=T),]
-
-icm_sig2<-icm %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 396
-tmp<-links200[which(links200$CT=="Inhibitory" & links200$group=="AD"),]
-tmp<-unique(tmp) 
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-iam<-FindMotifs(data, features=og, background=background)
-iam$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Tiam<-FindMotifs(data, features=og, background=background)
-   Tiam$i<-i
-  iam<-rbind(iam,Tiam)
-}
-tab<-table(iam$motif)
-iam_sig<-iam[which(iam$motif %in% names(tab[tab>95])),]
-
-iam_sig2<-iam_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-iam_sig2<-iam_sig2[order(iam_sig2$fold.enrichment, decreasing=T),]
-
-iam_sig2<-iam %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 3700
-tmp<-links200[which(links200$CT=="Excitatory" & links200$group=="AD"),]
-tmp<-unique(tmp) 
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks <- AccessiblePeaks(data, idents = "Excitatory")
-
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-eam<-FindMotifs(data, features=og, background=background)
-eam$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Team<-FindMotifs(data, features=og, background=background)
-  Team$i<-i
-  eam<-rbind(eam,Team)
-}
-tab<-table(eam$motif)
-eam_sig<-eam[which(eam$motif %in% names(tab[tab>95])),]
-
-eam_sig2<-eam_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-eam_sig2<-eam_sig2[order(eam_sig2$fold.enrichment, decreasing=T),]
-
-eam_sig2<-eam %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 11382
-tmp<-links200[which(links200$CT=="Excitatory" & links200$group=="Ctrl"),]
-tmp<-unique(tmp) 
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-ecm<-FindMotifs(data, features=og, background=background)
-ecm$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Tecm<-FindMotifs(data, features=og, background=background)
-  Tecm$i<-i
-  ecm<-rbind(ecm,Tecm)
-}
-tab<-table(ecm$motif)
-ecm_sig<-ecm[which(ecm$motif %in% names(tab[tab>95])),]
-
-ecm_sig2<-ecm_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-ecm_sig2<-ecm_sig2[order(ecm_sig2$fold.enrichment, decreasing=T),]
-
-ecm_sig2<-ecm %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1022
-tmp<-links200[which(links200$CT=="Oligodendrocytes" & links200$group=="Ctrl"),]
-tmp<-unique(tmp) # 2709
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks <- AccessiblePeaks(data, idents = "Oligodendrocytes")
-
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-ocm<-FindMotifs(data, features=og, background=background)
-ocm$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Tocm<-FindMotifs(data, features=og, background=background)
-   Tocm$i<-i
-  ocm<-rbind(ocm,Tocm)
-}
-tab<-table(ocm$motif)
-ocm_sig<-ocm[which(ocm$motif %in% names(tab[tab>95])),]
-
-ocm_sig2<-ocm_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-ocm_sig2<-ocm_sig2[order(ocm_sig2$fold.enrichment, decreasing=T),]
-
-ocm_sig2<-ocm %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 580
-tmp<-links200[which(links200$CT=="Oligodendrocytes" & links200$group=="AD"),]
-tmp<-unique(tmp) # 2705
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-oam<-FindMotifs(data, features=og, background=background)
-oam$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Toam<-FindMotifs(data, features=og, background=background)
-  Toam$i<-i
-  oam<-rbind(oam,Toam)
-}
-tab<-table(oam$motif)
-oam_sig<-oam[which(oam$motif %in% names(tab[tab>95])),]
-
-oam_sig2<-oam_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-oam_sig2<-oam_sig2[order(oam_sig2$fold.enrichment, decreasing=T),]
-
-oam_sig2<-oam %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 403
-tmp<-links200[which(links200$CT=="OPCs" & links200$group=="Ctrl"),]
-tmp<-unique(tmp) # 2705
-open.peaks <- AccessiblePeaks(data, idents = "OPCs")
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-opcm<-FindMotifs(data, features=og, background=background)
-opcm$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Topcm<-FindMotifs(data, features=og, background=background)
-  Topcm$i<-i
-  opcm<-rbind(opcm,Topcm)
-}
-tab<-table(opcm$motif)
-opcm_sig<-opcm[which(opcm$motif %in% names(tab[tab>95])),]
-
-opcm_sig2<-opcm_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-opcm_sig2<-opcm_sig2[order(opcm_sig2$fold.enrichment, decreasing=T),]
-
-opcm_sig2<-opcm %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 152
-tmp<-links200[which(links200$CT=="OPCs" & links200$group=="AD"),]
-tmp<-unique(tmp) # 251
-og<-paste(seqnames(tmp),"-",start(tmp),"-",end(tmp),sep="")
-og2<-paste(seqnames(tmp),"-",start(tmp)-1,"-",end(tmp)-1,sep="")
-og<-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature <- GetAssayData(data, assay = "peaks500", slot = "meta.features")
-peaks.matched <- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background<-sample(peaks.matched, size=length(og))
-opam<-FindMotifs(data, features=og, background=background)
-opam$i<-1
-for (i in 2:100){
-  set.seed(i)
-  background<-sample(peaks.matched, size=length(og))
-  Topam<-FindMotifs(data, features=og, background=background)
-   Topam$i<-i
-  opam<-rbind(opam,Topam)
-}
-tab<-table(opam$motif)
-opam_sig<-opam[which(opam$motif %in% names(tab[tab>95])),]
-
-opam_sig2<-opam_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-opam_sig2<-opam_sig2[order(opam_sig2$fold.enrichment, decreasing=T),]
-
-opam_sig2<-opam %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-
-
-
-
-aam_sig2<-as.data.frame(aam_sig2)
-acm_sig2<-as.data.frame(acm_sig2)
-iam_sig2<-as.data.frame(iam_sig2)
-icm_sig2<-as.data.frame(icm_sig2)
-eam_sig2<-as.data.frame(eam_sig2)
-ecm_sig2<-as.data.frame(ecm_sig2)
-oam_sig2<-as.data.frame(oam_sig2)
-ocm_sig2<-as.data.frame(ocm_sig2)
-mam_sig2<-as.data.frame(mam_sig2)
-mcm_sig2<-as.data.frame(mcm_sig2)
-opam_sig2<-as.data.frame(opam_sig2)
-opcm_sig2<-as.data.frame(opcm_sig2)
-
-
-aam_sig2$Status<-"AD"
-acm_sig2$Status<-"Ctrl"
-iam_sig2$Status<-"AD"
-icm_sig2$Status<-"Ctrl"
-eam_sig2$Status<-"AD"
-ecm_sig2$Status<-"Ctrl"
-oam_sig2$Status<-"AD"
-ocm_sig2$Status<-"Ctrl"
-mam_sig2$Status<-"AD"
-mcm_sig2$Status<-"Ctrl"
-opam_sig2$Status<-"AD"
-opcm_sig2$Status<-"Ctrl"
-
-aam_sig2$celltype<-"Astrocytes"
-acm_sig2$celltype<-"Astrocytes"
-iam_sig2$celltype<-"Inhibitory"
-icm_sig2$celltype<-"Inhibitory"
-eam_sig2$celltype<-"Excitatory"
-ecm_sig2$celltype<-"Excitatory"
-oam_sig2$celltype<-"Oligodendrocytes"
-ocm_sig2$celltype<-"Oligodendrocytes"
-mam_sig2$celltype<-"Microglia"
-mcm_sig2$celltype<-"Microglia"
-opam_sig2$celltype<-"OPCs"
-opcm_sig2$celltype<-"OPCs"
-
-all_motifs<-rbind(aam_sig2,acm_sig2,iam_sig2,icm_sig2,eam_sig2,ecm_sig2,oam_sig2,ocm_sig2,mam_sig2,mcm_sig2, opam_sig2, opcm_sig2)
-
-
-# saved version is filtered on pvalue for each iteration and motif enriched in >=95 iterations 
-write.csv(all_motifs,"~/myers/scAnalysis/RINdrop/Motif_all.csv", quote=F)
-
-
-```
-
-```{r,eval=F}
-
-
-ct<-c("Astrocytes","Astrocytes","Inhibitory","Inhibitory","Excitatory","Excitatory","Oligodendrocytes","Oligodendrocytes","Microglia","Microglia","OPCs","OPCs")
-
-mots<-list(aam,acm,iam,icm,eam,ecm,oam,ocm,mam,mcm, opam, opcm)
-mots_sig<-list()
-mots_all<-list()
-for( i in 1:12){
-  aam2<-mots[[i]][which(mots[[i]]$pvalue<0.05 ),]
-  tab<-table(aam2$motif)
-  aam_sig<-aam2[which(aam2$motif %in% names(tab[tab>95])),]
-  aam_sig2<-aam_sig %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-  aam_sig2$Status<-ifelse(i%%2==0, "Ctrl","AD")
-  aam_sig2$celltype<-ct[i]
-  mots_sig[[i]]<-as.data.frame(aam_sig2)
-  aam_all<-mots[[i]] %>% group_by(motif) %>% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-  aam_all$Status<-ifelse(i%%2==0, "Ctrl","AD")
-  aam_all$celltype<-ct[i]
-  mots_all[[i]]<-as.data.frame(aam_all)
- 
-}
-
-# filter on pvalue for each iteration. average of enrichment>1.3 once merges
-
-
-sig_motif2<-rbind(mots_sig[[1]],mots_sig[[2]],mots_sig[[3]],mots_sig[[4]],mots_sig[[5]],mots_sig[[6]],mots_sig[[7]],mots_sig[[8]],mots_sig[[9]],mots_sig[[10]],mots_sig[[11]],mots_sig[[12]])
-
-all_motif2<-rbind(mots_all[[1]],mots_all[[2]],mots_all[[3]],mots_all[[4]],mots_all[[5]],mots_all[[6]],mots_all[[7]],mots_all[[8]],mots_all[[9]],mots_all[[10]],mots_all[[11]],mots_all[[12]])
-
- 
- sig_motif2<-sig_motif2[which(sig_motif2$fold.enrichment>1.25),]
- 
-  table(sig_motif2$Status, sig_motif2$celltype)
-
-  
-  
-
-```
-
-
-
-
-
-###  plot enrichment
-```{r,eval=F}
-
-
-df<-sig_motif_fam
-df<-df[which(df$celltype %in% c("Astrocytes","Excitatory","Microglia","Oligodendrocytes")),]
-df_ad<-df[which(df$Status=="AD"),]
-df_ctrl<-df[which(df$Status=="Ctrl"),]
-
-
-# df_ad<-df_ad %>% group_by(celltype) %>% top_n(n=60, wt=fold.enrichment)
-# df_ctrl<-df_ctrl %>% group_by(celltype) %>% top_n(n=60, wt=fold.enrichment)
-
-keep<-unique(c(df_ad$Cluster, df_ctrl$Cluster))
-
-mat<-matrix(nrow=length(keep),ncol=4)
-rownames(mat)<-keep
-colnames(mat)<-unique(df$celltype)
-for (i in 1:nrow(mat)){
-  for (j in 1:ncol(mat)){
-    gene_tmp<-df_ad[which(df_ad$Cluster==rownames(mat)[i]),]
-    gene_tmp<-gene_tmp[which(gene_tmp$celltype==colnames(mat)[j]),]
-    mat[i,j]<-ifelse(nrow(gene_tmp)>0, gene_tmp$fold.enrichment,0)}}
-
-mat2<-matrix(nrow=length(keep),ncol=4)
-rownames(mat2)<-keep
-colnames(mat2)<-unique(df$celltype)
-for (i in 1:nrow(mat2)){
-  for (j in 1:ncol(mat2)){
-    gene_tmp<-df_ctrl[which(df_ctrl$Cluster==rownames(mat2)[i]),]
-    gene_tmp<-gene_tmp[which(gene_tmp$celltype==colnames(mat2)[j]),]
-     mat2[i,j]<-ifelse(nrow(gene_tmp)>0, gene_tmp$fold.enrichment,0)}}
-sig_mat<-cbind(mat, mat2)
-colnames(sig_mat)<-substr(colnames(sig_mat),start=1,stop=3)
-
-# sig_mat<-sig_mat[,c(1,7,3,9,2,8,5,11,4,10,6,12)]
-# sig_mat<-sig_mat[,-c(11,12)]
-sig_mat<-sig_mat[,c(1,5,4,8,2,6,3,7)]
-
-{
-df<-all_motif2[which(all_motif2$motif %in% keep),]
-df_ad<-df[which(df$Status=="AD"),]
-df_ctrl<-df[which(df$Status=="Ctrl"),]
-
-mat<-matrix(nrow=length(unique(df$motif)),ncol=4)
-rownames(mat)<-unique(df$motif)
-colnames(mat)<-unique(df$celltype)
-for (i in 1:nrow(mat)){
-  for (j in 1:ncol(mat)){
-    gene_tmp<-df_ad[which(df_ad$motif==rownames(mat)[i]),]
-    gene_tmp<-gene_tmp[which(gene_tmp$celltype==colnames(mat)[j]),]
-    mat[i,j]<-ifelse(nrow(gene_tmp)>0, gene_tmp$fold.enrichment,0)}}
-
-mat2<-matrix(nrow=length(unique(df$motif)),ncol=4)
-rownames(mat2)<-unique(df$motif)
-colnames(mat2)<-unique(df$celltype)
-for (i in 1:nrow(mat2)){
-  for (j in 1:ncol(mat2)){
-    gene_tmp<-df_ctrl[which(df_ctrl$motif==rownames(mat2)[i]),]
-    gene_tmp<-gene_tmp[which(gene_tmp$celltype==colnames(mat2)[j]),]
-     mat2[i,j]<-ifelse(nrow(gene_tmp)>0, gene_tmp$fold.enrichment,0)}}
-all_mat<-cbind(mat, mat2)
-colnames(all_mat)<-substr(colnames(all_mat),start=1,stop=3)
-
-
-# all_mat<-all_mat[,c(1,7,3,9,2,8,5,11,4,10,6,12)]
-# all_mat<-all_mat[,-c(11,12)]
-all_mat<-all_mat[,c(1,5,2,6,4,8,3,7)]
-}
-
-
-
-
-df<-df[order(df$fold.enrichment,decreasing=T),]
-noDup<-df[!duplicated(df$Cluster),]
-noDup<-noDup[order(noDup$celltype),]
-noDup<-noDup[which(noDup$Cluster %in% rownames(sig_mat)),]
-
-
-all_mat<-all_mat[noDup$Cluster,]
-sig_mat<-sig_mat[noDup$Cluster,]
-noDup$motif_nam<-sapply(strsplit(noDup$motif, "_", fixed=T),`[`,1)
-
-
-
-lab<-which(noDup$motif %in% c("Atf3_MA2036.1","CEBPB_MA0466.3","FOXO1::ELK1_MA1803.1","FOXO1::ELK3_MA1804.1","FOXO1::FLI1_MA1805.1","IRF4_MA1419.1","FOS_MA0476.1","FOS::JUND_MA1141.1","EMX2_MA0886.1","ETV5::FOXI1_MA1786.1","RUNX2_MA0511.2","NFIC_MA0161.2","NKX6-1_MA0674.1","CEBPE_MA0837.2","CEBPG_MA0838.1"))
-
-ha2<-HeatmapAnnotation(celltype=colnames(sig_mat), col= list(celltype=c("Ast"="darkgoldenrod1","Exc"="cornflowerblue","Mic"="mediumorchid3","Oli"="coral3")), show_legend=F)
-ha<-HeatmapAnnotation(Status=rep(c("AD","Ctrl"),4), col=list(Status=c("AD"="red","Ctrl"="blue")), show_legend=F)
-ha<-c(ha,ha2)
-
-
-ht=Heatmap(sig_mat, cluster_rows=F,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(0,1.2,1.24, 1.25,1.6,2),c("# f0efed","# f0efed","# F0F921FF", rev(plasma(3)))), name="Fold Enrichment",  show_column_names=T, show_row_names=T, column_title=NULL,row_names_gp = gpar(fontsize = 6), top_annotation=ha) 
-#            cell_fun = function(j, i, x, y, w, h, fill) { if(sig_mat[i, j] >0) {grid.text("*", x, y, gp=gpar(fontsize=5), vjust="center") } })
-
-
-
-
-pdf("~/myers/scAnalysis/plots/RINdrop/Motif_enrichment_heatmap_center500_family_2.pdf", width=6, height=8)
-ht
-dev.off()
-
-
-
-```
-
-
-```{r,eval=F}
-
-
-
-
-
-df<-all_motif[which(all_motif$motif %in% sig_motif[which(sig_motif$celltype=="Excitatory"),]$motif),]
-df_ad<-df[which(df$Status=="AD" & df$celltype=="Excitatory"),]
-df_ctrl<-df[which(df$Status=="Ctrl" & df$celltype=="Excitatory"),]
-
-mat<-as.matrix(data.frame(ad=df_ad$fold.enrichment, ctrl=df_ctrl$fold.enrichment))
-rownames(mat)<-df_ad$motif
-# # all labels
-
-
-
-
-ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(0,0.95,1, 1.1,1.5,2),c("# f0efed","# f0efed","# F0F921FF", rev(plasma(3)))), name="Fold Enrichment",  show_column_names=T, show_row_names=T, column_title=NULL,row_names_gp = gpar(fontsize = 4))
-
-
-pdf("~/myers/scAnalysis/plots/RINdrop/Motif_enrichment_heatmap_Excitatory.pdf", width=4, height=12)
-ht
-dev.off()
 
 
 ```
@@ -4087,7 +3428,8 @@ saveRDS(c2, "~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200_annot.rds")
 
 ```
 
-## filter by UMI
+## Filter by UMI
+Only genes with at least 200 UMIs were retained in the links
 ```{r,eval=F}
 sumR<-rowSums(data[["RNA"]]@counts)
 sumR<-sumR[sumR>200]
@@ -4112,7 +3454,7 @@ saveRDS(s2, "~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200.rds")
 
 
 
-## annotate
+## Annotate
 ```{r,eval=F}
 library(ChIPseeker)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
@@ -4133,7 +3475,7 @@ saveRDS(links_200.anno, "~/myers/scAnalysis/RINdrop/XY_Filtered_AD_Ctrl_links_UM
 
 ```
 
-## add k27
+## Add k27
 All peaks were overlapped with h3k27ac earlier before links were called
 ```{r,eval=F}
 c2<-readRDS("~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200_annot.rds")
@@ -4149,58 +3491,8 @@ c2[subjectHits(overlap)]$k27<-olap[queryHits(overlap)]$k27
 
 
 
-## olap Morabito
-```{r,eval=F}
- mor<-read.table("/cluster/home/lrizzardi/Morabito_Sup4.txt")
-colnames(mor)<-mor[1,]
-mor<-mor[-1,]
-
-mor$seqnames<-sapply(strsplit(mor$cCRE,"-"), `[`,1)
-mor$start<-sapply(strsplit(mor$cCRE,"-"), `[`,2)
-mor$end<-sapply(strsplit(mor$cCRE,"-"), `[`,3)
-mor<-GRanges(mor)
-
-olap<-findOverlaps(c2, mor)
-c2.olap<-c2[queryHits(olap)]
-c2.olap$morabito_gene<-mor[subjectHits(olap)]$target_gene
-c2.olap$morabito_group<-mor[subjectHits(olap)]$group
-
-agree<-c2.olap[which(c2.olap$gene ==c2.olap$morabito_gene),]
-
-prop1<-length(agree[which(agree$CooperMPRA==T | agree$Weiss_NPC==T | agree$Weiss_ESC==T | agree$Uebbing_MPRA==T | agree$SuRE_K562==T | agree$SuRE_HePG2==T | agree$GTEx_FC==T | agree$eQTL_Bryois==T | agree$Geschwin_HiC==T)])
 
 
-mat<-matrix(data=c(245775,65873,6589,1668),ncol=2)
-fisher.test(t(mat))
-```
-
-
-Cooper MPRA
-1
-Weiss NPC
-9
-Weiss ESC
-14
-Uebbing MPRA
-83
-SuRE K562
-984
-SuRE HepG2
-567
-GTEx FC
-6
-Byois eQTL
-15
-HiC
-241
-
-.
-         AD Control joint
-  AD      398     295   335
-  common 2174    1476  1964
-  Ctrl    682     398   535
-
-Of all morabito links, only 32% are shared between AD and control. 
 
 ## interesting things
 ### TBR1
@@ -4949,16 +4241,17 @@ dev.off()
 ### MEF2C link plot
 ```{r, eval=F}
 
-region<-GRanges("chr1:9852501-9852660")
+region<-GRanges("chr4:90030247-90031491")
 start(region)<-start(region)-1000
 end(region)<-end(region)+1000
-ChIP_track1<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig",smooth = 300)+ylab("AD")+theme(legend.position="none")+scale_fill_manual(values="red")
-ChIP_track2<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig",smooth = 300)+ylab("Ctrl")+theme(legend.position="none")+ylim(0,25)+scale_fill_manual(values="blue")
+ChIP_track1<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig",smooth = 300)+ylab("AD")+theme(legend.position="none")+scale_fill_manual(values="red")+ylim(0,10)
+ChIP_track2<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig",smooth = 300)+ylab("Ctrl")+theme(legend.position="none")+ylim(0,10)+scale_fill_manual(values="blue")
+ChIP_track3<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_other/Jan2021_ChIPseq/MEF2C_OL-NEUN_PT2_test/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig",smooth = 300)+ylab("NEUN")+theme(legend.position="none")+ylim(0,10)+scale_fill_manual(values="grey54")
 
 
-p<-CombineTracks(plotlist=list(ChIP_track1,ChIP_track2), heights=c(2,2))
+p<-CombineTracks(plotlist=list(ChIP_track1,ChIP_track2,ChIP_track3), heights=c(2,2,2))
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/MEF2C_ADCtrl.pdf"), width=6, height=7)
+pdf(paste0("~/myers/scAnalysis/plots/RINdrop/MEF2C_ADCtrl_NEUN.pdf"), width=6, height=7)
 p
 dev.off()
 
@@ -4969,19 +4262,6 @@ subsetByOverlaps(b, sig[7])$GRN
 ```
 
 2
-18127-MEF2C_MA0497.1-KCNK1; maybe but also 3 other trios
-
-3
-crap
-
-4
-MCRS1 promoter: "84069-MEF2C_MA0497.1-KCNH3" , "84069-ZEB1_MA0103.3-KCNH3"
-
-6/7 (it's 2 peaks)
-dumb-"113229-MEF2C_MA0497.1-TTC8"
-
-8
-"168217-MEF2C_MA0497.1-TRPM4" 
 
 
 ```{r, eval=F}
@@ -5058,16 +4338,7 @@ extraCols_narrowPeak <- c(signalValue = "numeric", pValue = "numeric",qValue = "
 ZEB1_DLPFC=import(con="/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_DLPFC-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz",format="bed",extraCols=extraCols_narrowPeak)
 ZEB1_DLPFC$Tissue="DLPFC"
 
-ZEB1_OL=import(con="/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_OL-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz",format="bed",extraCols=extraCols_narrowPeak)
-ZEB1_OL$Tissue="OL"
-ZEB1_FP=import(con="/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_FP-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz",format="bed",extraCols=extraCols_narrowPeak)
-ZEB1_FP$Tissue="FP"
-zeb1_cortex=c(ZEB1_DLPFC,ZEB1_OL,ZEB1_FP)
-HOT=import("/cluster/home/lrizzardi/BrainTF-ADSupp/union_DLPFC_NEUN_HOT.bed")  #12826 peaks
-
-zeb1_notHOT=subsetByOverlaps(zeb1_cortex,HOT,invert=TRUE)
-
-ZEB1_trio<-subsetByOverlaps(changed[which(changed$TF=="ZEB1"),],zeb1_notHOT)
+ZEB1_trio<-subsetByOverlaps(changed[which(changed$TF=="ZEB1"),],ZEB1_DLPFC)
 ZEB1_trio<-changed[which(changed$TF=="ZEB1"),]
 ```
 
@@ -5076,10 +4347,11 @@ ZEB1_trio<-changed[which(changed$TF=="ZEB1"),]
 
 meh<-unique(b[which(b$TF=="ZEB1" & (b$Excitatory==T | b$Inhibitory==T)),])
 meh$olapK27<-F
-olap<-findOverlaps(meh, zeb1_cortex)
+olap<-findOverlaps(meh, ZEB1_DLPFC)
 meh[unique(queryHits(olap))]$olapK27<-T
 table( meh$olapK27, meh$category)
 ```
+
 
 ###Fig4G,H
 ```{r,eval=F}
@@ -5170,6 +4442,8 @@ dev.off()
 
 
 
+
+
 ```{r, eval=F}
 df<-data.frame(ZEB1=data@assays$RNA@data["ZEB1",], GABRA5=data@assays$RNA@data["GABRA5",], Status=data$Status, ct=data$predicted.id, subs=data$subs)
 df2<-df[which(df$ct %in% c("Excitatory", "Inhibitory")),]
@@ -5212,78 +4486,13 @@ noquote(t(t(trio_val$GRN)))
 
 ```
 
+
+3 trios that also overlap significant luciferase region
+
+
 "269545-MEF2C_MA0497.1-CCSER1"   
 "138088-RARB_MA1552.1-JPH3"      
 "213871-SOX10_MA0442.2-ADAMTS1"  
-
-
-#NGN2 iPSC
-
-https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE124703
-```{r, eval=F}
-rep1<-read.table("/cluster/home/aanderson/myers/scAnalysis/Kampmann_NGN2_RNAseq/GSM3543612_D14_C1_read_counts.txt")
-rep2<-read.table("/cluster/home/aanderson/myers/scAnalysis/Kampmann_NGN2_RNAseq/GSM3543613_D14_C2_read_counts.txt")
-rep1$V3<-rep2$V2
-
-library('biomaRt')
-mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
-G_list <- getBM(filters = "ensembl_gene_id", 
-                attributes = c("ensembl_gene_id", "hgnc_symbol", "description"),
-                values = rep1$V1, mart = mart)
-
-mer<-merge(rep1, G_list, by.x="V1", by.y="ensembl_gene_id")
-mer$avg<-(mer$V2+mer$V3)/2
-exp<-mer[which(mer$avg>100),]
-
-genes<-exp[which(exp$avg > quantile(exp$avg, probs=0.4)),]$hgnc_symbol
-
-#Add data from BC1 and XCL4
- bc1<-readRDS("~/myers/scAnalysis/220405/merged_220405_210330_wAst.rds")
- DefaultAssay(bc1)<-"RNA"
- bc1<-NormalizeData(bc1, normalization.method="RC",scale.factor = 1e6)
-bc1$cell_line<-ifelse(bc1$week %in% c("4wk","6wk"), "BC1","XCL4")
-
-
-
-test<-import("~/myers/scAnalysis/RINdrop/test.bed")
-test2<-subsetByOverlaps(c2, test)
-avgExp<-as.data.frame(AverageExpression(bc1, features=unique(test2$gene), group.by="week", assay="RNA", slot="counts"))
-avgExp$gene<-rownames(avgExp)
-
-test2.1<-merge(test2, mer[,c(4,6)], by.x="gene",by.y="hgnc_symbol")
-test2.2<-merge(test2.1,avgExp, by="gene")
-
-test2.2<-test2.2[order(abs(test2.2$score)),]
-agg<-test2.2 %>% group_by(index) %>% summarize(gene=paste0(gene, collapse=","), score=paste0(round(score,2), collapse=","), NGN2=paste0(round(avg,2), collapse=","), XCL4=paste0(round(RNA.2wk,2), collapse=","), BC1=paste0(round(RNA.4wk,2), collapse=","))
-```
-
-
-
-
-
-# XCL4
-```{r,eval=F}
-XCL4<-import("/cluster/home/jtaylor/lindsay_chip-seq_project/ouputs/XCL4/XCL4_H3K27ac_npc/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz", format="bed",extraCols=extraCols_narrowPeak)
-BC1_k27=import(con="/cluster/home/jtaylor/lindsay_chip-seq_project/ouputs/BC1/BC1_H3K27ac_neuron/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz",format="bed",extraCols=extraCols_narrowPeak)
-
-
-gRNA<-read.csv("~/myers/scrnaseq_cellranger/220729/feature_ref3.csv")
-gRNA$seqnames<-sapply(strsplit(gRNA$id,"_"), `[`,1)
-gRNA$start<-sapply(strsplit(gRNA$id,"_"), `[`,2)
-gRNA$end<-as.numeric(gRNA$start)+100
-gRNA<-gRNA[!grepl("AAV", gRNA$name),]
-gRNA.gr<-GRanges(gRNA)
-
-olap<-findOverlaps(gRNA.gr, XCL4, maxgap=500)
-gRNA.gr$XCL4<-F
-gRNA.gr[queryHits(olap)]$XCL4<-T
-
-olap<-findOverlaps(gRNA.gr, BsC1_k27, maxgap=500)
-gRNA.gr$BC1<-F
-gRNA.gr[queryHits(olap)]$BC1<-T
-
-df<-data.frame(gRNA=gRNA.gr$id, XCL4_olap=gRNA.gr$XCL4, BC1_olap=gRNA.gr$BC1)
-```
 
 
 
@@ -6933,10 +6142,55 @@ nrow(df[which(df$MPRA == F & df$eQTL == T & df$Geschwin_HiC == F),]) ##477
 ```
 
 
+## Overlap Morabito
+```{r,eval=F}
+ mor<-read.table("/cluster/home/lrizzardi/Morabito_Sup4.txt")
+colnames(mor)<-mor[1,]
+mor<-mor[-1,]
+
+mor$seqnames<-sapply(strsplit(mor$cCRE,"-"), `[`,1)
+mor$start<-sapply(strsplit(mor$cCRE,"-"), `[`,2)
+mor$end<-sapply(strsplit(mor$cCRE,"-"), `[`,3)
+mor<-GRanges(mor)
+
+olap<-findOverlaps(c2, mor)
+c2.olap<-c2[queryHits(olap)]
+c2.olap$morabito_gene<-mor[subjectHits(olap)]$target_gene
+c2.olap$morabito_group<-mor[subjectHits(olap)]$group
+
+agree<-c2.olap[which(c2.olap$gene ==c2.olap$morabito_gene),]
+
+prop1<-length(agree[which(agree$CooperMPRA==T | agree$Weiss_NPC==T | agree$Weiss_ESC==T | agree$Uebbing_MPRA==T | agree$SuRE_K562==T | agree$SuRE_HePG2==T | agree$GTEx_FC==T | agree$eQTL_Bryois==T | agree$Geschwin_HiC==T)])
+
+
+mat<-matrix(data=c(245775,65873,6589,1668),ncol=2)
+fisher.test(t(mat))
+```
+
+
+Cooper MPRA
+1
+Weiss NPC
+9
+Weiss ESC
+14
+Uebbing MPRA
+83
+SuRE K562
+984
+SuRE HepG2
+567
+GTEx FC
+6
+Byois eQTL
+15
+HiC
+241
 
 
 
-## Fig 5E) APP link plot
+
+# Fig 5E) APP link plot
 ```{r,eval=F}
 ## APP
 gRNA<-read.xlsx("~/myers/scAnalysis/RINdrop/SingleCellValidation_Luciferase_HEKs_transformed.xlsx")
@@ -6991,9 +6245,9 @@ dev.off()
 
 
 
-## SUPP Links
+# SUPP Links
 
-####  gene & peak density
+##  gene & peak density
 ```{r,eval=F}
 
 
@@ -7027,7 +6281,7 @@ dev.off()
 
 
 
-#### var bin
+## Gene Variance by score
 ```{r,eval=F}
 
 

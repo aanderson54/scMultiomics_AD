@@ -174,21 +174,18 @@ pre code {
 <ul>
 <li><a href="#preprocessing">Preprocessing</a>
 <ul>
-<li><a href="#filter-norm-scale-dim-reduc">filter, norm, scale, dim reduc</a></li>
+<li><a href="#filter-norm-scale-dim-reduc">Filter, Norm, Scale, Dim Reduc</a></li>
 <li><a href="#doublet-filter">doublet filter</a></li>
 <li><a href="#reference-mapping">Reference Mapping</a></li>
 <li><a href="#harmony-batch-correction">Harmony batch correction</a></li>
-<li><a href="#peak-calling">Peak-calling</a></li>
-</ul></li>
-<li><a href="#s2-stats">S2: STATS</a></li>
-<li><a href="#peaks">Peaks</a>
+<li><a href="#peak-calling">Peak-calling</a>
 <ul>
 <li><a href="#peak-annot-encode">Peak-annot: encode</a></li>
-<li><a href="#k27-overlap">k27 overlap</a>
-<ul>
-<li><a href="#ct-spec">CT-spec</a></li>
+<li><a href="#h3k27ac-overlap">H3K27ac overlap</a></li>
+<li><a href="#cell-type-spec">Cell type-spec</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#s2-stats">S2: STATS</a></li>
 <li><a href="#degs">DEGs</a>
 <ul>
 <li><a href="#fig2adctrl">Fig2:AD/Ctrl</a>
@@ -199,9 +196,9 @@ pre code {
 <li><a href="#fig2d-compare">Fig2D) compare</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#subcluster">subcluster</a>
+<li><a href="#subcluster">Subcluster</a>
 <ul>
-<li><a href="#ast">ast</a>
+<li><a href="#ast">Ast</a>
 <ul>
 <li><a href="#s2d-umap">S2D) UMAP</a></li>
 <li><a href="#degs-1">DEGs</a></li>
@@ -210,14 +207,14 @@ pre code {
 <li><a href="#s1e-heatmap">S1E) heatmap</a></li>
 <li><a href="#sadick-scores">sadick scores</a></li>
 </ul></li>
-<li><a href="#in">In</a>
+<li><a href="#inh">Inh</a>
 <ul>
 <li><a href="#s2j-umap">S2J) UMAP</a></li>
 <li><a href="#degs-2">DEGs</a></li>
 <li><a href="#go-1">GO</a></li>
 <li><a href="#s2l-boxplot">S2L) Boxplot</a></li>
 </ul></li>
-<li><a href="#ex">Ex</a>
+<li><a href="#exc">Exc</a>
 <ul>
 <li><a href="#s2h-umap">S2H) UMAP</a></li>
 <li><a href="#degs-3">DEGs</a></li>
@@ -246,17 +243,11 @@ pre code {
 <ul>
 <li><a href="#b-all-subcluster-plot">B) All subcluster plot</a></li>
 <li><a href="#d-scread-heatmap">D) scREAD heatmap</a></li>
-<li><a href="#ecoverage">E)coverage</a></li>
-<li><a href="#csubcluster-prop-plot">C)subcluster prop plot</a></li>
-<li><a href="#fcorplot">F)CorPlot</a></li>
+<li><a href="#e-atac-signal">E) ATAC signal</a></li>
+<li><a href="#c-subcluster-prop-plot">C) Subcluster prop plot</a></li>
+<li><a href="#f-corplot">F) CorPlot</a></li>
 </ul></li>
-<li><a href="#motifs">motifs</a>
-<ul>
-<li><a href="#ad-ct-links">AD &amp;CT Links</a>
-<ul>
-<li><a href="#plot-enrichment">plot enrichment</a></li>
-</ul></li>
-</ul></li>
+<li><a href="#motifs">Motifs</a></li>
 <li><a href="#chromvar">chromVAR</a></li>
 <li><a href="#links">LINKS</a>
 <ul>
@@ -264,10 +255,9 @@ pre code {
 <li><a href="#ctrl">Ctrl</a></li>
 <li><a href="#common">common</a></li>
 <li><a href="#signac-format">signac format</a></li>
-<li><a href="#filter-by-umi">filter by UMI</a></li>
-<li><a href="#annotate">annotate</a></li>
-<li><a href="#add-k27">add k27</a></li>
-<li><a href="#olap-morabito">olap Morabito</a></li>
+<li><a href="#filter-by-umi">Filter by UMI</a></li>
+<li><a href="#annotate">Annotate</a></li>
+<li><a href="#add-k27">Add k27</a></li>
 <li><a href="#interesting-things">interesting things</a>
 <ul>
 <li><a href="#tbr1">TBR1</a></li>
@@ -292,7 +282,6 @@ pre code {
 <li><a href="#zeb1-link-plot">ZEB1 link plot</a></li>
 <li><a href="#olap-luciferase">olap luciferase</a></li>
 </ul></li>
-<li><a href="#xcl4">XCL4</a></li>
 <li><a href="#fig-3">FIG 3</a>
 <ul>
 <li><a href="#a-acc-vs-exp">A) acc vs exp</a></li>
@@ -332,8 +321,13 @@ pre code {
 <li><a href="#fig5b-plot">Fig5B) PLOT</a></li>
 <li><a href="#overlaps">overlaps</a></li>
 </ul></li>
+<li><a href="#overlap-morabito">Overlap Morabito</a></li>
+</ul></li>
 <li><a href="#fig-5e-app-link-plot">Fig 5E) APP link plot</a></li>
-<li><a href="#supp-links">SUPP Links</a></li>
+<li><a href="#supp-links">SUPP Links</a>
+<ul>
+<li><a href="#gene-peak-density">gene &amp; peak density</a></li>
+<li><a href="#gene-variance-by-score">Gene Variance by score</a></li>
 <li><a href="#variance-of-linked-genes">Variance of linked genes</a></li>
 </ul></li>
 </ul>
@@ -495,7 +489,7 @@ VlnPlot(data, features =  c(&quot;nCount_ATAC&quot;, &quot;nFeature_RNA&quot;,&q
 dev.off()
 ###################################################################################</code></pre>
 <div id="filter-norm-scale-dim-reduc" class="section level2">
-<h2>filter, norm, scale, dim reduc</h2>
+<h2>Filter, Norm, Scale, Dim Reduc</h2>
 <pre class="r"><code>###################################################################################
 #                     Filtering, norm, scale, dim reduc
 data&lt;-subset(data, subset = nFeature_RNA &lt; 10000 &amp;   
@@ -704,44 +698,8 @@ AD&lt;-df[which(df$status==&quot;AD&quot;),1:2]
 Ctrl&lt;-df[which(df$status==&quot;Ctrl&quot;),1:2]
 write.csv(AD, &quot;~/myers/scAnalysis/22_restart/barcodes_AD.csv&quot;, row.names=F, quote=F)
 write.csv(Ctrl, &quot;~/myers/scAnalysis/22_restart/barcodes_Ctrl.csv&quot;, row.names=F, quote=F)</code></pre>
-</div>
-</div>
-<div id="s2-stats" class="section level1">
-<h1>S2: STATS</h1>
-<pre class="r"><code>num&lt;-t(t(table(data$id)))
-colnames(num)&lt;-&quot;Total&quot;
-ct&lt;-t(t(table(data$id, data$predicted.id)))
-r1&lt;-aggregate(nCount_RNA~id, data@meta.data, mean)
-r2&lt;-aggregate(nFeature_RNA~id, data@meta.data, mean)
-t1&lt;-aggregate(percent.mt~id, data@meta.data, mean)
-a1&lt;-aggregate(nCount_ATAC~id, data@meta.data, mean)
-a2&lt;-aggregate(nFeature_ATAC~id, data@meta.data, mean)
-t2&lt;-aggregate(TSS.enrichment~id, data@meta.data, mean)
-
-c&lt;-cbind(r1,r2,t1,a1,a2,t2)
-c&lt;-c[,c(1,2,4,6,8,10,12)]
-
-c$Total&lt;-num
-c$Astrocytes      &lt;-ct[,1]
-c$Endothelial     &lt;-ct[,2]
-c$Excitatory      &lt;-ct[,3]
-c$Inhibitory      &lt;-ct[,4]
-c$Microglia       &lt;-ct[,5]
-c$Oligodendrocytes&lt;-ct[,6]
-c$OPCs            &lt;-ct[,7]
-c$Pericytes       &lt;-ct[,8]
-
-
-meta&lt;-read.csv(&quot;~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv&quot;)
-meta$ID[16]&lt;-&quot;HCTZZT&quot;
-meta2&lt;-merge(meta, c, by.x=&quot;ID&quot;,by.y=&quot;id&quot;)
-
-write.csv(meta2, &quot;~/myers/scAnalysis/RINdrop/Sample_stats.csv&quot;, quote=F, row.names=F)</code></pre>
-</div>
-<div id="peaks" class="section level1">
-<h1>Peaks</h1>
-<div id="peak-annot-encode" class="section level2">
-<h2>Peak-annot: encode</h2>
+<div id="peak-annot-encode" class="section level3">
+<h3>Peak-annot: encode</h3>
 <pre class="r"><code>load(&quot;/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
 enc=full_annot_encode_cre_def_GR
 enc&lt;-enc[!grepl(&quot;iCell&quot;,enc$accesionLabel),]
@@ -788,8 +746,9 @@ pdf(&quot;~/myers/scAnalysis/plots/RINdrop/Peaks_annot_encode2.pdf&quot;, width=
 ggplot(df, aes(x=value, y=variable, fill=annot))+geom_bar(stat=&quot;identity&quot;)+xlab(&quot;Proportion of Linked peaks&quot;)+ylab(&quot;Cell type&quot;)+theme_classic()+scale_fill_brewer(palette=&quot;Dark2&quot;,labels=c(&quot;CTCF-only&quot;,&quot;dELS&quot;,&quot;DNase-H3K4me3&quot;,&quot;pELS&quot;,&quot;PLS&quot;,&quot;other&quot;))+theme(legend.position=&quot;right&quot;, axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))
 dev.off()</code></pre>
 </div>
-<div id="k27-overlap" class="section level2">
-<h2>k27 overlap</h2>
+<div id="h3k27ac-overlap" class="section level3">
+<h3>H3K27ac overlap</h3>
+<p>H3K27ac from Nott et al. 2019 and Kolzlenkov et al. 2018</p>
 <pre class="r"><code>peaks&lt;-read.csv(&quot;~/myers/scAnalysis/RINdrop/CTpeaks_annotated.csv&quot;)
 peaks&lt;-GRanges(peaks)
 
@@ -842,8 +801,10 @@ peaks_over&lt;-findOverlaps(peaks, all_agree) # 125746   # 386892
 
 
 write.csv(tmp, &quot;~/myers/scAnalysis/RINdrop/CTpeaks_wK27olap.csv&quot;)</code></pre>
-<div id="ct-spec" class="section level3">
-<h3>CT-spec</h3>
+</div>
+<div id="cell-type-spec" class="section level3">
+<h3>Cell type-spec</h3>
+<p>If peak was called in a cell type, does it overlap H3K27ac of that cell type? For peaks that were called in multiple cell types, they may overlap H3K27ac of only one cell type. (ie. peak called in microglia and astrocytes but only overlaps microglia H3K27ac)</p>
 <pre class="r"><code>tmp&lt;-read.csv(&quot;~/myers/scAnalysis/RINdrop/CTpeaks_wK27olap.csv&quot;)
 olap&lt;-GRanges(tmp)
 
@@ -956,6 +917,38 @@ for (i in seq(2,nrow(df),by=2)){
 </div>
 </div>
 </div>
+<div id="s2-stats" class="section level1">
+<h1>S2: STATS</h1>
+<pre class="r"><code>num&lt;-t(t(table(data$id)))
+colnames(num)&lt;-&quot;Total&quot;
+ct&lt;-t(t(table(data$id, data$predicted.id)))
+r1&lt;-aggregate(nCount_RNA~id, data@meta.data, mean)
+r2&lt;-aggregate(nFeature_RNA~id, data@meta.data, mean)
+t1&lt;-aggregate(percent.mt~id, data@meta.data, mean)
+a1&lt;-aggregate(nCount_ATAC~id, data@meta.data, mean)
+a2&lt;-aggregate(nFeature_ATAC~id, data@meta.data, mean)
+t2&lt;-aggregate(TSS.enrichment~id, data@meta.data, mean)
+
+c&lt;-cbind(r1,r2,t1,a1,a2,t2)
+c&lt;-c[,c(1,2,4,6,8,10,12)]
+
+c$Total&lt;-num
+c$Astrocytes      &lt;-ct[,1]
+c$Endothelial     &lt;-ct[,2]
+c$Excitatory      &lt;-ct[,3]
+c$Inhibitory      &lt;-ct[,4]
+c$Microglia       &lt;-ct[,5]
+c$Oligodendrocytes&lt;-ct[,6]
+c$OPCs            &lt;-ct[,7]
+c$Pericytes       &lt;-ct[,8]
+
+
+meta&lt;-read.csv(&quot;~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv&quot;)
+meta$ID[16]&lt;-&quot;HCTZZT&quot;
+meta2&lt;-merge(meta, c, by.x=&quot;ID&quot;,by.y=&quot;id&quot;)
+
+write.csv(meta2, &quot;~/myers/scAnalysis/RINdrop/Sample_stats.csv&quot;, quote=F, row.names=F)</code></pre>
+</div>
 <div id="degs" class="section level1">
 <h1>DEGs</h1>
 <pre class="r"><code>extra&lt;-read.csv(&quot;~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv&quot;)
@@ -1040,89 +1033,6 @@ oli_up&lt;-enrichr(degs[which(degs$celltype==&quot;Oligodendrocytes&quot; &amp; 
 
 opc_down&lt;-enrichr(degs[which(degs$celltype==&quot;OPCs&quot; &amp; degs$cat==&quot;down&quot;),]$gene, dbs)
 opc_up&lt;-enrichr(degs[which(degs$celltype==&quot;OPCs&quot; &amp; degs$cat==&quot;up&quot;),]$gene, dbs)</code></pre>
-<div id="fig2e-bottom-up" class="section level4">
-<h4>Fig2E bottom) UP</h4>
-<pre class="r"><code># # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-#            BP UP
-a&lt;-ast_up[[&quot;GO_Biological_Process_2021&quot;]]
-b&lt;-mic_up[[&quot;GO_Biological_Process_2021&quot;]]
-c&lt;-ex_up[[&quot;GO_Biological_Process_2021&quot;]]
-d&lt;-in_up[[&quot;GO_Biological_Process_2021&quot;]]
-e&lt;-oli_up[[&quot;GO_Biological_Process_2021&quot;]]
-f&lt;-opc_up[[&quot;GO_Biological_Process_2021&quot;]]
-
-a$celltype&lt;-&quot;Astrocytes&quot;
-b$celltype&lt;-&quot;Microglia&quot;
-c$celltype&lt;-&quot;Excitatory&quot;
-d$celltype&lt;-&quot;Inhibitory&quot;
-e$celltype&lt;-&quot;Oligodendrocytes&quot;
-f$celltype&lt;-&quot;OPC&quot;
-
-df&lt;-rbind(a,b,c,d,e,f)
-df_all&lt;-df
-df2&lt;-df[which(df$Adjusted.P.value&lt;0.05),]
-df2&lt;-df2[order(df2$Adjusted.P.value),]
-top&lt;-df2[c(1:10),1]
-
-
-write.csv(df2, &quot;~/myers/scAnalysis/RINdrop/enrichr/top_BP_upAD_across_ct_MAST.csv&quot;)
-# up
- t&lt;-table(df2$Term)
-topup&lt;-head(df2$Term, n=10)
-topup&lt;-df2 %&gt;% group_by(celltype) %&gt;% top_n(n=5, wt=Combined.Score)
-topup&lt;-topup[order(topup$celltype),]
-topup&lt;-topup$Term
-tD&lt;-df[which(df$Term %in% topup),]
-
-mat&lt;-matrix(nrow=length(unique(topup)), ncol=6)
-colnames(mat)&lt;-unique(df$celltype)
-for (j in 1:length(unique(topup))){
-  for (i in 1:6){
-    termTmp&lt;-unique(topup)[j]
-    ctTmp&lt;-colnames(mat)[i]
-    sub&lt;-df[which(df$Term==termTmp &amp; df$celltype==ctTmp),]
-    if (nrow(sub)&gt;0){
-      mat[j,i]&lt;- sub$Odds.Ratio
-    }
-    else{
-      mat[j,i]&lt;-0
-    }
-  }  
-}
-
-rownames(mat)&lt;-sapply(strsplit(unique(topup), &quot; (&quot;, fixed=T), `[`, 1)
-colnames(mat)&lt;-substr(colnames(mat),start=1,stop=3)
-
-sig_mat&lt;-matrix(nrow=length(unique(topup)), ncol=6)
-colnames(sig_mat)&lt;-unique(df$celltype)
-for (j in 1:length(unique(topup))){
-  for (i in 1:6){
-    termTmp&lt;-unique(topup)[j]
-    ctTmp&lt;-colnames(sig_mat)[i]
-    sub&lt;-df[which(df$Term==termTmp &amp; df$celltype==ctTmp),]
-    if (nrow(sub)&gt;0){
-      sig_mat[j,i]&lt;-sub$Adjusted.P.value}
-    else{
-      sig_mat[j,i]&lt;-1}  }}
-
-mat&lt;-mat[,c(1,3,4,2,5,6)]
-sig_mat&lt;-sig_mat[,c(1,3,4,2,5,6)]
-
-ha2&lt;-HeatmapAnnotation(celltype=colnames(mat)
-, col= list(celltype=c(&quot;Ast&quot;=&quot;darkgoldenrod1&quot;,&quot;Exc&quot;=&quot;cornflowerblue&quot;,&quot;Inh&quot;=&quot;seagreen3&quot;,&quot;Mic&quot;=&quot;mediumorchid3&quot;,&quot;Oli&quot;=&quot;coral3&quot;,&quot;OPC&quot;=&quot;firebrick&quot;)), show_legend=F,annotation_label=&quot;&quot;)
-
-ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c(&quot;grey95&quot;,&quot;red&quot;,&quot;red4&quot;)),  top_annotation=ha2, name=&quot;Odds.Ratio&quot;,  show_column_names=T, show_row_names=T, column_title=NULL,row_names_side=&quot;left&quot;, row_title_gp=gpar(fontsize=14),row_names_max_width = max_text_width(
-        rownames(mat), 
-        gp = gpar(fontsize = 12)
-    ), cell_fun = function(j, i, x, y, w, h, fill) {
-    if(sig_mat[i, j] &lt;0.05) {
-        grid.text(&quot;*&quot;, x, y, gp=gpar(fontsize=20, col=&quot;white&quot;), vjust=&quot;center&quot;)
-    } })
-
-pdf(&quot;~/myers/scAnalysis/plots/RINdrop/Top_upDEG_GObp.pdf&quot;, width=10, height=5)
-ht
-dev.off()</code></pre>
-</div>
 <div id="fig2e-top-down" class="section level4">
 <h4>Fig2E top) DOWN</h4>
 <pre class="r"><code># down
@@ -1207,6 +1117,89 @@ ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c(&q
     } })
 
 pdf(&quot;~/myers/scAnalysis/plots/RINdrop/Top_downDEG_GObp.pdf&quot;, width=13, height=5)
+ht
+dev.off()</code></pre>
+</div>
+<div id="fig2e-bottom-up" class="section level4">
+<h4>Fig2E bottom) UP</h4>
+<pre class="r"><code># # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#            BP UP
+a&lt;-ast_up[[&quot;GO_Biological_Process_2021&quot;]]
+b&lt;-mic_up[[&quot;GO_Biological_Process_2021&quot;]]
+c&lt;-ex_up[[&quot;GO_Biological_Process_2021&quot;]]
+d&lt;-in_up[[&quot;GO_Biological_Process_2021&quot;]]
+e&lt;-oli_up[[&quot;GO_Biological_Process_2021&quot;]]
+f&lt;-opc_up[[&quot;GO_Biological_Process_2021&quot;]]
+
+a$celltype&lt;-&quot;Astrocytes&quot;
+b$celltype&lt;-&quot;Microglia&quot;
+c$celltype&lt;-&quot;Excitatory&quot;
+d$celltype&lt;-&quot;Inhibitory&quot;
+e$celltype&lt;-&quot;Oligodendrocytes&quot;
+f$celltype&lt;-&quot;OPC&quot;
+
+df&lt;-rbind(a,b,c,d,e,f)
+df_all&lt;-df
+df2&lt;-df[which(df$Adjusted.P.value&lt;0.05),]
+df2&lt;-df2[order(df2$Adjusted.P.value),]
+top&lt;-df2[c(1:10),1]
+
+
+write.csv(df2, &quot;~/myers/scAnalysis/RINdrop/enrichr/top_BP_upAD_across_ct_MAST.csv&quot;)
+# up
+ t&lt;-table(df2$Term)
+topup&lt;-head(df2$Term, n=10)
+topup&lt;-df2 %&gt;% group_by(celltype) %&gt;% top_n(n=5, wt=Combined.Score)
+topup&lt;-topup[order(topup$celltype),]
+topup&lt;-topup$Term
+tD&lt;-df[which(df$Term %in% topup),]
+
+mat&lt;-matrix(nrow=length(unique(topup)), ncol=6)
+colnames(mat)&lt;-unique(df$celltype)
+for (j in 1:length(unique(topup))){
+  for (i in 1:6){
+    termTmp&lt;-unique(topup)[j]
+    ctTmp&lt;-colnames(mat)[i]
+    sub&lt;-df[which(df$Term==termTmp &amp; df$celltype==ctTmp),]
+    if (nrow(sub)&gt;0){
+      mat[j,i]&lt;- sub$Odds.Ratio
+    }
+    else{
+      mat[j,i]&lt;-0
+    }
+  }  
+}
+
+rownames(mat)&lt;-sapply(strsplit(unique(topup), &quot; (&quot;, fixed=T), `[`, 1)
+colnames(mat)&lt;-substr(colnames(mat),start=1,stop=3)
+
+sig_mat&lt;-matrix(nrow=length(unique(topup)), ncol=6)
+colnames(sig_mat)&lt;-unique(df$celltype)
+for (j in 1:length(unique(topup))){
+  for (i in 1:6){
+    termTmp&lt;-unique(topup)[j]
+    ctTmp&lt;-colnames(sig_mat)[i]
+    sub&lt;-df[which(df$Term==termTmp &amp; df$celltype==ctTmp),]
+    if (nrow(sub)&gt;0){
+      sig_mat[j,i]&lt;-sub$Adjusted.P.value}
+    else{
+      sig_mat[j,i]&lt;-1}  }}
+
+mat&lt;-mat[,c(1,3,4,2,5,6)]
+sig_mat&lt;-sig_mat[,c(1,3,4,2,5,6)]
+
+ha2&lt;-HeatmapAnnotation(celltype=colnames(mat)
+, col= list(celltype=c(&quot;Ast&quot;=&quot;darkgoldenrod1&quot;,&quot;Exc&quot;=&quot;cornflowerblue&quot;,&quot;Inh&quot;=&quot;seagreen3&quot;,&quot;Mic&quot;=&quot;mediumorchid3&quot;,&quot;Oli&quot;=&quot;coral3&quot;,&quot;OPC&quot;=&quot;firebrick&quot;)), show_legend=F,annotation_label=&quot;&quot;)
+
+ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c(&quot;grey95&quot;,&quot;red&quot;,&quot;red4&quot;)),  top_annotation=ha2, name=&quot;Odds.Ratio&quot;,  show_column_names=T, show_row_names=T, column_title=NULL,row_names_side=&quot;left&quot;, row_title_gp=gpar(fontsize=14),row_names_max_width = max_text_width(
+        rownames(mat), 
+        gp = gpar(fontsize = 12)
+    ), cell_fun = function(j, i, x, y, w, h, fill) {
+    if(sig_mat[i, j] &lt;0.05) {
+        grid.text(&quot;*&quot;, x, y, gp=gpar(fontsize=20, col=&quot;white&quot;), vjust=&quot;center&quot;)
+    } })
+
+pdf(&quot;~/myers/scAnalysis/plots/RINdrop/Top_upDEG_GObp.pdf&quot;, width=10, height=5)
 ht
 dev.off()</code></pre>
 </div>
@@ -1426,9 +1419,9 @@ dev.off()</code></pre>
 </div>
 </div>
 <div id="subcluster" class="section level1">
-<h1>subcluster</h1>
+<h1>Subcluster</h1>
 <div id="ast" class="section level2">
-<h2>ast</h2>
+<h2>Ast</h2>
 <pre class="r"><code>  DefaultAssay(Astrocytes)&lt;-&quot;PC&quot;
      Astrocytes &lt;- SCTransform(Astrocytes,assay=&quot;PC&quot;,new.assay.name=&quot;SCT&quot;,vars.to.regress = c(&quot;percent.mt&quot;),verbose=F) %&gt;%      RunPCA(ndims=30)
     Astrocytes&lt;-RunUMAP(Astrocytes,reduction=&quot;sub.harmony.rna&quot;,dims=1:30,reduction.name=&quot;sub.harmony.rna.umap&quot;)
@@ -1643,6 +1636,7 @@ dev.off()</code></pre>
 </div>
 <div id="sadick-scores" class="section level3">
 <h3>sadick scores</h3>
+<p>This analysis was not shown in publication</p>
 <pre class="r"><code>sad&lt;-read.csv(&quot;~/myers/scAnalysis/Sadick/Sadick_Ast_subDEGs.csv&quot;)
 sad&lt;-sad[which(sad$p_val_adj&lt;0.01 &amp; sad$avg_log2FC&gt;0.35),]
 
@@ -1671,8 +1665,8 @@ FeaturePlot(Astrocytes, reduction=&quot;wnn.umap&quot;, features=c(&quot;Clust0_
 dev.off()</code></pre>
 </div>
 </div>
-<div id="in" class="section level2">
-<h2>In</h2>
+<div id="inh" class="section level2">
+<h2>Inh</h2>
 <pre class="r"><code>   DefaultAssay(Inhibitory)&lt;-&quot;PC&quot;
      Inhibitory &lt;- SCTransform(Inhibitory,assay=&quot;PC&quot;,new.assay.name=&quot;SCT&quot;,vars.to.regress = c(&quot;percent.mt&quot;),verbose=F) %&gt;%      RunPCA(ndims=30)
    # Inhibitory&lt;-RunHarmony(Inhibitory, group.by.vars=&quot;id&quot;,reduction=&quot;pca&quot;,assay.use=&quot;SCT&quot;, reduction.save=&quot;sub.harmony.rna&quot;, lambda=0.8)
@@ -1983,8 +1977,8 @@ dev.off()</code></pre>
 <p>Inh_0 2043 2104 Inh_1 1571 2096 Inh_2 1836 1785 Inh_3 916 1047 Inh_4 564 598 Inh_5 341 372 Inh_6 305 380 Inh_7 154 219</p>
 </div>
 </div>
-<div id="ex" class="section level2">
-<h2>Ex</h2>
+<div id="exc" class="section level2">
+<h2>Exc</h2>
 <pre class="r"><code>   DefaultAssay(Excitatory)&lt;-&quot;PC&quot;
      Excitatory &lt;- SCTransform(Excitatory,assay=&quot;PC&quot;,new.assay.name=&quot;SCT&quot;,vars.to.regress = c(&quot;percent.mt&quot;),verbose=F) %&gt;%      RunPCA(ndims=30)
    Excitatory&lt;-RunUMAP(Excitatory,reduction=&quot;harmony.rna&quot;,dims=1:30,reduction.name=&quot;sub.harmony.rna.umap&quot;)
@@ -2910,8 +2904,8 @@ pdf(&quot;~/myers/scAnalysis/plots/RINdrop/scREAD_heatmap_byID.pdf&quot;, width=
 ht+rowAnnotation(gene=anno_mark(at=lab, labels=rownames(mat_scaled[lab,]), side=&quot;right&quot;, labels_gp=gpar(fontsize=10)))
 dev.off()</code></pre>
 </div>
-<div id="ecoverage" class="section level2">
-<h2>E)coverage</h2>
+<div id="e-atac-signal" class="section level2">
+<h2>E) ATAC signal</h2>
 <pre class="r"><code>DefaultAssay(data)&lt;-&quot;ATAC&quot;
 annot&lt;-Annotation(data)
 
@@ -2967,8 +2961,8 @@ pdf(&quot;~/myers/scAnalysis/plots/RINdrop/marker_coverage_plot.pdf&quot;, width
 plot_grid(p1,p2,p3,p4,p5,p6, ncol=6)
 dev.off()</code></pre>
 </div>
-<div id="csubcluster-prop-plot" class="section level2">
-<h2>C)subcluster prop plot</h2>
+<div id="c-subcluster-prop-plot" class="section level2">
+<h2>C) Subcluster prop plot</h2>
 <pre class="r"><code>tab&lt;-prop.table(table(meta$subs, meta$id),1)
 Status&lt;-c(&quot;Ctrl&quot;,&quot;Ctrl&quot;,&quot;Ctrl&quot;,&quot;AD&quot;,&quot;Ctrl&quot;,&quot;Ctrl&quot;,&quot;AD&quot;,&quot;AD&quot;,&quot;AD&quot;,&quot;AD&quot;,&quot;AD&quot;,&quot;AD&quot;,&quot;AD&quot;,&quot;AD&quot;,&quot;Ctrl&quot;,&quot;Ctrl&quot;,&quot;Ctrl&quot;,&quot;Ctrl&quot;)
 Status&lt;-Status[-c(6,13,14)]
@@ -3018,8 +3012,8 @@ p2=ggplot(tab2.m, aes(x=Freq, y=Var1, fill=Var1))+geom_bar(stat=&quot;identity&q
 p1+p2
 dev.off()</code></pre>
 </div>
-<div id="fcorplot" class="section level2">
-<h2>F)CorPlot</h2>
+<div id="f-corplot" class="section level2">
+<h2>F) CorPlot</h2>
 <pre class="r"><code>Idents(data)&lt;-data$id
 df2&lt;-data@meta.data[,c(&quot;id&quot;,&quot;Status&quot;)]
 df2&lt;-df2[!duplicated(df2$id),]
@@ -3083,7 +3077,7 @@ dev.off()</code></pre>
 </div>
 </div>
 <div id="motifs" class="section level1">
-<h1>motifs</h1>
+<h1>Motifs</h1>
 <pre class="r"><code>library(Signac)
 library(Seurat)
 library(JASPAR2020)
@@ -3112,637 +3106,7 @@ data &lt;- AddMotifs(
 )
 
 motifs&lt;-Motifs(data)
-saveRDS(motifs, &quot;~/myers/scAnalysis/RINdrop/motifs_object.rds&quot;)
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
-DefaultAssay(data)&lt;-&quot;CTpeaks&quot;
-peaks&lt;-granges(data)
-peaks&lt;-resize(peaks, width=500, fix=&quot;center&quot;)
-counts&lt;-FeatureMatrix(fragments=Fragments(data), features=peaks,cells=colnames(data))
-data[[&quot;peaks500&quot;]]&lt;-CreateChromatinAssay(counts=macs2_counts,  fragments=Fragments(data))
-
-DefaultAssay(data)&lt;-&quot;ATAC&quot;
-annotation&lt;-Annotation(data)
-DefaultAssay(data)&lt;-&quot;peaks500&quot;
-Annotation(data)&lt;-annotation
-#  add motif information
-data &lt;- AddMotifs(
-  object = data,
-  genome = BSgenome.Hsapiens.UCSC.hg38,
-  pfm = pfm2
-)
-
-motifs&lt;-Motifs(data)
-saveRDS(motifs, &quot;~/myers/scAnalysis/RINdrop/motifs500_object.rds&quot;)
-
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-peaks&lt;-names(Peak2)
-df&lt;-data.frame(chr=sapply(strsplit(peaks,&quot;-&quot;), `[`,1),
-               start=sapply(strsplit(peaks,&quot;-&quot;), `[`,2),
-               end=sapply(strsplit(peaks,&quot;-&quot;), `[`,3))
-
-gr&lt;-GRanges(df)
-peaks&lt;-resize(gr, width=500, fix=&quot;center&quot;)
-counts&lt;-FeatureMatrix(fragments=Fragments(data), features=peaks,cells=colnames(data))
-data[[&quot;peaks500&quot;]]&lt;-CreateChromatinAssay(counts=counts,  fragments=Fragments(data))
-saveRDS(counts, &quot;~/myers/scAnalysis/RINdrop/FilteredPeaks500b_assay.rds&quot;)
-
-DefaultAssay(data)&lt;-&quot;ATAC&quot;
-annotation&lt;-Annotation(data)
-DefaultAssay(data)&lt;-&quot;peaks500&quot;
-Annotation(data)&lt;-annotation
-#  add motif information
-data &lt;- AddMotifs(
-  object = data,
-  genome = BSgenome.Hsapiens.UCSC.hg38,
-  pfm = pfm2
-)
-
-motifs&lt;-Motifs(data)
-saveRDS(motifs, &quot;~/myers/scAnalysis/RINdrop/FilteredPeaks500b_motifs.rds&quot;)</code></pre>
-<div id="ad-ct-links" class="section level2">
-<h2>AD &amp;CT Links</h2>
-<pre class="r"><code>motif&lt;-readRDS(&quot;~/myers/scAnalysis/RINdrop/motif/FilteredPeaks500b_motif_families.rds&quot;)
-Motifs(data)&lt;-motif
-open.peaks &lt;- AccessiblePeaks(data, idents = &quot;Microglia&quot;)
-data&lt;-RegionStats(data, assay=&quot;peaks500&quot;, genome=BSgenome.Hsapiens.UCSC.hg38)
-rn&lt;-rownames(data)
-
-
-
-
-links200&lt;-resize(GRanges(c2), width=500, fix=&quot;center&quot;)
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1508
-tmp&lt;-links200[which(links200$CT==&quot;Astrocytes&quot; &amp; links200$group==&quot;Ctrl&quot;),]
-tmp&lt;-unique(tmp) # 2705
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks &lt;- AccessiblePeaks(data, idents = &quot;Astrocytes&quot;)
-
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-acm&lt;-FindMotifs(data, features=og, background=background)
-acm$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Tacm&lt;-FindMotifs(data, features=og, background=background)
-  Tacm$i&lt;-i
-  acm&lt;-rbind(acm,Tacm)
-}
-tab&lt;-table(acm$motif)
-acm_sig&lt;-acm[which(acm$motif %in% names(tab[tab&gt;95])),]
-
-
-acm_sig2&lt;-acm %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 606
-tmp&lt;-links200[which(links200$CT==&quot;Astrocytes&quot; &amp; links200$group==&quot;AD&quot;),]
-tmp&lt;-unique(tmp) # 961
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-aam&lt;-FindMotifs(data, features=og, background=background)
-aam$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Taam&lt;-FindMotifs(data, features=og, background=background)
-  Taam$i&lt;-i
-  aam&lt;-rbind(aam,Taam)
-}
-tab&lt;-table(aam$motif)
-aam_sig&lt;-aam[which(aam$motif %in% names(tab[tab&gt;95])),]
-
-aam_sig2&lt;-aam_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-aam_sig2&lt;-aam %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 4311
-tmp&lt;-links200[which(links200$CT==&quot;Microglia&quot; &amp; links200$group==&quot;AD&quot;),]
-tmp&lt;-unique(tmp) # 5754
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks &lt;- AccessiblePeaks(data, idents = &quot;Microglia&quot;)
-
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-mam&lt;-FindMotifs(data, features=og, background=background)
-mam$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Tmam&lt;-FindMotifs(data, features=og, background=background)
-  Tmam$i&lt;-i
-  mam&lt;-rbind(mam,Tmam)
-}
-tab&lt;-table(mam$motif)
-mam_sig&lt;-mam[which(mam$motif %in% names(tab[tab&gt;95])),]
-
-mam_sig2&lt;-mam_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-mam_sig2&lt;-mam_sig2[order(mam_sig2$fold.enrichment, decreasing=T),]
-
-mam_sig2&lt;-mam %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1536
-tmp&lt;-links200[which(links200$CT==&quot;Microglia&quot; &amp; links200$group==&quot;Ctrl&quot;),]
-tmp&lt;-unique(tmp) # 2705
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-mcm&lt;-FindMotifs(data, features=og, background=background)
-mcm$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Tmcm&lt;-FindMotifs(data, features=og, background=background)
-  Tmcm$i&lt;-i
-  mcm&lt;-rbind(mcm,Tmcm)
-}
-tab&lt;-table(mcm$motif)
-mcm_sig&lt;-mcm[which(mcm$motif %in% names(tab[tab&gt;95])),]
-
-mcm_sig2&lt;-mcm_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-mcm_sig2&lt;-mcm_sig2[order(mcm_sig2$fold.enrichment, decreasing=T),]
-
-mcm_sig2&lt;-mcm %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1349
-tmp&lt;-links200[which(links200$CT==&quot;Inhibitory&quot; &amp; links200$group==&quot;Ctrl&quot;),]
-tmp&lt;-unique(tmp) 
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks &lt;- AccessiblePeaks(data, idents = &quot;Inhibitory&quot;)
-
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-icm&lt;-FindMotifs(data, features=og, background=background)
-icm$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Ticm&lt;-FindMotifs(data, features=og, background=background)
-   Ticm$i&lt;-i
-  icm&lt;-rbind(icm,Ticm)
-}
-tab&lt;-table(icm$motif)
-icm_sig&lt;-icm[which(icm$motif %in% names(tab[tab&gt;95])),]
-
-icm_sig2&lt;-icm_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-icm_sig2&lt;-icm_sig2[order(icm_sig2$fold.enrichment, decreasing=T),]
-
-icm_sig2&lt;-icm %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 396
-tmp&lt;-links200[which(links200$CT==&quot;Inhibitory&quot; &amp; links200$group==&quot;AD&quot;),]
-tmp&lt;-unique(tmp) 
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-iam&lt;-FindMotifs(data, features=og, background=background)
-iam$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Tiam&lt;-FindMotifs(data, features=og, background=background)
-   Tiam$i&lt;-i
-  iam&lt;-rbind(iam,Tiam)
-}
-tab&lt;-table(iam$motif)
-iam_sig&lt;-iam[which(iam$motif %in% names(tab[tab&gt;95])),]
-
-iam_sig2&lt;-iam_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-iam_sig2&lt;-iam_sig2[order(iam_sig2$fold.enrichment, decreasing=T),]
-
-iam_sig2&lt;-iam %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 3700
-tmp&lt;-links200[which(links200$CT==&quot;Excitatory&quot; &amp; links200$group==&quot;AD&quot;),]
-tmp&lt;-unique(tmp) 
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks &lt;- AccessiblePeaks(data, idents = &quot;Excitatory&quot;)
-
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-eam&lt;-FindMotifs(data, features=og, background=background)
-eam$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Team&lt;-FindMotifs(data, features=og, background=background)
-  Team$i&lt;-i
-  eam&lt;-rbind(eam,Team)
-}
-tab&lt;-table(eam$motif)
-eam_sig&lt;-eam[which(eam$motif %in% names(tab[tab&gt;95])),]
-
-eam_sig2&lt;-eam_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-eam_sig2&lt;-eam_sig2[order(eam_sig2$fold.enrichment, decreasing=T),]
-
-eam_sig2&lt;-eam %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 11382
-tmp&lt;-links200[which(links200$CT==&quot;Excitatory&quot; &amp; links200$group==&quot;Ctrl&quot;),]
-tmp&lt;-unique(tmp) 
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-ecm&lt;-FindMotifs(data, features=og, background=background)
-ecm$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Tecm&lt;-FindMotifs(data, features=og, background=background)
-  Tecm$i&lt;-i
-  ecm&lt;-rbind(ecm,Tecm)
-}
-tab&lt;-table(ecm$motif)
-ecm_sig&lt;-ecm[which(ecm$motif %in% names(tab[tab&gt;95])),]
-
-ecm_sig2&lt;-ecm_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-ecm_sig2&lt;-ecm_sig2[order(ecm_sig2$fold.enrichment, decreasing=T),]
-
-ecm_sig2&lt;-ecm %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 1022
-tmp&lt;-links200[which(links200$CT==&quot;Oligodendrocytes&quot; &amp; links200$group==&quot;Ctrl&quot;),]
-tmp&lt;-unique(tmp) # 2709
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-open.peaks &lt;- AccessiblePeaks(data, idents = &quot;Oligodendrocytes&quot;)
-
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-ocm&lt;-FindMotifs(data, features=og, background=background)
-ocm$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Tocm&lt;-FindMotifs(data, features=og, background=background)
-   Tocm$i&lt;-i
-  ocm&lt;-rbind(ocm,Tocm)
-}
-tab&lt;-table(ocm$motif)
-ocm_sig&lt;-ocm[which(ocm$motif %in% names(tab[tab&gt;95])),]
-
-ocm_sig2&lt;-ocm_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-ocm_sig2&lt;-ocm_sig2[order(ocm_sig2$fold.enrichment, decreasing=T),]
-
-ocm_sig2&lt;-ocm %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 580
-tmp&lt;-links200[which(links200$CT==&quot;Oligodendrocytes&quot; &amp; links200$group==&quot;AD&quot;),]
-tmp&lt;-unique(tmp) # 2705
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-oam&lt;-FindMotifs(data, features=og, background=background)
-oam$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Toam&lt;-FindMotifs(data, features=og, background=background)
-  Toam$i&lt;-i
-  oam&lt;-rbind(oam,Toam)
-}
-tab&lt;-table(oam$motif)
-oam_sig&lt;-oam[which(oam$motif %in% names(tab[tab&gt;95])),]
-
-oam_sig2&lt;-oam_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-oam_sig2&lt;-oam_sig2[order(oam_sig2$fold.enrichment, decreasing=T),]
-
-oam_sig2&lt;-oam %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 403
-tmp&lt;-links200[which(links200$CT==&quot;OPCs&quot; &amp; links200$group==&quot;Ctrl&quot;),]
-tmp&lt;-unique(tmp) # 2705
-open.peaks &lt;- AccessiblePeaks(data, idents = &quot;OPCs&quot;)
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-opcm&lt;-FindMotifs(data, features=og, background=background)
-opcm$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Topcm&lt;-FindMotifs(data, features=og, background=background)
-  Topcm$i&lt;-i
-  opcm&lt;-rbind(opcm,Topcm)
-}
-tab&lt;-table(opcm$motif)
-opcm_sig&lt;-opcm[which(opcm$motif %in% names(tab[tab&gt;95])),]
-
-opcm_sig2&lt;-opcm_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-opcm_sig2&lt;-opcm_sig2[order(opcm_sig2$fold.enrichment, decreasing=T),]
-
-opcm_sig2&lt;-opcm %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 33
-# 152
-tmp&lt;-links200[which(links200$CT==&quot;OPCs&quot; &amp; links200$group==&quot;AD&quot;),]
-tmp&lt;-unique(tmp) # 251
-og&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp),&quot;-&quot;,end(tmp),sep=&quot;&quot;)
-og2&lt;-paste(seqnames(tmp),&quot;-&quot;,start(tmp)-1,&quot;-&quot;,end(tmp)-1,sep=&quot;&quot;)
-og&lt;-unique(c(og[og %in% rn], og2[og2 %in% rn]))
-meta.feature &lt;- GetAssayData(data, assay = &quot;peaks500&quot;, slot = &quot;meta.features&quot;)
-peaks.matched &lt;- MatchRegionStats(
-  meta.feature = meta.feature,
-  query.feature = meta.feature[og, ],
-  n = 30000)
-background&lt;-sample(peaks.matched, size=length(og))
-opam&lt;-FindMotifs(data, features=og, background=background)
-opam$i&lt;-1
-for (i in 2:100){
-  set.seed(i)
-  background&lt;-sample(peaks.matched, size=length(og))
-  Topam&lt;-FindMotifs(data, features=og, background=background)
-   Topam$i&lt;-i
-  opam&lt;-rbind(opam,Topam)
-}
-tab&lt;-table(opam$motif)
-opam_sig&lt;-opam[which(opam$motif %in% names(tab[tab&gt;95])),]
-
-opam_sig2&lt;-opam_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-opam_sig2&lt;-opam_sig2[order(opam_sig2$fold.enrichment, decreasing=T),]
-
-opam_sig2&lt;-opam %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-
-
-
-
-
-aam_sig2&lt;-as.data.frame(aam_sig2)
-acm_sig2&lt;-as.data.frame(acm_sig2)
-iam_sig2&lt;-as.data.frame(iam_sig2)
-icm_sig2&lt;-as.data.frame(icm_sig2)
-eam_sig2&lt;-as.data.frame(eam_sig2)
-ecm_sig2&lt;-as.data.frame(ecm_sig2)
-oam_sig2&lt;-as.data.frame(oam_sig2)
-ocm_sig2&lt;-as.data.frame(ocm_sig2)
-mam_sig2&lt;-as.data.frame(mam_sig2)
-mcm_sig2&lt;-as.data.frame(mcm_sig2)
-opam_sig2&lt;-as.data.frame(opam_sig2)
-opcm_sig2&lt;-as.data.frame(opcm_sig2)
-
-
-aam_sig2$Status&lt;-&quot;AD&quot;
-acm_sig2$Status&lt;-&quot;Ctrl&quot;
-iam_sig2$Status&lt;-&quot;AD&quot;
-icm_sig2$Status&lt;-&quot;Ctrl&quot;
-eam_sig2$Status&lt;-&quot;AD&quot;
-ecm_sig2$Status&lt;-&quot;Ctrl&quot;
-oam_sig2$Status&lt;-&quot;AD&quot;
-ocm_sig2$Status&lt;-&quot;Ctrl&quot;
-mam_sig2$Status&lt;-&quot;AD&quot;
-mcm_sig2$Status&lt;-&quot;Ctrl&quot;
-opam_sig2$Status&lt;-&quot;AD&quot;
-opcm_sig2$Status&lt;-&quot;Ctrl&quot;
-
-aam_sig2$celltype&lt;-&quot;Astrocytes&quot;
-acm_sig2$celltype&lt;-&quot;Astrocytes&quot;
-iam_sig2$celltype&lt;-&quot;Inhibitory&quot;
-icm_sig2$celltype&lt;-&quot;Inhibitory&quot;
-eam_sig2$celltype&lt;-&quot;Excitatory&quot;
-ecm_sig2$celltype&lt;-&quot;Excitatory&quot;
-oam_sig2$celltype&lt;-&quot;Oligodendrocytes&quot;
-ocm_sig2$celltype&lt;-&quot;Oligodendrocytes&quot;
-mam_sig2$celltype&lt;-&quot;Microglia&quot;
-mcm_sig2$celltype&lt;-&quot;Microglia&quot;
-opam_sig2$celltype&lt;-&quot;OPCs&quot;
-opcm_sig2$celltype&lt;-&quot;OPCs&quot;
-
-all_motifs&lt;-rbind(aam_sig2,acm_sig2,iam_sig2,icm_sig2,eam_sig2,ecm_sig2,oam_sig2,ocm_sig2,mam_sig2,mcm_sig2, opam_sig2, opcm_sig2)
-
-
-# saved version is filtered on pvalue for each iteration and motif enriched in &gt;=95 iterations 
-write.csv(all_motifs,&quot;~/myers/scAnalysis/RINdrop/Motif_all.csv&quot;, quote=F)</code></pre>
-<pre class="r"><code>ct&lt;-c(&quot;Astrocytes&quot;,&quot;Astrocytes&quot;,&quot;Inhibitory&quot;,&quot;Inhibitory&quot;,&quot;Excitatory&quot;,&quot;Excitatory&quot;,&quot;Oligodendrocytes&quot;,&quot;Oligodendrocytes&quot;,&quot;Microglia&quot;,&quot;Microglia&quot;,&quot;OPCs&quot;,&quot;OPCs&quot;)
-
-mots&lt;-list(aam,acm,iam,icm,eam,ecm,oam,ocm,mam,mcm, opam, opcm)
-mots_sig&lt;-list()
-mots_all&lt;-list()
-for( i in 1:12){
-  aam2&lt;-mots[[i]][which(mots[[i]]$pvalue&lt;0.05 ),]
-  tab&lt;-table(aam2$motif)
-  aam_sig&lt;-aam2[which(aam2$motif %in% names(tab[tab&gt;95])),]
-  aam_sig2&lt;-aam_sig %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-  aam_sig2$Status&lt;-ifelse(i%%2==0, &quot;Ctrl&quot;,&quot;AD&quot;)
-  aam_sig2$celltype&lt;-ct[i]
-  mots_sig[[i]]&lt;-as.data.frame(aam_sig2)
-  aam_all&lt;-mots[[i]] %&gt;% group_by(motif) %&gt;% summarize_at(vars(-motif.name), funs(mean(.,na.rm=T)))
-  aam_all$Status&lt;-ifelse(i%%2==0, &quot;Ctrl&quot;,&quot;AD&quot;)
-  aam_all$celltype&lt;-ct[i]
-  mots_all[[i]]&lt;-as.data.frame(aam_all)
- 
-}
-
-# filter on pvalue for each iteration. average of enrichment&gt;1.3 once merges
-
-
-sig_motif2&lt;-rbind(mots_sig[[1]],mots_sig[[2]],mots_sig[[3]],mots_sig[[4]],mots_sig[[5]],mots_sig[[6]],mots_sig[[7]],mots_sig[[8]],mots_sig[[9]],mots_sig[[10]],mots_sig[[11]],mots_sig[[12]])
-
-all_motif2&lt;-rbind(mots_all[[1]],mots_all[[2]],mots_all[[3]],mots_all[[4]],mots_all[[5]],mots_all[[6]],mots_all[[7]],mots_all[[8]],mots_all[[9]],mots_all[[10]],mots_all[[11]],mots_all[[12]])
-
- 
- sig_motif2&lt;-sig_motif2[which(sig_motif2$fold.enrichment&gt;1.25),]
- 
-  table(sig_motif2$Status, sig_motif2$celltype)</code></pre>
-<div id="plot-enrichment" class="section level3">
-<h3>plot enrichment</h3>
-<pre class="r"><code>df&lt;-sig_motif_fam
-df&lt;-df[which(df$celltype %in% c(&quot;Astrocytes&quot;,&quot;Excitatory&quot;,&quot;Microglia&quot;,&quot;Oligodendrocytes&quot;)),]
-df_ad&lt;-df[which(df$Status==&quot;AD&quot;),]
-df_ctrl&lt;-df[which(df$Status==&quot;Ctrl&quot;),]
-
-
-# df_ad&lt;-df_ad %&gt;% group_by(celltype) %&gt;% top_n(n=60, wt=fold.enrichment)
-# df_ctrl&lt;-df_ctrl %&gt;% group_by(celltype) %&gt;% top_n(n=60, wt=fold.enrichment)
-
-keep&lt;-unique(c(df_ad$Cluster, df_ctrl$Cluster))
-
-mat&lt;-matrix(nrow=length(keep),ncol=4)
-rownames(mat)&lt;-keep
-colnames(mat)&lt;-unique(df$celltype)
-for (i in 1:nrow(mat)){
-  for (j in 1:ncol(mat)){
-    gene_tmp&lt;-df_ad[which(df_ad$Cluster==rownames(mat)[i]),]
-    gene_tmp&lt;-gene_tmp[which(gene_tmp$celltype==colnames(mat)[j]),]
-    mat[i,j]&lt;-ifelse(nrow(gene_tmp)&gt;0, gene_tmp$fold.enrichment,0)}}
-
-mat2&lt;-matrix(nrow=length(keep),ncol=4)
-rownames(mat2)&lt;-keep
-colnames(mat2)&lt;-unique(df$celltype)
-for (i in 1:nrow(mat2)){
-  for (j in 1:ncol(mat2)){
-    gene_tmp&lt;-df_ctrl[which(df_ctrl$Cluster==rownames(mat2)[i]),]
-    gene_tmp&lt;-gene_tmp[which(gene_tmp$celltype==colnames(mat2)[j]),]
-     mat2[i,j]&lt;-ifelse(nrow(gene_tmp)&gt;0, gene_tmp$fold.enrichment,0)}}
-sig_mat&lt;-cbind(mat, mat2)
-colnames(sig_mat)&lt;-substr(colnames(sig_mat),start=1,stop=3)
-
-# sig_mat&lt;-sig_mat[,c(1,7,3,9,2,8,5,11,4,10,6,12)]
-# sig_mat&lt;-sig_mat[,-c(11,12)]
-sig_mat&lt;-sig_mat[,c(1,5,4,8,2,6,3,7)]
-
-{
-df&lt;-all_motif2[which(all_motif2$motif %in% keep),]
-df_ad&lt;-df[which(df$Status==&quot;AD&quot;),]
-df_ctrl&lt;-df[which(df$Status==&quot;Ctrl&quot;),]
-
-mat&lt;-matrix(nrow=length(unique(df$motif)),ncol=4)
-rownames(mat)&lt;-unique(df$motif)
-colnames(mat)&lt;-unique(df$celltype)
-for (i in 1:nrow(mat)){
-  for (j in 1:ncol(mat)){
-    gene_tmp&lt;-df_ad[which(df_ad$motif==rownames(mat)[i]),]
-    gene_tmp&lt;-gene_tmp[which(gene_tmp$celltype==colnames(mat)[j]),]
-    mat[i,j]&lt;-ifelse(nrow(gene_tmp)&gt;0, gene_tmp$fold.enrichment,0)}}
-
-mat2&lt;-matrix(nrow=length(unique(df$motif)),ncol=4)
-rownames(mat2)&lt;-unique(df$motif)
-colnames(mat2)&lt;-unique(df$celltype)
-for (i in 1:nrow(mat2)){
-  for (j in 1:ncol(mat2)){
-    gene_tmp&lt;-df_ctrl[which(df_ctrl$motif==rownames(mat2)[i]),]
-    gene_tmp&lt;-gene_tmp[which(gene_tmp$celltype==colnames(mat2)[j]),]
-     mat2[i,j]&lt;-ifelse(nrow(gene_tmp)&gt;0, gene_tmp$fold.enrichment,0)}}
-all_mat&lt;-cbind(mat, mat2)
-colnames(all_mat)&lt;-substr(colnames(all_mat),start=1,stop=3)
-
-
-# all_mat&lt;-all_mat[,c(1,7,3,9,2,8,5,11,4,10,6,12)]
-# all_mat&lt;-all_mat[,-c(11,12)]
-all_mat&lt;-all_mat[,c(1,5,2,6,4,8,3,7)]
-}
-
-
-
-
-df&lt;-df[order(df$fold.enrichment,decreasing=T),]
-noDup&lt;-df[!duplicated(df$Cluster),]
-noDup&lt;-noDup[order(noDup$celltype),]
-noDup&lt;-noDup[which(noDup$Cluster %in% rownames(sig_mat)),]
-
-
-all_mat&lt;-all_mat[noDup$Cluster,]
-sig_mat&lt;-sig_mat[noDup$Cluster,]
-noDup$motif_nam&lt;-sapply(strsplit(noDup$motif, &quot;_&quot;, fixed=T),`[`,1)
-
-
-
-lab&lt;-which(noDup$motif %in% c(&quot;Atf3_MA2036.1&quot;,&quot;CEBPB_MA0466.3&quot;,&quot;FOXO1::ELK1_MA1803.1&quot;,&quot;FOXO1::ELK3_MA1804.1&quot;,&quot;FOXO1::FLI1_MA1805.1&quot;,&quot;IRF4_MA1419.1&quot;,&quot;FOS_MA0476.1&quot;,&quot;FOS::JUND_MA1141.1&quot;,&quot;EMX2_MA0886.1&quot;,&quot;ETV5::FOXI1_MA1786.1&quot;,&quot;RUNX2_MA0511.2&quot;,&quot;NFIC_MA0161.2&quot;,&quot;NKX6-1_MA0674.1&quot;,&quot;CEBPE_MA0837.2&quot;,&quot;CEBPG_MA0838.1&quot;))
-
-ha2&lt;-HeatmapAnnotation(celltype=colnames(sig_mat), col= list(celltype=c(&quot;Ast&quot;=&quot;darkgoldenrod1&quot;,&quot;Exc&quot;=&quot;cornflowerblue&quot;,&quot;Mic&quot;=&quot;mediumorchid3&quot;,&quot;Oli&quot;=&quot;coral3&quot;)), show_legend=F)
-ha&lt;-HeatmapAnnotation(Status=rep(c(&quot;AD&quot;,&quot;Ctrl&quot;),4), col=list(Status=c(&quot;AD&quot;=&quot;red&quot;,&quot;Ctrl&quot;=&quot;blue&quot;)), show_legend=F)
-ha&lt;-c(ha,ha2)
-
-
-ht=Heatmap(sig_mat, cluster_rows=F,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(0,1.2,1.24, 1.25,1.6,2),c(&quot;# f0efed&quot;,&quot;# f0efed&quot;,&quot;# F0F921FF&quot;, rev(plasma(3)))), name=&quot;Fold Enrichment&quot;,  show_column_names=T, show_row_names=T, column_title=NULL,row_names_gp = gpar(fontsize = 6), top_annotation=ha) 
-#            cell_fun = function(j, i, x, y, w, h, fill) { if(sig_mat[i, j] &gt;0) {grid.text(&quot;*&quot;, x, y, gp=gpar(fontsize=5), vjust=&quot;center&quot;) } })
-
-
-
-
-pdf(&quot;~/myers/scAnalysis/plots/RINdrop/Motif_enrichment_heatmap_center500_family_2.pdf&quot;, width=6, height=8)
-ht
-dev.off()</code></pre>
-<pre class="r"><code>df&lt;-all_motif[which(all_motif$motif %in% sig_motif[which(sig_motif$celltype==&quot;Excitatory&quot;),]$motif),]
-df_ad&lt;-df[which(df$Status==&quot;AD&quot; &amp; df$celltype==&quot;Excitatory&quot;),]
-df_ctrl&lt;-df[which(df$Status==&quot;Ctrl&quot; &amp; df$celltype==&quot;Excitatory&quot;),]
-
-mat&lt;-as.matrix(data.frame(ad=df_ad$fold.enrichment, ctrl=df_ctrl$fold.enrichment))
-rownames(mat)&lt;-df_ad$motif
-# # all labels
-
-
-
-
-ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(0,0.95,1, 1.1,1.5,2),c(&quot;# f0efed&quot;,&quot;# f0efed&quot;,&quot;# F0F921FF&quot;, rev(plasma(3)))), name=&quot;Fold Enrichment&quot;,  show_column_names=T, show_row_names=T, column_title=NULL,row_names_gp = gpar(fontsize = 4))
-
-
-pdf(&quot;~/myers/scAnalysis/plots/RINdrop/Motif_enrichment_heatmap_Excitatory.pdf&quot;, width=4, height=12)
-ht
-dev.off()</code></pre>
-</div>
-</div>
+saveRDS(motifs, &quot;~/myers/scAnalysis/RINdrop/motifs_object.rds&quot;)</code></pre>
 </div>
 <div id="chromvar" class="section level1">
 <h1>chromVAR</h1>
@@ -3973,7 +3337,8 @@ c2&lt;-GRanges(t)
 saveRDS(c2, &quot;~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200_annot.rds&quot;)</code></pre>
 </div>
 <div id="filter-by-umi" class="section level2">
-<h2>filter by UMI</h2>
+<h2>Filter by UMI</h2>
+<p>Only genes with at least 200 UMIs were retained in the links</p>
 <pre class="r"><code>sumR&lt;-rowSums(data[[&quot;RNA&quot;]]@counts)
 sumR&lt;-sumR[sumR&gt;200]
 
@@ -3994,7 +3359,7 @@ colnames(s2)[c(1,2,3)]&lt;-c(&quot;seqnames&quot;,&quot;start&quot;,&quot;end&qu
 saveRDS(s2, &quot;~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200.rds&quot;)</code></pre>
 </div>
 <div id="annotate" class="section level2">
-<h2>annotate</h2>
+<h2>Annotate</h2>
 <pre class="r"><code>library(ChIPseeker)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 txdb &lt;- TxDb.Hsapiens.UCSC.hg38.knownGene
@@ -4011,40 +3376,13 @@ links_200.anno&lt;-links_200.annp@anno
 saveRDS(links_200.anno, &quot;~/myers/scAnalysis/RINdrop/XY_Filtered_AD_Ctrl_links_UMI200_annot.rds&quot;)</code></pre>
 </div>
 <div id="add-k27" class="section level2">
-<h2>add k27</h2>
+<h2>Add k27</h2>
 <p>All peaks were overlapped with h3k27ac earlier before links were called</p>
 <pre class="r"><code>c2&lt;-readRDS(&quot;~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200_annot.rds&quot;)
 
 overlap&lt;-findOverlaps(olap, c2) # olap is from peak k27 overlap in FIG1
 
 c2[subjectHits(overlap)]$k27&lt;-olap[queryHits(overlap)]$k27</code></pre>
-</div>
-<div id="olap-morabito" class="section level2">
-<h2>olap Morabito</h2>
-<pre class="r"><code> mor&lt;-read.table(&quot;/cluster/home/lrizzardi/Morabito_Sup4.txt&quot;)
-colnames(mor)&lt;-mor[1,]
-mor&lt;-mor[-1,]
-
-mor$seqnames&lt;-sapply(strsplit(mor$cCRE,&quot;-&quot;), `[`,1)
-mor$start&lt;-sapply(strsplit(mor$cCRE,&quot;-&quot;), `[`,2)
-mor$end&lt;-sapply(strsplit(mor$cCRE,&quot;-&quot;), `[`,3)
-mor&lt;-GRanges(mor)
-
-olap&lt;-findOverlaps(c2, mor)
-c2.olap&lt;-c2[queryHits(olap)]
-c2.olap$morabito_gene&lt;-mor[subjectHits(olap)]$target_gene
-c2.olap$morabito_group&lt;-mor[subjectHits(olap)]$group
-
-agree&lt;-c2.olap[which(c2.olap$gene ==c2.olap$morabito_gene),]
-
-prop1&lt;-length(agree[which(agree$CooperMPRA==T | agree$Weiss_NPC==T | agree$Weiss_ESC==T | agree$Uebbing_MPRA==T | agree$SuRE_K562==T | agree$SuRE_HePG2==T | agree$GTEx_FC==T | agree$eQTL_Bryois==T | agree$Geschwin_HiC==T)])
-
-
-mat&lt;-matrix(data=c(245775,65873,6589,1668),ncol=2)
-fisher.test(t(mat))</code></pre>
-<p>Cooper MPRA 1 Weiss NPC 9 Weiss ESC 14 Uebbing MPRA 83 SuRE K562 984 SuRE HepG2 567 GTEx FC 6 Byois eQTL 15 HiC 241</p>
-<p>. AD Control joint AD 398 295 335 common 2174 1476 1964 Ctrl 682 398 535</p>
-<p>Of all morabito links, only 32% are shared between AD and control.</p>
 </div>
 <div id="interesting-things" class="section level2">
 <h2>interesting things</h2>
@@ -4666,16 +4004,17 @@ dev.off()</code></pre>
 </div>
 <div id="mef2c-link-plot" class="section level3">
 <h3>MEF2C link plot</h3>
-<pre class="r"><code>region&lt;-GRanges(&quot;chr1:9852501-9852660&quot;)
+<pre class="r"><code>region&lt;-GRanges(&quot;chr4:90030247-90031491&quot;)
 start(region)&lt;-start(region)-1000
 end(region)&lt;-end(region)+1000
-ChIP_track1&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)
-ChIP_track2&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,25)+scale_fill_manual(values=&quot;blue&quot;)
+ChIP_track1&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)+ylim(0,10)
+ChIP_track2&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;blue&quot;)
+ChIP_track3&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_other/Jan2021_ChIPseq/MEF2C_OL-NEUN_PT2_test/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;NEUN&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;grey54&quot;)
 
 
-p&lt;-CombineTracks(plotlist=list(ChIP_track1,ChIP_track2), heights=c(2,2))
+p&lt;-CombineTracks(plotlist=list(ChIP_track1,ChIP_track2,ChIP_track3), heights=c(2,2,2))
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/RINdrop/MEF2C_ADCtrl.pdf&quot;), width=6, height=7)
+pdf(paste0(&quot;~/myers/scAnalysis/plots/RINdrop/MEF2C_ADCtrl_NEUN.pdf&quot;), width=6, height=7)
 p
 dev.off()
 
@@ -4683,11 +4022,7 @@ dev.off()
 sig&lt;-GRanges(c(&quot;chr1:9852501-9852660&quot;,&quot;chr1:233567051-233567110&quot;,&quot;chr10:123583851-123583910&quot;,&quot;chr12:49565251-49565360&quot;,&quot;chr14:70098351-70098460&quot;,&quot;chr14:88824601-88824710&quot;,&quot;chr14:88824601-88824710&quot;,&quot;chr19:49165501-49165510&quot;))
 
 subsetByOverlaps(b, sig[7])$GRN</code></pre>
-<p>2 18127-MEF2C_MA0497.1-KCNK1; maybe but also 3 other trios</p>
-<p>3 crap</p>
-<p>4 MCRS1 promoter: “84069-MEF2C_MA0497.1-KCNH3” , “84069-ZEB1_MA0103.3-KCNH3”</p>
-<p>6/7 (it’s 2 peaks) dumb-“113229-MEF2C_MA0497.1-TTC8”</p>
-<p>8 “168217-MEF2C_MA0497.1-TRPM4”</p>
+<p>2</p>
 <pre class="r"><code>mef_neurn=import(&quot;/cluster/home/jloupe/Outputs_other/Jan2021_ChIPseq/MEF2C_OL-NEUN_PT2_test/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
 mef=import(&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
 mef2&lt;-import(&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output//peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
@@ -4747,20 +4082,11 @@ dev.off()</code></pre>
 ZEB1_DLPFC=import(con=&quot;/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_DLPFC-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
 ZEB1_DLPFC$Tissue=&quot;DLPFC&quot;
 
-ZEB1_OL=import(con=&quot;/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_OL-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
-ZEB1_OL$Tissue=&quot;OL&quot;
-ZEB1_FP=import(con=&quot;/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_FP-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
-ZEB1_FP$Tissue=&quot;FP&quot;
-zeb1_cortex=c(ZEB1_DLPFC,ZEB1_OL,ZEB1_FP)
-HOT=import(&quot;/cluster/home/lrizzardi/BrainTF-ADSupp/union_DLPFC_NEUN_HOT.bed&quot;)  #12826 peaks
-
-zeb1_notHOT=subsetByOverlaps(zeb1_cortex,HOT,invert=TRUE)
-
-ZEB1_trio&lt;-subsetByOverlaps(changed[which(changed$TF==&quot;ZEB1&quot;),],zeb1_notHOT)
+ZEB1_trio&lt;-subsetByOverlaps(changed[which(changed$TF==&quot;ZEB1&quot;),],ZEB1_DLPFC)
 ZEB1_trio&lt;-changed[which(changed$TF==&quot;ZEB1&quot;),]</code></pre>
 <pre class="r"><code>meh&lt;-unique(b[which(b$TF==&quot;ZEB1&quot; &amp; (b$Excitatory==T | b$Inhibitory==T)),])
 meh$olapK27&lt;-F
-olap&lt;-findOverlaps(meh, zeb1_cortex)
+olap&lt;-findOverlaps(meh, ZEB1_DLPFC)
 meh[unique(queryHits(olap))]$olapK27&lt;-T
 table( meh$olapK27, meh$category)</code></pre>
 <p>###Fig4G,H</p>
@@ -4876,69 +4202,11 @@ dev.off()</code></pre>
 <h2>olap luciferase</h2>
 <pre class="r"><code>trio_val&lt;-subsetByOverlaps(b, gRNA[which(gRNA$Significant==T),])
 noquote(t(t(trio_val$GRN)))</code></pre>
+<p>3 trios that also overlap significant luciferase region</p>
 <p>“269545-MEF2C_MA0497.1-CCSER1”<br />
 “138088-RARB_MA1552.1-JPH3”<br />
 “213871-SOX10_MA0442.2-ADAMTS1”</p>
-<p>#NGN2 iPSC</p>
-<p><a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE124703" class="uri">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE124703</a></p>
-<pre class="r"><code>rep1&lt;-read.table(&quot;/cluster/home/aanderson/myers/scAnalysis/Kampmann_NGN2_RNAseq/GSM3543612_D14_C1_read_counts.txt&quot;)
-rep2&lt;-read.table(&quot;/cluster/home/aanderson/myers/scAnalysis/Kampmann_NGN2_RNAseq/GSM3543613_D14_C2_read_counts.txt&quot;)
-rep1$V3&lt;-rep2$V2
-
-library(&#39;biomaRt&#39;)
-mart &lt;- useDataset(&quot;hsapiens_gene_ensembl&quot;, useMart(&quot;ensembl&quot;))
-G_list &lt;- getBM(filters = &quot;ensembl_gene_id&quot;, 
-                attributes = c(&quot;ensembl_gene_id&quot;, &quot;hgnc_symbol&quot;, &quot;description&quot;),
-                values = rep1$V1, mart = mart)
-
-mer&lt;-merge(rep1, G_list, by.x=&quot;V1&quot;, by.y=&quot;ensembl_gene_id&quot;)
-mer$avg&lt;-(mer$V2+mer$V3)/2
-exp&lt;-mer[which(mer$avg&gt;100),]
-
-genes&lt;-exp[which(exp$avg &gt; quantile(exp$avg, probs=0.4)),]$hgnc_symbol
-
-#Add data from BC1 and XCL4
- bc1&lt;-readRDS(&quot;~/myers/scAnalysis/220405/merged_220405_210330_wAst.rds&quot;)
- DefaultAssay(bc1)&lt;-&quot;RNA&quot;
- bc1&lt;-NormalizeData(bc1, normalization.method=&quot;RC&quot;,scale.factor = 1e6)
-bc1$cell_line&lt;-ifelse(bc1$week %in% c(&quot;4wk&quot;,&quot;6wk&quot;), &quot;BC1&quot;,&quot;XCL4&quot;)
-
-
-
-test&lt;-import(&quot;~/myers/scAnalysis/RINdrop/test.bed&quot;)
-test2&lt;-subsetByOverlaps(c2, test)
-avgExp&lt;-as.data.frame(AverageExpression(bc1, features=unique(test2$gene), group.by=&quot;week&quot;, assay=&quot;RNA&quot;, slot=&quot;counts&quot;))
-avgExp$gene&lt;-rownames(avgExp)
-
-test2.1&lt;-merge(test2, mer[,c(4,6)], by.x=&quot;gene&quot;,by.y=&quot;hgnc_symbol&quot;)
-test2.2&lt;-merge(test2.1,avgExp, by=&quot;gene&quot;)
-
-test2.2&lt;-test2.2[order(abs(test2.2$score)),]
-agg&lt;-test2.2 %&gt;% group_by(index) %&gt;% summarize(gene=paste0(gene, collapse=&quot;,&quot;), score=paste0(round(score,2), collapse=&quot;,&quot;), NGN2=paste0(round(avg,2), collapse=&quot;,&quot;), XCL4=paste0(round(RNA.2wk,2), collapse=&quot;,&quot;), BC1=paste0(round(RNA.4wk,2), collapse=&quot;,&quot;))</code></pre>
 </div>
-</div>
-<div id="xcl4" class="section level1">
-<h1>XCL4</h1>
-<pre class="r"><code>XCL4&lt;-import(&quot;/cluster/home/jtaylor/lindsay_chip-seq_project/ouputs/XCL4/XCL4_H3K27ac_npc/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;, format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
-BC1_k27=import(con=&quot;/cluster/home/jtaylor/lindsay_chip-seq_project/ouputs/BC1/BC1_H3K27ac_neuron/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
-
-
-gRNA&lt;-read.csv(&quot;~/myers/scrnaseq_cellranger/220729/feature_ref3.csv&quot;)
-gRNA$seqnames&lt;-sapply(strsplit(gRNA$id,&quot;_&quot;), `[`,1)
-gRNA$start&lt;-sapply(strsplit(gRNA$id,&quot;_&quot;), `[`,2)
-gRNA$end&lt;-as.numeric(gRNA$start)+100
-gRNA&lt;-gRNA[!grepl(&quot;AAV&quot;, gRNA$name),]
-gRNA.gr&lt;-GRanges(gRNA)
-
-olap&lt;-findOverlaps(gRNA.gr, XCL4, maxgap=500)
-gRNA.gr$XCL4&lt;-F
-gRNA.gr[queryHits(olap)]$XCL4&lt;-T
-
-olap&lt;-findOverlaps(gRNA.gr, BsC1_k27, maxgap=500)
-gRNA.gr$BC1&lt;-F
-gRNA.gr[queryHits(olap)]$BC1&lt;-T
-
-df&lt;-data.frame(gRNA=gRNA.gr$id, XCL4_olap=gRNA.gr$XCL4, BC1_olap=gRNA.gr$BC1)</code></pre>
 </div>
 <div id="fig-3" class="section level1">
 <h1>FIG 3</h1>
@@ -6381,8 +5649,34 @@ nrow(df[which(df$MPRA == F &amp; df$eQTL == F &amp; df$Geschwin_HiC == T),]) ##6
 nrow(df[which(df$MPRA == F &amp; df$eQTL == T &amp; df$Geschwin_HiC == F),]) ##477</code></pre>
 </div>
 </div>
-<div id="fig-5e-app-link-plot" class="section level2">
-<h2>Fig 5E) APP link plot</h2>
+<div id="overlap-morabito" class="section level2">
+<h2>Overlap Morabito</h2>
+<pre class="r"><code> mor&lt;-read.table(&quot;/cluster/home/lrizzardi/Morabito_Sup4.txt&quot;)
+colnames(mor)&lt;-mor[1,]
+mor&lt;-mor[-1,]
+
+mor$seqnames&lt;-sapply(strsplit(mor$cCRE,&quot;-&quot;), `[`,1)
+mor$start&lt;-sapply(strsplit(mor$cCRE,&quot;-&quot;), `[`,2)
+mor$end&lt;-sapply(strsplit(mor$cCRE,&quot;-&quot;), `[`,3)
+mor&lt;-GRanges(mor)
+
+olap&lt;-findOverlaps(c2, mor)
+c2.olap&lt;-c2[queryHits(olap)]
+c2.olap$morabito_gene&lt;-mor[subjectHits(olap)]$target_gene
+c2.olap$morabito_group&lt;-mor[subjectHits(olap)]$group
+
+agree&lt;-c2.olap[which(c2.olap$gene ==c2.olap$morabito_gene),]
+
+prop1&lt;-length(agree[which(agree$CooperMPRA==T | agree$Weiss_NPC==T | agree$Weiss_ESC==T | agree$Uebbing_MPRA==T | agree$SuRE_K562==T | agree$SuRE_HePG2==T | agree$GTEx_FC==T | agree$eQTL_Bryois==T | agree$Geschwin_HiC==T)])
+
+
+mat&lt;-matrix(data=c(245775,65873,6589,1668),ncol=2)
+fisher.test(t(mat))</code></pre>
+<p>Cooper MPRA 1 Weiss NPC 9 Weiss ESC 14 Uebbing MPRA 83 SuRE K562 984 SuRE HepG2 567 GTEx FC 6 Byois eQTL 15 HiC 241</p>
+</div>
+</div>
+<div id="fig-5e-app-link-plot" class="section level1">
+<h1>Fig 5E) APP link plot</h1>
 <pre class="r"><code>## APP
 gRNA&lt;-read.xlsx(&quot;~/myers/scAnalysis/RINdrop/SingleCellValidation_Luciferase_HEKs_transformed.xlsx&quot;)
 gRNA&lt;-gRNA[-1,]
@@ -6429,10 +5723,10 @@ pdf(paste0(&quot;~/myers/scAnalysis/plots/RINdrop/APP_linkPlot_olap_Luciferase.p
 p
 dev.off()</code></pre>
 </div>
-<div id="supp-links" class="section level2">
-<h2>SUPP Links</h2>
-<div id="gene-peak-density" class="section level4">
-<h4>gene &amp; peak density</h4>
+<div id="supp-links" class="section level1">
+<h1>SUPP Links</h1>
+<div id="gene-peak-density" class="section level2">
+<h2>gene &amp; peak density</h2>
 <pre class="r"><code>t1&lt;-as.data.frame(table(a10.gr$gene))
 t2&lt;-as.data.frame(table(c10.gr$gene))
 t&lt;-merge(t1,t2,by=&quot;Var1&quot;,all=T) 
@@ -6457,8 +5751,8 @@ b=ggplot(p, aes(x=value, color=variable,fill=variable))+geom_density( aes(y = ..
 b+a
 dev.off()</code></pre>
 </div>
-<div id="var-bin" class="section level4">
-<h4>var bin</h4>
+<div id="gene-variance-by-score" class="section level2">
+<h2>Gene Variance by score</h2>
 <pre class="r"><code>var&lt;-rowVars(data[[&quot;RNA&quot;]]@data)
 
 var&lt;-as.data.frame(var)
@@ -6503,7 +5797,6 @@ biny2$bin&lt;-factor(biny2$bin, levels=c(&quot;0-0.2&quot;,&quot;0.2-0.4&quot;,&
 pdf(&quot;~/myers/scAnalysis/plots/22_restart/Gene_var_by_bin_mic.pdf&quot;)
 ggplot(biny2, aes(x=bin, y=log(var)))+geom_boxplot()+theme_classic()+ylim(-8,10)
 dev.off()</code></pre>
-</div>
 </div>
 <div id="variance-of-linked-genes" class="section level2">
 <h2>Variance of linked genes</h2>

@@ -1,4 +1,4 @@
-##LDSC analysis pipeline AD multiomics
+## LDSC analysis pipeline AD multiomics
 Author: Ivan Rodriguez-Nunez
 
 

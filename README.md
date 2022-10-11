@@ -1,4 +1,4 @@
-# Identification of AD-specific *cis* regulatory elements regulated by ZEB1 and MAFB in neurons and microglia using single nuclei multiomics
+# Single nucleus multiomics identifies ZEB1 and MAFB as candidate regulators of Alzheimer’s disease-specific *cis* regulatory elements
 
 ![Figrue1](https://github.com/aanderson54/scMultiomics_AD/blob/main/images/Figure1-2.png)
 
@@ -21,5 +21,5 @@ microglia, and previously identified active regulatory regions.
 
 To view a vignette of all analyses click [here](https://aanderson54.github.io/scMultiomics_AD/)
 
-Additional pre-processing scripts can be found in the scripts directory. This includes scripts for sample demultiplexing using cellSNP and vireo.
+Additional pre-processing scripts can be found in the scripts directory. This includes scripts for sample demultiplexing using cellSNP and vireo, plotting functions, and LDSC.
 

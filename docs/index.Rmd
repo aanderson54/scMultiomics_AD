@@ -404,7 +404,7 @@ write.csv(Ctrl, "~/myers/scAnalysis/22_restart/barcodes_Ctrl.csv", row.names=F, 
 load("/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar")
 enc=full_annot_encode_cre_def_GR
 enc<-enc[!grepl("iCell",enc$accesionLabel),]
-u2<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_annotated.csv")
+u2<-read.csv("~/scMultiomics_AD/CTpeaks_annotated.csv")
 u2$index<-seq(1,nrow(u2))
 ol_enc=findOverlaps(GRanges(u2),enc)
 
@@ -420,7 +420,7 @@ u2$Pericytes        <-grepl("Pericytes",       u2$peak_called_in)
 u2$Endothelial      <-grepl("Endothelial",      u2$peak_called_in)
 
 c2_enc<-u2[queryHits(ol_enc),]
-c2_enc$encLab<-enc[subjectHits(ol_enc),]$encodeLabel
+c2_enc$encLab<-as.character(enc[subjectHits(ol_enc),]$encodeLabel)
 c2_enc<-c2_enc[!duplicated(c2_enc$index),]
 d2<-merge(c2_enc, u2, by="index", all=T)
 d2$encLab<-ifelse(is.na(d2$encLab)==T, "None",d2$encLab)
@@ -456,7 +456,7 @@ dev.off()
 H3K27ac from Nott et al. 2019 and Kolzlenkov et al. 2018
 ```{r,eval=F}
 
-peaks<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_annotated.csv")
+peaks<-read.csv("~/scMultiomics_AD/CTpeaks_annotated.csv")
 peaks<-GRanges(peaks)
 
 
@@ -507,7 +507,7 @@ peaks_over<-findOverlaps(peaks, all_agree) # 125746   # 386892
 
 
 
-write.csv(tmp, "~/myers/scAnalysis/RINdrop/CTpeaks_wK27olap.csv")
+write.csv(tmp, "~/scMultiomics_AD/CTpeaks_wK27olap.csv")
 
 ```
 
@@ -517,7 +517,7 @@ If peak was called in a cell type, does it overlap H3K27ac of that cell type?
 For peaks that were called in multiple cell types, they may overlap H3K27ac of only one cell type. (ie. peak called in microglia and astrocytes but only overlaps microglia H3K27ac)
 ```{r,eval=F}
 
-tmp<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_wK27olap.csv")
+tmp<-read.csv("~/scMultiomics_AD/CTpeaks_wK27olap.csv")
 olap<-GRanges(tmp)
 
 
@@ -660,7 +660,7 @@ meta<-read.csv("~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv")
 meta$ID[16]<-"HCTZZT"
 meta2<-merge(meta, c, by.x="ID",by.y="id")
 
-write.csv(meta2, "~/myers/scAnalysis/RINdrop/Sample_stats.csv", quote=F, row.names=F)
+write.csv(meta2, "~/scMultiomics_AD/Sample_stats.csv", quote=F, row.names=F)
 ```
 
 
@@ -724,7 +724,7 @@ ALL$cat<-ifelse(ALL$avg_log2FC >0, "up","down")
 significant<-ALL[which(abs(ALL$avg_log2FC)>0.25),]
 significant<-significant[which(significant$p_val_adj<0.01),]
 
-write.csv(significant, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
+write.csv(significant, "~/scMultiomics_AD/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
 
 
 ```
@@ -736,7 +736,7 @@ write.csv(significant, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_MAST_ADCtrl_AgeSex.
 ```{r,eval=F}
 # # # #  all CT
 
-degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
 library(enrichR)
 setEnrichrSite("Enrichr")
 
@@ -801,8 +801,8 @@ df2_BP_down<-df2
 
 df2<-df[which(df$Adjusted.P.value<0.01),]
 
-# write.csv(df2, "~/myers/scAnalysis/RINdrop/enrichr/top_BP_downAD_across_ct_MAST.csv")
-write.csv(df2, "~/myers/scAnalysis/RINdrop/enrichr/top_BP_downAD_across_ct_MAST.csv")
+# write.csv(df2, "~/scMultiomics_AD/enrichr/top_BP_downAD_across_ct_MAST.csv")
+write.csv(df2, "~/scMultiomics_AD/enrichr/top_BP_downAD_across_ct_MAST.csv")
 
  t<-table(df2_BP_down$Term)
 topDown<-head(df2$Term, n=10)
@@ -890,7 +890,7 @@ df2<-df2[order(df2$Adjusted.P.value),]
 top<-df2[c(1:10),1]
 
 
-write.csv(df2, "~/myers/scAnalysis/RINdrop/enrichr/top_BP_upAD_across_ct_MAST.csv")
+write.csv(df2, "~/scMultiomics_AD/enrichr/top_BP_upAD_across_ct_MAST.csv")
 # up
  t<-table(df2$Term)
 topup<-head(df2$Term, n=10)
@@ -955,7 +955,7 @@ dev.off()
 ### Fig2A) Heatmap 
 ```{r,eval=F}
 
-degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
 tab<-table(degs$celltype, degs$cat)
 
 mat<-matrix(nrow=length(unique(degs$gene)),ncol=6)
@@ -1009,7 +1009,7 @@ tmp<-unlist(tmp)
 write.csv(tmp, "~/Documents/RINdrop/Luciferase_linked_genes.csv")
 
 # back to cluster
-luc<-read.csv("~/myers/scAnalysis/RINdrop/Luciferase_linked_genes.csv")
+luc<-read.csv("~/scMultiomics_AD/Luciferase_linked_genes.csv")
 toTest<-toTest[which(toTest$gene != "PVR"),]
 all_connect_genes<-subsetByOverlaps(l2, toTest)
 show_genes<-unique(c(luc$x, all_connect_genes$gene))
@@ -1184,8 +1184,6 @@ dev.off()
 
 
 
-
-
 # Subcluster
 ## Ast
 ```{r,eval=F}
@@ -1226,7 +1224,7 @@ DEGs<-FindAllMarkers(Astrocytes,min.pct=0.1,logfc.threshold = 0.1,  assay="PC", 
 DEGs<-DEGs[which(DEGs$p_val_adj<0.01 & abs(DEGs$avg_log2FC)>0.5),]
 DEGs$cat<-ifelse(DEGs$avg_log2FC>0, "up","down")
 
-write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Astrocytes.csv")
+write.csv(DEGs, "~/scMultiomics_AD/DEGs/DEGs_Astrocytes.csv")
 
 
 ```
@@ -1235,7 +1233,7 @@ write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Astrocytes.csv")
 #### GO
 Supp Fig 5
 ```{r,eval=F}
-degs_in<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Astrocytes.csv")
+degs_in<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Astrocytes.csv")
 degs_in<-degs_in[which(degs_in$cat=="up"),]
 degs_in<-degs_in[order(degs_in$p_val_adj),]
 degs_in<-degs_in[which(abs(degs_in$avg_log2FC)>0.55 & degs_in$p_val_adj<0.01 ),]
@@ -1264,7 +1262,7 @@ e$i<-4
 df<-rbind(a,b,c,d,e)
 df_all<-df
 df<-df[which(df$Adjusted.P.value<0.05),]
-write.csv(df, "~/myers/scAnalysis/RINdrop/enrichr/Ast_subclusters_GO_BP.csv")
+write.csv(df, "~/scMultiomics_AD/enrichr/Ast_subclusters_GO_BP.csv")
 
 
 # switch back to BP
@@ -1406,7 +1404,7 @@ dev.off()
 ```{r,eval=F}
 
 
-olig_degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Astrocytes.csv")
+olig_degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Astrocytes.csv")
 olig_degs<-olig_degs[which(olig_degs$cat=="up"),]
 top <- olig_degs %>% group_by(cluster) %>% top_n(n=10, wt=avg_log2FC)
 top$clust<-paste("Ast_", top$cluster, sep="")
@@ -1511,14 +1509,14 @@ DEGs<-FindAllMarkers(Inhibitory,min.pct=0.1,logfc.threshold = 0.1,  assay="PC", 
 DEGs<-DEGs[which(DEGs$p_val_adj<0.01 & abs(DEGs$avg_log2FC)>0.5),]
 DEGs$cat<-ifelse(DEGs$avg_log2FC>0, "up","down")
 
-write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Inhibitory.csv")
+write.csv(DEGs, "~/scMultiomics_AD/DEGs/DEGs_Inhibitory.csv")
 
 
 ```
 
 #### subtype
 ```{r eval=F}
-degs_in<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Inhibitory.csv")
+degs_in<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Inhibitory.csv")
 degs_in<-degs_in[which(degs_in$cat=="up"),]
 degs_in<-degs_in[order(degs_in$p_val_adj),]
 
@@ -1677,7 +1675,7 @@ dev.off()
 
 ###  GO
 ```{r,eval=F}
-degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Inhibitory.csv")
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Inhibitory.csv")
 degs<-degs[which(degs$p_val_adj<0.01 & abs(degs$avg_log2FC)>0.5),]
 degs_up<-degs[which(degs$cat=="up"),]
 dbs <- c("GO_Molecular_Function_2021", "GO_Cellular_Component_2021", "GO_Biological_Process_2021", "KEGG_2021_Human", "Azimuth_Cell_Types_2021", "Allen_Brain_Atlas_10x_scRNA_2021")
@@ -1716,7 +1714,7 @@ h$i<-7
 df<-rbind(a,b,c,d,e,f,g,h)
 df_all<-df
 df<-df[which(df$Adjusted.P.value<0.05),]
-write.csv(df, "~/myers/scAnalysis/RINdrop/enrichr/Inh_subclusters_GO_BP.csv")
+write.csv(df, "~/scMultiomics_AD/enrichr/Inh_subclusters_GO_BP.csv")
 
 
 
@@ -1887,7 +1885,7 @@ DEGs<-FindAllMarkers(Excitatory2,min.pct=0.1,logfc.threshold = 0.1,  assay="PC",
 DEGs<-DEGs[which(DEGs$p_val_adj<0.01 & abs(DEGs$avg_log2FC)>0.5),]
 DEGs$cat<-ifelse(DEGs$avg_log2FC>0, "up","down")
 
-write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Excitatory.csv")
+write.csv(DEGs, "~/scMultiomics_AD/DEGs/DEGs_Excitatory.csv")
 
 
 ```
@@ -1896,7 +1894,7 @@ write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Excitatory.csv")
 ```{r eval=F}
 # # Excitatory subtypes
 # same as large subcluster DEG list but this ran first
-degs_ex<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Excitatory.csv")
+degs_ex<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Excitatory.csv")
 
 
 degs_ex<-degs_ex[which(degs_ex$cat=="up"),]
@@ -1994,7 +1992,7 @@ dev.off()
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-degs_ex<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEG_Excitatory_subTypes_AgeSex.csv")
+degs_ex<-read.csv("~/scMultiomics_AD/DEGs/DEG_Excitatory_subTypes_AgeSex.csv")
 
 
 degs_ex$subtype<-ifelse(degs_ex$cluster==0, "L2/3 RORB+ CCDC68+ ",
@@ -2011,7 +2009,7 @@ degs_ex$subtype<-ifelse(degs_ex$cluster==0, "L2/3 RORB+ CCDC68+ ",
                          ifelse(degs_ex$cluster==11, "NS","L5 FEZF2+ CSN1S1+"))))))))))))
 
 # degs_ex$layer<-lapply(strsplit(degs_ex$subtype, split=" "), `[`, 1)
-write.csv(degs_ex, "~/myers/scAnalysis/RINdrop/DEGs/DEG_Ex_subTypes.csv")
+write.csv(degs_ex, "~/scMultiomics_AD/DEGs/DEG_Ex_subTypes.csv")
 ```
 
 
@@ -2033,7 +2031,7 @@ L6_T_L=c("EMA3A","TRPM3","ADAMTS3","LINC00343","ANKRD30B","DCHS2","THEMIS","SEC2
 markers$seq<-seq(1, nrow(markers))
 markers_melt<-melt(markers, id="seq")
 markers_melt<-markers_melt[which(markers_melt$value != "x"),]
-# ex_degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Excitatory.csv")
+# ex_degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Excitatory.csv")
 # markers_malt2<-markers_melt[which(markers_melt$value %in% ex_degs$gene),]
 
 
@@ -2135,7 +2133,7 @@ dev.off()
 
 ###  GO
 ```{r,eval=F}
-degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Excitatory.csv")
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Excitatory.csv")
 degs<-degs[which(degs$p_val_adj<0.01 & abs(degs$avg_log2FC)>0.5),]
 degs_up<-degs[which(degs$cat=="up"),]
 dbs <- c("GO_Molecular_Function_2021", "GO_Cellular_Component_2021", "GO_Biological_Process_2021", "KEGG_2021_Human", "Azimuth_Cell_Types_2021", "Allen_Brain_Atlas_10x_scRNA_2021")
@@ -2173,7 +2171,7 @@ j$i<-9
 df<-rbind(a,b,c,d,e,f,g,h,i,j)
 df_all<-df
 df<-df[which(df$Adjusted.P.value<0.05),]
-write.csv(df, "~/myers/scAnalysis/RINdrop/enrichr/Exc_subclusters_GO_BP.csv")
+write.csv(df, "~/scMultiomics_AD/enrichr/Exc_subclusters_GO_BP.csv")
 
 
 
@@ -2337,7 +2335,7 @@ DEGs<-FindAllMarkers(Oligodendrocytes,min.pct=0.1,logfc.threshold = 0.1,  assay=
 DEGs<-DEGs[which(DEGs$p_val_adj<0.01 & abs(DEGs$avg_log2FC)>0.5),]
 DEGs$cat<-ifelse(DEGs$avg_log2FC>0, "up","down")
 
-write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Oligodendrocytes.csv")
+write.csv(DEGs, "~/scMultiomics_AD/DEGs/DEGs_Oligodendrocytes.csv")
 
 
 ```
@@ -2345,7 +2343,7 @@ write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Oligodendrocytes.csv")
 #### GO
 Supp Fig 5
 ```{r,eval=F}
-degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Oligodendrocytes.csv")
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Oligodendrocytes.csv")
 degs<-degs[which(degs$p_val_adj<0.01 & abs(degs$avg_log2FC)>0.25),]
 degs_up<-degs[which(degs$cat=="up"),]
 dbs <- c("GO_Molecular_Function_2021", "GO_Cellular_Component_2021", "GO_Biological_Process_2021", "KEGG_2021_Human", "Azimuth_Cell_Types_2021", "Allen_Brain_Atlas_10x_scRNA_2021")
@@ -2376,7 +2374,7 @@ d$i<-3
 df<-rbind(a,b,c,d)
 df_all<-df
 df<-df[which(df$Adjusted.P.value<0.05),]
-write.csv(df, "~/myers/scAnalysis/RINdrop/enrichr/Olig_subclusters_GO_BP.csv")
+write.csv(df, "~/scMultiomics_AD/enrichr/Olig_subclusters_GO_BP.csv")
 
 
 
@@ -2417,7 +2415,7 @@ dev.off()
 
 
 
-df<-read.csv("~/myers/scAnalysis/RINdrop/enrichr/Olig_subclusters_GO_BP.csv")
+df<-read.csv("~/scMultiomics_AD/enrichr/Olig_subclusters_GO_BP.csv")
 df<-df[which(df$i==2),]
 df<-df[which(df$Adjusted.P.value<0.01),]
 df$term<-sapply(strsplit(df$Term, " (", fixed=T), `[`,1)
@@ -2516,7 +2514,7 @@ dev.off()
 ```{r,eval=F}
 
 
-olig_degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Oligodendrocytes.csv")
+olig_degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Oligodendrocytes.csv")
 olig_degs<-olig_degs[which(olig_degs$cat=="up"),]
 top <- olig_degs %>% group_by(cluster) %>% top_n(n=10, wt=avg_log2FC)
 top$clust<-paste("Oli_", top$cluster, sep="")
@@ -2591,7 +2589,7 @@ DEGs<-FindAllMarkers(Microglia,min.pct=0.1,logfc.threshold = 0.1,  assay="PC", t
 DEGs<-DEGs[which(DEGs$p_val_adj<0.01 & abs(DEGs$avg_log2FC)>0.5),]
 DEGs$cat<-ifelse(DEGs$avg_log2FC>0, "up","down")
 
-write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Microglia.csv")
+write.csv(DEGs, "~/scMultiomics_AD/DEGs/DEGs_Microglia.csv")
 
 
 ```
@@ -2605,7 +2603,7 @@ DEGs<-FindAllMarkers(Mic_no4,min.pct=0.1,logfc.threshold = 0.1,  assay="PC", tes
 DEGs<-DEGs[which(DEGs$p_val_adj<0.01 & abs(DEGs$avg_log2FC)>0.5),]
 DEGs$cat<-ifelse(DEGs$avg_log2FC>0, "up","down")
 
-write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Microglia_removeCluster.csv")
+write.csv(DEGs, "~/scMultiomics_AD/DEGs/DEGs_Microglia_removeCluster.csv")
 
 ```
 
@@ -2615,7 +2613,7 @@ write.csv(DEGs, "~/myers/scAnalysis/RINdrop/DEGs/DEGs_Microglia_removeCluster.cs
 ### S2B) heatmap
 ```{r,eval=F}
 
-mic_degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Microglia.csv")
+mic_degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Microglia.csv")
 
 mic_degs<-mic_degs[order(mic_degs$cat,  -mic_degs$cluster,decreasing=T),]
 mic_degs2<-mic_degs[which(mic_degs$cat=="up"),]
@@ -2667,7 +2665,7 @@ dev.off()
 
 
 ```{r,eval=F}
-mic_degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Microglia.csv")
+mic_degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Microglia.csv")
 mic_degs<-mic_degs[order(mic_degs$cat,  -mic_degs$cluster,decreasing=T),]
 mic_degs_H<-mic_degs[which(mic_degs$cat=="up"),]
 mic_degs_H<-mic_degs_H[which(mic_degs_H$cluster %in% c(0,1,2)),]
@@ -2703,7 +2701,7 @@ dev.off()
 ### GO
 
 ```{r,eval=F}
-degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Microglia.csv")
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Microglia.csv")
 degs<-degs[which(degs$p_val_adj<0.01 & abs(degs$avg_log2FC)>0.5),]
 degs_up<-degs[which(degs$cat=="up"),]
 dbs <- c("GO_Molecular_Function_2021", "GO_Cellular_Component_2021", "GO_Biological_Process_2021", "KEGG_2021_Human", "Azimuth_Cell_Types_2021", "Allen_Brain_Atlas_10x_scRNA_2021")
@@ -2730,19 +2728,19 @@ b$i<-4
 
 df<-rbind(a,b)
 df<-df[which(df$Adjusted.P.value<0.05),]
-write.csv(df, "~/myers/scAnalysis/RINdrop/enrichr/Mic_subclusters_GO_BP_cluster3_4.csv")
+write.csv(df, "~/scMultiomics_AD/enrichr/Mic_subclusters_GO_BP_cluster3_4.csv")
 
 
 mic_down<-enrichr(mic_degs[which(mic_degs$cat=="down" & mic_degs$cluster==4),]$gene, dbs)
 
-write.csv(mic_down[["GO_Biological_Process_2021"]], "~/myers/scAnalysis/RINdrop/enrichr/Mic_cluster4down_GO_BP.csv")
+write.csv(mic_down[["GO_Biological_Process_2021"]], "~/scMultiomics_AD/enrichr/Mic_cluster4down_GO_BP.csv")
 
 
 
 ```
 
 ```{r,eval=F}
-mic_degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_Microglia_removeCluster.csv")
+mic_degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_Microglia_removeCluster.csv")
 
 mic_degs2<-mic_degs[which(mic_degs$cat=="up"),]
 
@@ -2821,9 +2819,9 @@ dev.off()
 ## B) All subcluster plot
 
 ```{r,eval=F}
-data<-readRDS("~/myers/scAnalysis/RINdrop/final.rds")
-Microglia<-readRDS("~/myers/scAnalysis/RINdrop/Microglia_subcluster.rds")
-subs<-readRDS("~/myers/scAnalysis/RINdrop/subclusters.rds")
+data<-readRDS("~/scMultiomics_AD/final.rds")
+Microglia<-readRDS("~/scMultiomics_AD/Microglia_subcluster.rds")
+subs<-readRDS("~/scMultiomics_AD/subclusters.rds")
 
 mic_clusters<-Microglia@meta.data
 subs[[5]]<-AddMetaData(subs[[5]],mic_clusters)
@@ -2840,7 +2838,7 @@ for (i in 1:length(subs)){
 
 
 
-mic_meta<-read.csv("~/myers/scAnalysis/RINdrop/microglia_metadata.csv")
+mic_meta<-read.csv("~/scMultiomics_AD/microglia_metadata.csv")
 mic_meta$subs<-paste0("Mic_", mic_meta$seurat_clusters)
 mic_subs<-as.data.frame(mic_meta$subs)
 rownames(mic_subs)<-mic_meta$X.1
@@ -3163,7 +3161,7 @@ data <- AddMotifs(
 )
 
 motifs<-Motifs(data)
-saveRDS(motifs, "~/myers/scAnalysis/RINdrop/motifs_object.rds")
+saveRDS(motifs, "~/scMultiomics_AD/motifs_object.rds")
 
 
 ```
@@ -3173,8 +3171,8 @@ saveRDS(motifs, "~/myers/scAnalysis/RINdrop/motifs_object.rds")
 
 # chromVAR
 ```{r,eval=F}
-counts<-readRDS("~/myers/scAnalysis/RINdrop/motif/FilteredPeaks500b_assay.rds")
-motifs<-readRDS("~/myers/scAnalysis/RINdrop/motif/FilteredPeaks500b_motifs.rds")
+counts<-readRDS("~/scMultiomics_AD/motif/FilteredPeaks500b_assay.rds")
+motifs<-readRDS("~/scMultiomics_AD/motif/FilteredPeaks500b_motifs.rds")
 
 
 data[["peaks500"]]<-CreateChromatinAssay(counts=counts,  fragments=Fragments(data))
@@ -3211,7 +3209,7 @@ differential.activity.ct <- FindAllMarkers(
 )
 differential.activity.ct<-differential.activity.ct[which(differential.activity.ct$avg_diff>0),]
 
-write.csv(differential.activity.ct,"~/myers/scAnalysis/RINdrop/motif/Differential_activity_celltypes.csv")
+write.csv(differential.activity.ct,"~/scMultiomics_AD/motif/Differential_activity_celltypes.csv")
 ```
 
 
@@ -3229,14 +3227,14 @@ rsPeak<-rowSums(avgAcc>0.02) # rerun links with these peaks
 
 Peak2<-rsPeak[which(rsPeak>0)]
 
-peak_set<-write.table(rownames(Peak2),"~/myers/scAnalysis/RINdrop/CT_filtered_peaks.bed")
+peak_set<-write.table(rownames(Peak2),"~/scMultiomics_AD/CT_filtered_peaks.bed")
 ```
 
 
 ## AD
 ```{r,eval=F}
 
-part1<-import("/cluster/home/aanderson/myers/scAnalysis/RINdrop/reanalyze_filterPeaks_AD/outs/analysis/feature_linkage/feature_linkage.bedpe", format="bedpe")
+part1<-import("/cluster/home/aanderson/scMultiomics_AD/reanalyze_filterPeaks_AD/outs/analysis/feature_linkage/feature_linkage.bedpe", format="bedpe")
 
 
 
@@ -3272,7 +3270,7 @@ a10<-a10[which(abs(a10$score)>0.2),]
 
 # a10<-a10[,c(26,27,28,22,19,20,21,23,11,12,13,14,15,16,17,18,29)]
 
-annot_peaks<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_wK27olap.csv")
+annot_peaks<-read.csv("~/scMultiomics_AD/CTpeaks_wK27olap.csv")
 annot_peaks$peak<-gsub("X",23, annot_peaks$peak)
 annot_peaks$peak<-gsub("Y",24, annot_peaks$peak)
 a10_ct<-merge(a10, annot_peaks, by.x="Peak_pos", by.y="peak")
@@ -3281,8 +3279,8 @@ tmp<-a10_ct
 colnames(tmp)[c(8,9,10)]<-c("seqnames","start","end")
 colnames(a10_ct)[c(8,9,10)]<-c("signac.seqnames","signac.start","signac.end")
 a10.gr<-makeGRangesFromDataFrame(tmp, keep.extra.columns = T)
-saveRDS(a10.gr, "~/myers/scAnalysis/RINdrop/Links_AD_signac_formatted_filtered.rds")
-write.table(a10_ct, "~/myers/scAnalysis/RINdrop/Links_AD_filtered_withXY.bed", sep="\t", row.names=F, quote=F)
+saveRDS(a10.gr, "~/scMultiomics_AD/Links_AD_signac_formatted_filtered.rds")
+write.table(a10_ct, "~/scMultiomics_AD/Links_AD_filtered_withXY.bed", sep="\t", row.names=F, quote=F)
 
 
 
@@ -3294,7 +3292,7 @@ a10_qval<-data.frame(Qval=a10_ct$NA., link=a10_ct$link)
 ## Ctrl
 ```{r,eval=F}
 
-part1<-import("/cluster/home/aanderson/myers/scAnalysis/RINdrop/reanalyze_filterPeaks_Ctrl/outs/analysis/feature_linkage/feature_linkage.bedpe", format="bedpe")
+part1<-import("/cluster/home/aanderson/scMultiomics_AD/reanalyze_filterPeaks_Ctrl/outs/analysis/feature_linkage/feature_linkage.bedpe", format="bedpe")
 
 
 c10<-as.data.frame(part1)
@@ -3336,8 +3334,8 @@ tmp<-c10_ct
 colnames(tmp)[c(8,9,10)]<-c("seqnames","start","end")
 colnames(c10_ct)[c(8,9,10)]<-c("signac.seqnames","signac.start","signac.end")
 c10.gr<-makeGRangesFromDataFrame(tmp, keep.extra.columns = T)
-saveRDS(c10.gr, "~/myers/scAnalysis/RINdrop/Links_AD_signac_formatted_filtered.rds")
-write.table(c10_ct, "~/myers/scAnalysis/RINdrop/Links_AD_filtered_withXY.bed", sep="\t", row.names=F, quote=F)
+saveRDS(c10.gr, "~/scMultiomics_AD/Links_AD_signac_formatted_filtered.rds")
+write.table(c10_ct, "~/scMultiomics_AD/Links_AD_filtered_withXY.bed", sep="\t", row.names=F, quote=F)
 
 
 c10_ct$link<-paste0(c10_ct$gene,"-", c10_ct$index)
@@ -3368,7 +3366,7 @@ all$CT<-ifelse(is.na(all$score.x)==T, all$peak_called_in.y, all$peak_called_in.x
 
 t<-table(all$CT, all$group)
 t<-t[order(-t[,2]),]
-write.table(t, "~/myers/scAnalysis/RINdrop/Entire_ct_link_tablefiltered.txt", sep="\t")
+write.table(t, "~/scMultiomics_AD/Entire_ct_link_tablefiltered.txt", sep="\t")
 
 all$Astrocytes      <-grepl("Astrocytes",all$CT)
 all$Microglia       <-grepl("Microglia",       all$CT)
@@ -3393,7 +3391,7 @@ tab<-rbind(table(all$Astrocytes ,  all$group   ),
 tab2<-tab[which(rownames(tab)==TRUE),]
 rownames(tab2)<-c("Astrocytes","Microglia","Inhibitory","Excitatory","Inhibitory","Oligodendrocytes","OPCs","Pericytes","Endothelial")
 
-write.table(tab2, "~/myers/scAnalysis/RINdrop/Melt_ct_link_table_filtered_wXY.txt", sep="\t", quote=F)
+write.table(tab2, "~/scMultiomics_AD/Melt_ct_link_table_filtered_wXY.txt", sep="\t", quote=F)
 
 
 
@@ -3424,7 +3422,7 @@ c2.df<-c2.df[,-c(19,20,21)]
 t<-merge(c2.df,mer, by="link",all.x=T)
 
 c2<-GRanges(t)
-saveRDS(c2, "~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200_annot.rds")
+saveRDS(c2, "~/scMultiomics_AD/AD_Ctrl_links_UMI200_annot.rds")
 
 ```
 
@@ -3448,7 +3446,7 @@ s2<-all_2[,c(2,3,4,1,6,16,25,26,27,28,29,30,31,32,33,34,35,36,37,38)]
 
 colnames(s2)[c(1,2,3)]<-c("seqnames","start","end")
 
-saveRDS(s2, "~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200.rds")
+saveRDS(s2, "~/scMultiomics_AD/AD_Ctrl_links_UMI200.rds")
 ```
 
 
@@ -3469,7 +3467,7 @@ s2$seqnames<-gsub("chr24","chrY",s2$seqnames)
 all.gr<-GRanges(s2)
 links_200.annp<-annotatePeak(all.gr, TxDb=txdb,tssRegion=c(-1000,100) )
 links_200.anno<-links_200.annp@anno
-saveRDS(links_200.anno, "~/myers/scAnalysis/RINdrop/XY_Filtered_AD_Ctrl_links_UMI200_annot.rds")
+saveRDS(links_200.anno, "~/scMultiomics_AD/XY_Filtered_AD_Ctrl_links_UMI200_annot.rds")
 
 
 
@@ -3478,7 +3476,7 @@ saveRDS(links_200.anno, "~/myers/scAnalysis/RINdrop/XY_Filtered_AD_Ctrl_links_UM
 ## Add k27
 All peaks were overlapped with h3k27ac earlier before links were called
 ```{r,eval=F}
-c2<-readRDS("~/myers/scAnalysis/RINdrop/AD_Ctrl_links_UMI200_annot.rds")
+c2<-readRDS("~/scMultiomics_AD/AD_Ctrl_links_UMI200_annot.rds")
 
 overlap<-findOverlaps(olap, c2) # olap is from peak k27 overlap in FIG1
 
@@ -3498,7 +3496,7 @@ c2[subjectHits(overlap)]$k27<-olap[queryHits(overlap)]$k27
 ### TBR1
 ```{r, eval=F}
 ahh<-subsetByOverlaps(ccdc, GRanges("chr3:42721851-42721910"))
-moitfs1000<-readRDS("~/myers/scAnalysis/RINdrop/motif/motifs1kb_object.rds")
+moitfs1000<-readRDS("~/scMultiomics_AD/motif/motifs1kb_object.rds")
 subsetByOverlaps(ahh, moitfs1000@positions$TBR1_MA0802.1)
 
 library(TFBSTools)
@@ -3512,10 +3510,10 @@ motif_pos<-matchMotifs(pfm3,resize(ahh, width=2000, fix="center"), genome = BSge
 
 
 
-ad_rna<-read.csv("~/myers/scAnalysis/RINdrop/GRN/AD_MetaCell_Expresion.csv", row.names=1)
-ad_atac<-read.csv("~/myers/scAnalysis/RINdrop/GRN/AD_MetaCell_Accessibility.csv", row.names=1)
-ctrl_rna<-read.csv("~/myers/scAnalysis/RINdrop/GRN/Ctrl_MetaCell_Expression.csv", row.names=1)
-ctrl_atac<-read.csv("~/myers/scAnalysis/RINdrop/GRN/Ctrl_MetaCell_Accessibility.csv", row.names=1)
+ad_rna<-read.csv("~/scMultiomics_AD/GRN/AD_MetaCell_Expresion.csv", row.names=1)
+ad_atac<-read.csv("~/scMultiomics_AD/GRN/AD_MetaCell_Accessibility.csv", row.names=1)
+ctrl_rna<-read.csv("~/scMultiomics_AD/GRN/Ctrl_MetaCell_Expression.csv", row.names=1)
+ctrl_atac<-read.csv("~/scMultiomics_AD/GRN/Ctrl_MetaCell_Accessibility.csv", row.names=1)
 
 
 G_TF.x<-cor.test(as.numeric(ad_rna["TBR1",]), as.numeric(ad_rna["HHATL",]))
@@ -3584,13 +3582,6 @@ TBR1-HHATL link (HHATL-242389)
 
 
 
-```{r, eval=F}
-subsetByOverlaps(c2, GRanges("chr4:138911101-138911160"))
-#ELF2
-#promoter bleh
-```
-
-
 # Format for LDSC
 ```{r,eval=F}
 
@@ -3611,7 +3602,7 @@ redo_format$Excitatory.k27<-grepl("Neuron",redo_format$k27) | grepl("GLU", redo_
 redo_format$Inhbitory.k27<-grepl("Neuron",redo_format$k27) | grepl("GABA",redo_format$k27)
 redo_format$Microglia.k27<-grepl("Microglia",redo_format$k27)
 redo_format$Oligodendrocytes.k27<-grepl("Oligodendrocytes",redo_format$k27)
-write.csv(redo_format,"/cluster/home/aanderson/myers/scAnalysis/RINdrop/celltype_specific_links_anno_hg38.csv")
+write.csv(redo_format,"/cluster/home/aanderson/scMultiomics_AD/celltype_specific_links_anno_hg38.csv")
 
 
 tmp<-c2
@@ -3625,14 +3616,41 @@ redo_format$Excitatory.k27<-grepl("Neuron",redo_format$k27) | grepl("GLU", redo_
 redo_format$Inhbitory.k27<-grepl("Neuron",redo_format$k27) | grepl("GABA",redo_format$k27)
 redo_format$Microglia.k27<-grepl("Microglia",redo_format$k27)
 redo_format$Oligodendrocytes.k27<-grepl("Oligodendrocytes",redo_format$k27)
-write.csv(redo_format,"/cluster/home/aanderson/myers/scAnalysis/RINdrop/all_links_anno_hg38.csv")
+write.csv(redo_format,"/cluster/home/aanderson/scMultiomics_AD/all_links_anno_hg38.csv")
 
 
 
 
-ivan<-read.csv("~/myers/scAnalysis/RINdrop/all_links_anno_hg38.csv")
-ivan$peak<-paste0(ivan$seqnames,"-", ivan$start-1,"-", ivan$end)
-ivan2<-ivan[which(ivan$peak %in% names(Peak2)),]
+write.table(as.data.frame(unique(c2[which(c2$Astrocytes==T  ),] ))[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Astrocytes_all.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Astrocytes==T & c2$group=="AD"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Astrocytes_AD.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Astrocytes==T & c2$group=="common"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Astrocytes_common.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Astrocytes==T & c2$group=="Ctrl"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Astrocytes_Ctrl.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+
+write.table(as.data.frame(unique(c2[which(c2$Excitatory==T  ),] ))[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Excitatory_all.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Excitatory==T & c2$group=="AD"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Excitatory_AD.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Excitatory==T & c2$group=="common"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Excitatory_common.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Excitatory==T & c2$group=="Ctrl"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Excitatory_Ctrl.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+
+write.table(as.data.frame(unique(c2[which(c2$Inhibitory==T  ),] ))[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Inhibitory_all.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Inhibitory==T & c2$group=="AD"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Inhibitory_AD.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Inhibitory==T & c2$group=="common"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Inhibitory_common.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Inhibitory==T & c2$group=="Ctrl"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Inhibitory_Ctrl.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+
+write.table(as.data.frame(unique(c2[which(c2$Microglia==T  ),] ))[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Microglia_all.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Microglia==T & c2$group=="AD"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Microglia_AD.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Microglia==T & c2$group=="common"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Microglia_common.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Microglia==T & c2$group=="Ctrl"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Microglia_Ctrl.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+
+write.table(as.data.frame(unique(c2[which(c2$Oligodendrocytes==T  ),] ))[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Oligodendrocytes_all.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Oligodendrocytes==T & c2$group=="AD"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Oligodendrocytes_AD.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Oligodendrocytes==T & c2$group=="common"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Oligodendrocytes_common.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$Oligodendrocytes==T & c2$group=="Ctrl"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/Oligodendrocytes_Ctrl.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+
+write.table(as.data.frame(unique(c2[which(c2$OPCs==T  ),] ))[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/OPCs_all.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$OPCs==T & c2$group=="AD"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/OPCs_AD.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$OPCs==T & c2$group=="common"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/OPCs_common.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+write.table(as.data.frame(unique(c2[which(c2$OPCs==T & c2$group=="Ctrl"),]) )[,c(1,2,3)], "~/scMultiomics_AD/LDSC_bed/OPCs_Ctrl.bed",quote=F,row.names=F, col.names=F, sep="\t" )
+
 
 ```
 
@@ -3690,8 +3708,8 @@ testing$peak<-paste0(testing$seqnames,"-",testing$start,"-",testing$end)# add pe
 c10<-testing[which(testing$group!="AD"),]
 a10<-testing[which(testing$group!="Ctrl" ),]
 
-saveRDS(c10,"~/myers/scAnalysis/RINdrop/GRN/c10.rds")
-saveRDS(a10,"~/myers/scAnalysis/RINdrop/GRN/a10.rds")
+saveRDS(c10,"~/scMultiomics_AD/GRN/c10.rds")
+saveRDS(a10,"~/scMultiomics_AD/GRN/a10.rds")
 
 ```
 
@@ -3717,7 +3735,7 @@ u$TF<-toupper(u$TF)
 olap<-findOverlaps(u, GRanges(annot_peaks), type="within")
 u<-u[queryHits(olap)]
 u$index<-annot_peaks[subjectHits(olap),]$index
-saveRDS(u, "~/myers/scAnalysis/RINdrop/motif/Motif_Score_indexPeaks.rds")
+saveRDS(u, "~/scMultiomics_AD/motif/Motif_Score_indexPeaks.rds")
 
 
 
@@ -3743,8 +3761,8 @@ testing2$GRN<-paste0(testing2$index,"-",testing2$motif,"-", testing2$gene)
 
 testing3<-testing2[which(testing2$Motif_score>12 & testing2$score>0.3 & testing2$Qval>20 & testing2$k27_num>0),]
 
-saveRDS(testing3[which(testing3$group!="Ctrl"),], "~/myers/scAnalysis/RINdrop/GRN/a10.rds")
-saveRDS(testing3[which(testing3$group!="AD"),], "~/myers/scAnalysis/RINdrop/GRN/c10.rds")
+saveRDS(testing3[which(testing3$group!="Ctrl"),], "~/scMultiomics_AD/GRN/a10.rds")
+saveRDS(testing3[which(testing3$group!="AD"),], "~/scMultiomics_AD/GRN/c10.rds")
 
 
 
@@ -3762,8 +3780,8 @@ ad<-FindClusters(ad, graph.name="wknn", resolution=100, group.singletons=T)
 ad<-NormalizeData(ad)
 avgExp<-as.data.frame(AverageExpression(ad, group.by="seurat_clusters", assay="RNA"))
 avgAcc<-as.data.frame(AverageExpression(ad, group.by="seurat_clusters",assay="CTpeaks"))
-write.csv(avgExp, "~/myers/scAnalysis/RINdrop/GRN/AD_MetaCell_Expresion.csv")
-write.csv(avgAcc, "~/myers/scAnalysis/RINdrop/GRN/AD_MetaCell_Accessibility.csv")
+write.csv(avgExp, "~/scMultiomics_AD/GRN/AD_MetaCell_Expresion.csv")
+write.csv(avgAcc, "~/scMultiomics_AD/GRN/AD_MetaCell_Accessibility.csv")
 
 
 
@@ -3775,8 +3793,8 @@ ad<-FindClusters(ad, graph.name="wknn", resolution=100, group.singletons=T)
 ad<-NormalizeData(ad)
 avgExp<-as.data.frame(AverageExpression(ad, group.by="seurat_clusters", assay="RNA"))
 avgAcc<-as.data.frame(AverageExpression(ad, group.by="seurat_clusters",assay="CTpeaks"))
-write.csv(avgExp, "~/myers/scAnalysis/RINdrop/GRN/Ctrl_MetaCell_Expression.csv")
-write.csv(avgAcc, "~/myers/scAnalysis/RINdrop/GRN/Ctrl_MetaCell_Accessibility.csv")
+write.csv(avgExp, "~/scMultiomics_AD/GRN/Ctrl_MetaCell_Expression.csv")
+write.csv(avgAcc, "~/scMultiomics_AD/GRN/Ctrl_MetaCell_Accessibility.csv")
 
 ```
 
@@ -3818,10 +3836,10 @@ n=args[1]
 n=as.numeric(i)
 group=args[2]
 
-data<-readRDS("~/myers/scAnalysis/RINdrop/final.rds")
+data<-readRDS("~/scMultiomics_AD/final.rds")
 
 ctrl<-subset(data, subset=Status=="AD")
-c10<-readRDS("~/myers/scAnalysis/RINdrop/GRN/a10.rds")
+c10<-readRDS("~/scMultiomics_AD/GRN/a10.rds")
 
 
 
@@ -3855,7 +3873,7 @@ for (i in i:j){
 
 df<-data.frame(`G-TF_cor`=cor, `G-TF_pval`=pval, `P-TF_cor`=cor2, `P-TF_pval`=pval2)
 df$grn<-c10[i:j,]$GRN
-write.csv(df, paste0("~/myers/scAnalysis/RINdrop/GRN/",group,"_gene_tf_peak_score_",n,".csv"))
+write.csv(df, paste0("~/scMultiomics_AD/GRN/",group,"_gene_tf_peak_score_",n,".csv"))
 
 
 ```
@@ -3873,13 +3891,13 @@ write.csv(df, paste0("~/myers/scAnalysis/RINdrop/GRN/",group,"_gene_tf_peak_scor
   ->can be expressed in multiple cell types but not correlated with peak in all
   
 ```{r,eval=F}
-files=as.list(readLines("/cluster/home/aanderson/myers/scAnalysis/RINdrop/GRN/AD_list.csv"))
+files=as.list(readLines("/cluster/home/aanderson/scMultiomics_AD/GRN/AD_list.csv"))
 files[[11]]<-files[[1]]
 files[[1]]<-NULL
 AD_list=lapply(files,function(x){
   FT=read.csv(x)})
 
-files=as.list(readLines("/cluster/home/aanderson/myers/scAnalysis/RINdrop/GRN/Ctrl_list.csv"))
+files=as.list(readLines("/cluster/home/aanderson/scMultiomics_AD/GRN/Ctrl_list.csv"))
 files[[11]]<-files[[1]]
 files[[1]]<-NULL
 Ctrl_list=lapply(files,function(x){
@@ -3904,9 +3922,9 @@ mer.2<-merge(a10.2,c10.2, by="GRN",all=T)
 
 
 
-a10<-readRDS("~/myers/scAnalysis/RINdrop/GRN/a10.rds")
-c10<-readRDS("~/myers/scAnalysis/RINdrop/GRN/c10.rds")
-all<-readRDS("~/myers/scAnalysis/RINdrop/GRN/ALL_wMotifScore_MaxAcc.rds" )
+a10<-readRDS("~/scMultiomics_AD/GRN/a10.rds")
+c10<-readRDS("~/scMultiomics_AD/GRN/c10.rds")
+all<-readRDS("~/scMultiomics_AD/GRN/ALL_wMotifScore_MaxAcc.rds" )
 
 
 
@@ -3984,7 +4002,7 @@ b$category<-ifelse(b$GRN %in% c2$GRN, "DiffDir",
                    ifelse(b$GRN %in% d2$GRN, "AD-only",
                           ifelse(b$GRN %in% e2$GRN, "Ctrl-only","Sig")))
 trios<-as.data.frame(b)
-write.table(trios, "~/myers/scAnalysis/RINdrop/Significant_trios.txt", sep="\t", row.names=F, quote=F)
+write.table(trios, "~/scMultiomics_AD/Significant_trios.txt", sep="\t", row.names=F, quote=F)
 ```
 
 ##Fig4B: annotation
@@ -4034,7 +4052,7 @@ enc<-enc[!grepl("iCell",enc$accesionLabel),]
 
 
 u2<-unique(b)
-all<-import("~/myers/scAnalysis/RINdrop/CT_filtered_peaks.srt.bed")
+all<-import("~/scMultiomics_AD/CT_filtered_peaks.srt.bed")
 over<-findOverlaps(all, u2)
 all$Linked<-F
 all[queryHits(over)]$Linked<-T
@@ -4084,7 +4102,7 @@ names(pval2)<-c("CTCF","dELS","DNase-H3K4me3","pELS","PLS")
 ```
 
 
-
+Heatmap of correlation values of AD and control-specific trios identified in microglia (left) and excitatory/inhibitory neurons (right) for TFs involved in at least 3 trios.
 
 
  
@@ -4147,6 +4165,9 @@ dev.off()
 
 
 
+
+
+
 CT="Excitatory"
 ra<-rowAnnotation(TF=changed[which(changed$CTspec==CT),]$TF,Class=changed[which(changed$CTspec==CT),]$class, show_legend=T, col=list( Class=c("ADonly"="red4", "Ctrlonly"="dodgerblue","DiffDir"="gold")))
 ht1=Heatmap(mat[which(changed$CTspec==CT),], cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.2,0.1,0.4), plasma(3)), name="r",  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra,row_title=NULL)
@@ -4156,6 +4177,42 @@ pdf(paste0("~/myers/scAnalysis/plots/RINdrop/Triangle_correlations_",CT,".pdf"),
 ht1
 dev.off()
 
+
+
+
+
+
+
+
+
+
+changed<-b[which(b$category %in% c("AD-only","Ctrl-only")),]
+changed$CTspec<-ifelse(changed$CT %in% c("Inhibitory","Excitatory,Inhibitory","Inhbitory,Excitatory","Excitatory"), "Neuron","shared")
+changed<-changed[which(changed$CTspec=="Neuron"),]
+t<-table(changed$TF)
+changed<-changed[which(changed$TF %in% names(t[t>2])),]
+
+mat<-as.matrix(cbind(changed$P.TF_cor.x,changed$G.TF_cor.x,changed$P.TF_cor.y, changed$G.TF_cor.y))
+colnames(mat)<-rep(c("Peak-TF","Gene-TF"), 2)
+rownames(mat)<-changed$TF
+#ha2<-HeatmapAnnotation(Score=rep(c("Peak-TF","Gene-TF"), 2), col= list(Score=c("Peak-TF"="mediumseagreen","Gene-TF"="orange")), show_legend=F)
+ha<-HeatmapAnnotation(Status=rep(c("AD","Ctrl"), each=2), col=list(Status=c("AD"="red","Ctrl"="blue")), show_legend=FALSE)
+#ha<-c(ha, ha2)
+
+
+cols<-c(brewer.pal(name = "Set3", n = 8),brewer.pal(name = "Set1", n = 6), brewer.pal(name = "Pastel1", n = 6))
+cols=setNames(cols, unique(changed$TF))
+cols[2]<-"red"
+cols[11]<-"blue"
+cols[9]<-"cyan"
+ra<-rowAnnotation(TF=changed$TF, show_legend=T, col=list(TF=cols))
+
+
+ht1=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.1,0.1,0.4), plasma(3)), name="r",  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra, use_raster=T,raster_quality=5,row_split=changed$category, row_title=NULL)
+
+pdf("~/myers/scAnalysis/plots/RINdrop/Triangle_correlations_Neuron_ExIn.pdf", width=5, height=10)
+ht1
+dev.off()
 
 ```
 
@@ -4311,7 +4368,7 @@ ChIP_track2<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_AD-supp/Jul2021_Ch
 #ChIP_track<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_DLPFC-NEUN_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig",smooth = 300)+ylab("ZEB1 ChIP")+theme(legend.position="none")
 
 
-#motifs<-readRDS("~/myers/scAnalysis/RINdrop/motif/motifs_object.rds")
+#motifs<-readRDS("~/scMultiomics_AD/motif/motifs_object.rds")
 motif_track<-Bed_PeakPlot(resize(motifs@positions$MEF2C_MA0497.1, width=500, fix="center"),region)+ylab("MEF2C")
 motif2<-Bed_PeakPlot(resize(motifs@positions$ZEB1_MA0103.3, width=500, fix="center"),region)+ylab("ZEB1")
 
@@ -4355,7 +4412,7 @@ table( meh$olapK27, meh$category)
 
 ###Fig4G,H
 ```{r,eval=F}
-links<-readRDS("~/myers/scAnalysis/RINdrop/AD_Ctrl_links_filt0.02_wPerm_wQval.rds")
+links<-readRDS("~/scMultiomics_AD/AD_Ctrl_links_filt0.02_wPerm_wQval.rds")
 signac_form<-as.data.frame(links)[,-c(2,3,4)]
 colnames(signac_form)[c(19,20,21)]<-c("seqnames","start","end")
 signac_form$seqnames<-paste0("chr",signac_form$seqnames)
@@ -4405,7 +4462,7 @@ k27_track<-Bed_PeakPlot(Nott_neuron, region)+ylab("Neuron H3K27ac")
 
 ChIP_track<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_DLPFC-NEUN_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig",smooth = 300)+ylab("ZEB1 ChIP")+theme(legend.position="none")
 
-#motifs<-readRDS("~/myers/scAnalysis/RINdrop/motif/motifs_object.rds")
+#motifs<-readRDS("~/scMultiomics_AD/motif/motifs_object.rds")
 motif_track<-Bed_PeakPlot(resize(motifs@positions$ZEB1_MA0103.3, width=500, fix="center"),region)+ylab("ZEB1 motif")
 
 DefaultAssay(data)<-"ATAC"
@@ -4748,10 +4805,10 @@ load("/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR
 enc=full_annot_encode_cre_def_GR
 enc<-enc[!grepl("iCell",enc$accesionLabel),]
 
-c2<-readRDS("~/myers/scAnalysis/RINdrop/AD_Ctrl_links_filt0.02_wPerm_wQval.rds")
+c2<-readRDS("~/scMultiomics_AD/AD_Ctrl_links_filt0.02_wPerm_wQval.rds")
 c2.2<-GRanges(c2)
 u2<-unique(c2.2)
-all<-import("~/myers/scAnalysis/RINdrop/CT_filtered_peaks.srt.bed")
+all<-import("~/scMultiomics_AD/CT_filtered_peaks.srt.bed")
 over<-findOverlaps(all, u2)
 all$Linked<-F
 all[queryHits(over)]$Linked<-T
@@ -4982,9 +5039,7 @@ link_plotA <- LinkPlot.height(data, region=region, min.cutoff=min.cutoff, max.cu
 
 bgp<-Bed_GWASPlot(GRanges("chr17:46224763-46225789"), region)+ylab("")
 
-
-## eqtl<-Bed_PeakPlot(resize(qtl, width=500,fix="center"), region)+ylab("eQTL")
-
+#dap_plot<-Bed_PeakPlot(GRanges(c2_DAP[which(c2_DAP$isDAP==T & (c2_DAP$celltype=="Excitatory" | c2_DAP$celltype=="Inhibitory") ),]), region)
 
 ## I went step by step thorugh function in plot dependencies
 enc.annot<-peak.plot+ scale_fill_manual(values=c("dodgerblue","gold","lightpink","orange","red",),labels=c("CTCF-only","dELS","DNase-H3K4me3","pELS","PLS"))
@@ -5155,9 +5210,9 @@ p2
 
 dev.off()
 
-##  extra<-read.csv("~/myers/scAnalysis/RINdrop/meta_RIN_PMI.csv")
+##  extra<-read.csv("~/scMultiomics_AD/meta_RIN_PMI.csv")
 ##  extra[16,1]<-"HCTZZT"
-##  meta<-read.csv("~/myers/scAnalysis/RINdrop/MetaData_wNK.csv")
+##  meta<-read.csv("~/scMultiomics_AD/MetaData_wNK.csv")
 ##  rownames(meta)<-meta$X
 ##  md.m<-merge(meta, extra, by.x="id",by.y="ID")
 ##  rownames(md.m)<-md.m$X
@@ -5179,6 +5234,9 @@ dev.off()
 
 
 ```
+
+
+
 
 
 
@@ -5335,7 +5393,7 @@ t2<-as.data.frame(table(c10.gr$gene))
 jD<-merge(t1,t2,by="Var1")
 colnames(jD)[2:3]<-c("AD","Ctrl")
 
-degs<-read.csv("~/myers/scAnalysis/RINdrop/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
 degs_up<-degs[which(degs$cat=="up"),]
 degs_down<-degs[which(degs$cat=="down"),]
 jD$deg<-ifelse(jD$Var1 %in% degs_up$gene, "up",
@@ -5384,12 +5442,657 @@ saveWidget(as_widget(ggplotly(p)), file="plotly_Links_per_gene.html", selfcontai
 ```
 
 
+# Revision
+
+## Gene body
+```{r,eval=F}
+gtf<-import("~/myers/quantseq/pool/STAR/genes.gtf")
+gtf<-gtf[which(gtf$type=="gene"),]
+
+c2<-GRanges(c2)
+over<-findOverlaps(c2, gtf)
+c2$geneAnnot<-NA
+c3<-c2[queryHits(over)]
+c3$geneAnnot<-gtf[subjectHits(over)]$gene_name
+c3$gene_body<-c3$gene==c3$geneAnnot
+c3<-c3[order(c3$gene_body, decreasing==T),]
+c3<-c3[!duplicated(c3$link),]
+c4<-c(c2[-queryHits(over)], c3)
+
+c4$gene_body<-ifelse(is.na(c4$gene_body)==T, F, c4$gene_body)
+c4$gb_p<-ifelse(c4$gene_body==T | (c4$annotation=="Promoter"& c4$distanceToTSS<1000  ),T,F)
+prop.table(table(c4$pos, c4$gb_p),1)
+
+size<-data.frame(size=width(gtf), gene=gtf$gene_name)
+c4<-merge(as.data.frame(c4), size, by="gene")
+
+
+
+
+
+
+t<-as.data.frame(table(c4$gene, c4$gb_p))
+colnames(t)[1:2]<-c("gene","gb_p")
+t<-merge(t,size, by="gene")
+t$long<-t$size>167585.1 #85th percentile
+t$bin40<-ifelse(t$Freq>=40, ">=40", 
+                  ifelse(t$Freq<=2, "<=2","other"))
+t2<-t[which(t$gb_p==F),]
+aggregate(Freq~long, t2, quantile)
+t.test(t2[which(t2$bin40==">=40"),]$size, t2[which(t2$bin40=="<=2"),]$size)
+t.test(t2[which(t2$long==T),]$Freq, t2[which(t2$long==F),]$Freq)
+
+
+t2<-as.data.frame(table(c4$gene))
+colnames(t2)<-c("gene","total")
+t2<-merge(t2,size, by="gene")
+t2$long<-t2$size>167585.1
+t2$bin40<-ifelse(t2$total>=40, ">=40", 
+                  ifelse(t2$total<=2, "<=2","other"))
+
+t.test(t2[which(t2$bin40==">=40"),]$size, t2[which(t2$bin40=="<=2"),]$size)
+t.test(t2[which(t2$long==T),]$total, t2[which(t2$long==F),]$total)
+
+```
+
+including gene body links, long genes have a median of 22 links per gene.
+
+
+
+## DEG links
+```{r,eval=F}
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
+
+c4_degs<-merge(as.data.frame(c4), degs, by="gene")
+
+bin<-c()
+for ( i in 1:nrow(c4_degs)){
+  j<-grepl(c4_degs$celltype[i], c4_degs$CT[i])
+  bin<-c(bin,j)
+}
+
+c4_degs$agree<-bin
+
+t<-table(c4_degs$gene, c4_degs$agree)
+table(t[,2])
+```
+
+```{r,eval=F}
+#only condition specific links
+c2_noCommon<-c2_degs[which(c2_degs$group != "common"),]
+c2_noCommon$up<-c2_noCommon$avg_log2FC>0
+#only agree on CT
+c2_sub<-c2_noCommon[which(c2_noCommon$agree==T),]
+c2_sub$score_dir<-c2_sub$score>0
+noDup<-c2_sub[!duplicated(c2_sub$bin),]
+
+
+
+chisq.test(table(c2_sub[which(c2_sub$score_dir==F),]$group, c2_sub[which(c2_sub$score_dir==F),]$up))
+chisq.test(table(c2_sub[which(c2_sub$score_dir==T),]$group, c2_sub[which(c2_sub$score_dir==T),]$up))
+
+#how many only have promoter links
+length(c2_sub[which(c2_sub$annot=="Promoter"),]$gene)
+length(unique(c2_sub[which(c2_sub$annot=="Promoter"),]$gene))
+geneP<-unique(c2_sub[which(c2_sub$annot=="Promoter"),]$gene)
+
+#non-promoter DEG links overlap snps
+c2_noProm<-c2_sub[which(c2_sub$annot !="Promoter"),]
+```
+
+
+## DAPs
+```{r,eval=F}
+
+subs<-SplitObject(data,split.by="predicted.id")
+
+counts<-list()
+meta<-list()
+for (i in 1:6){
+  subs[[i]]<-FindMultiModalNeighbors(subs[[i]], reduction.list=list("harmony.rna","harmony.atac"),dims.list=list(1:30,2:50))
+  subs[[i]]<-FindClusters(subs[[i]], resolution=0.8, graph.name="wknn")
+  c<-c()
+  for (j in unique(subs[[i]]$seurat_clusters)){
+    c<-cbind(c, rowSums(subs[[i]]@assays$CTpeaks@counts[,which(subs[[i]]$seurat_clusters==j & subs[[i]]$Status=="AD")]) )
+    c<-cbind(c, rowSums(subs[[i]]@assays$CTpeaks@counts[,which(subs[[i]]$seurat_clusters==j & subs[[i]]$Status=="Ctrl")]) )
+  }
+  df<-data.frame(Status=rep(c("AD","Ctrl"), length(unique(subs[[i]]$seurat_clusters))), Cluster=rep(unique(subs[[i]]$seurat_clusters), each=2))
+  rownames(df)<-paste0(df$Status,"-", df$Cluster)
+  colnames(c)<-paste0(df$Status,"-", df$Cluster)
+  meta[[i]]<-df
+  counts[[i]]<-c
+}
+
+
+all<-c()
+for (i in 1:6){
+  dds<-DESeqDataSetFromMatrix(countData=counts[[i]],
+    colData=meta[[i]], design=~Status)
+  dds<-DESeq(dds)
+  res2 <- results(dds, contrast=c("Status","AD","Ctrl"))
+  res2$celltype<-subs[[i]]$predicted.id[1]
+  res2$gene<-rownames(res2)
+  all<-c(all,res2)
+}
+
+all<-lapply(all, as.data.frame)
+ALL<-rbind(all[[1]],all[[2]],all[[3]],all[[4]],all[[5]],all[[6]])
+
+ALL_sig<-ALL[which(ALL$padj<0.05 & abs(ALL$log2FoldChange)>0.5),]
+
+```
+
+
+
+### Overlap DAPs
+```{r,eval=F}
+c2$peak<-paste0(seqnames(c2),"-", start(c2),"-", end(c2))
+c2_DAP<-merge(c2, ALL_sig, by.x="peak",by.y="gene", all.x=T)
+bin<-c()
+for (i in 1:nrow(c2_DAP)){
+  bin<-c(bin, grepl(c2_DAP$celltype[i], c2_DAP$CT[i]))
+}
+bin<-ifelse(is.na(bin)==T,F,T)
+
+c2_DAP$isDAP<-bin
+actualDAPs<-unique(c2_DAP[which(c2_DAP$isDAP==T),]$peak)
+ALL_DAPs<-ALL_sig[which(ALL_sig$gene %in% actualDAPs),]
+#NOTE: this will only include DAPs that agree on CT 
+write.csv(ALL_DAPs, "~/scMultiomics_AD/DAPs_metacell_ADCtrl_DESeq2_CTmatch.csv")
+
+
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_MAST_ADCtrl_AgeSex.csv")
+c2_dd<-merge(c2_DAP, degs, by="gene", all.x=T)
+c2_dd$dd<-c2_dd$celltype.y==c2_dd$celltype.x
+
+length(unique(c2_dd[which(c2_dd$dd==T),]$peak)) #1215 /8588
+length(unique(c2_dd[which(c2_dd$dd==T),]$gene)) #447 /911
+
+dd<-c2_dd[which(c2_dd$dd==T),]
+```
+
+447/911 DEGs are linked to a DAP in the same cell type. And vice versa 1215/8588 DAPs
+976/1310 DAP-DEG links agree on log2FC direction
+
+
+#### plot
+```{r,eval=F}
+
+
+gene="PSEN1"
+CT="Oligodendrocytes"
+tmp.gr<-signac.gr[which(signac.gr$gene==gene),]
+tmp.gr<-tmp.gr[which(tmp.gr$Oligodendrocytes==T ),]
+
+min.cutoff<-min(tmp.gr$score)*2
+min.cutoff<-ifelse(min.cutoff<0, min.cutoff, 0)
+max.cutoff<-max(tmp.gr$score)*2
+
+region<-GRanges(paste0(seqnames(tmp.gr)[1],":",min(start(tmp.gr))-4000,"-",max(end(tmp.gr)+4000)))
+
+Idents(subs$Oligodendrocytes)<-subs$Oligodendrocytes$Status
+DefaultAssay(subs$Oligodendrocytes)<-"CTpeaks"
+cov_plot<-CoveragePlot(object=subs$Oligodendrocytes, region=region,  assay="CTpeaks",annotation=F, idents=c("AD","Ctrl"),window=800,peaks=F, links=F)&
+  scale_fill_manual(values=c("red", "blue"))
+#
+Links(data)<-tmp.gr ## full
+link_plotA <- LinkPlot.height(tmp.gr, region=region, min.cutoff=min.cutoff, max.cutoff=max.cutoff)+ylab("Score")
+#
+dap_plot<-Bed_PeakPlot(GRanges(c2_DAP[which(c2_DAP$isDAP==T & (c2_DAP$celltype=="Oligodendrocytes") ),]), region)
+#
+DefaultAssay(data)<-"ATAC"
+gene_plot<-AnnotationPlot(data, region=region)
+
+
+p<-CombineTracks(plotlist=list(cov_plot,link_plotA,dap_plot,gene_plot), heights=c(4,2, 1,2))
+pdf(paste0("~/myers/scAnalysis/plots/RINdrop/",gene,"_linkPlot_w_DAP_",CT,".pdf"), width=8, height=5)
+p
+dev.off()
+
+```
+
+
+## Cell type specific genes and peaks
+```{r,eval=F}
+DefaultAssay(data)<-"RNA"
+data<-NormalizeData(data)
+rs<-rowSums(data@assays$RNA@data)
+q<-quantile(rs, probs=0.6)
+avgExp<-as.data.frame(AverageExpression(data, assay="RNA", group.by="predicted.id", features=names(rs[which(rs>q)])))
+
+avgExp<-as.matrix(avgExp)
+num<-as.data.frame(apply(avgExp, 1, function(i) sum(i>0.5)))
+count<-as.data.frame(table(c2$gene))
+num$Var1<-rownames(num)
+colnames(num)[1]<-"numCT"
+
+mer<-merge(num, count, by="Var1")
+mer$spec<-ifelse(mer$numCT<2, T, F)
+t.test(mer[which(mer$spec==T),]$Freq, mer[which(mer$spec==F),]$Freq)
+
+c2.mer<-merge(c2, num, by.x="gene",by.y="Var1")
+prop.table(table(c2.mer$numCT, c2.mer$ATAC_num), 2)
+
+
+
+####################################
+degs<-read.csv("~/scMultiomics_AD/DEGs/DEGs_celltype_markers_MAST_noFilter.csv")
+degs<-degs[which(degs$p_val_adj<0.05 & degs$avg_log2FC>0.2 & degs$cluster !="Endothelial" & degs$cluster!="Pericytes"),]
+c2.mer<-merge(c2, degs, by="gene", all=T)
+sum(c2.mer$cluster == c2.mer$CT, na.rm=T)
+c2.sub<-c2.mer[which(c2.mer$ATAC_num==1 & is.na(c2.mer$cluster)==F & c2.mer$CT !="Pericytes" & c2.mer$CT !="Endothelial"),]
+table(c2.sub[which(c2.sub$CT != c2.sub$cluster),]$cluster)
+table(c2.sub[which(c2.sub$CT != c2.sub$cluster),]$CT)
+c2.sub$mis<-c2.sub$CT == c2.sub$cluster
+
+count$CTdeg<-ifelse(count$Var1 %in% degs$gene, T,F)
+aggregate(Freq~CTdeg, count, mean)
+
+
+
+bin<-c()
+for (i in 1:nrow(c2.mer)){
+  b<-grepl(c2.mer$cluster[i], c2.mer$CT[i])
+  bin<-c(bin,b)
+}
+
+
+
+
+
+rs<-as.data.frame(rowSums(data@assays$RNA@counts))
+rs$gene<-rownames(rs)
+colnames(rs)[1]<-"RNA"
+rs$DEG<-rs$gene %in% degs$gene
+rs$link<-rs$gene %in% c2$gene
+rs2<-rs[which(rs$RNA> quantile(rs$RNA, probs=0.6)),]
+fisher.test(table(rs2$DEG, rs2$link))
+```
+
+### GO
+```{r,eval=F}
+dbs <- c("GO_Molecular_Function_2021", "GO_Cellular_Component_2021", "GO_Biological_Process_2021", "KEGG_2021_Human","Azimuth_Cell_Types_2021")
+
+go1<-enrichr(unique(c2[which(c2$group=="common" & c2$CT=="Excitatory"),]$gene), dbs)
+go2<-enrichr(unique(c2[which(c2$group=="common" & c2$CT=="Inhibitory"),]$gene), dbs)
+go3<-enrichr(unique(c2[which(c2$group=="common" & c2$CT=="Astrocytes"),]$gene), dbs)
+go4<-enrichr(unique(c2[which(c2$group=="common" & c2$CT=="Microglia"),]$gene), dbs)
+go5<-enrichr(unique(c2[which(c2$group=="common" & c2$CT=="Oligodendrocytes"),]$gene), dbs)
+go6<-enrichr(unique(c2[which(c2$group=="common" & c2$CT=="OPCs"),]$gene), dbs)
+
+go1<-go1[["GO_Biological_Process_2021"]]
+go2<-go2[["GO_Biological_Process_2021"]]
+go3<-go3[["GO_Biological_Process_2021"]]
+go4<-go4[["GO_Biological_Process_2021"]]
+go5<-go5[["GO_Biological_Process_2021"]]
+go6<-go6[["GO_Biological_Process_2021"]]
+
+
+Terms<-unique(c(go1[which(go1$Adjusted.P.value<0.01),][1:3,]$Term, go2[which(go2$Adjusted.P.value<0.01),][1:3,]$Term, go3[which(go3$Adjusted.P.value<0.01),][1,]$Term, go4[which(go4$Adjusted.P.value<0.01),][1:3,]$Term, go5[which(go5$Adjusted.P.value<0.01),][1:3,]$Term, go6[which(go6$Adjusted.P.value<0.01),][1:3,]$Term))
+
+
+#######################################
+go1<-go1[order(go1$Term),]
+go2<-go2[order(go2$Term),]
+go3<-go3[order(go3$Term),]
+go4<-go4[order(go4$Term),]
+go5<-go5[order(go5$Term),]
+go6<-go6[order(go6$Term),]
+
+go<-cbind(go1[which(go1$Term %in% Terms),]$Adjusted.P.value, go2[which(go2$Term %in% Terms),]$Adjusted.P.value, go3[which(go3$Term %in% Terms),]$Adjusted.P.value, go4[which(go4$Term %in% Terms),]$Adjusted.P.value, go5[which(go5$Term %in% Terms),]$Adjusted.P.value, go6[which(go6$Term %in% Terms),]$Adjusted.P.value)
+rownames(go)<-unique(go1[which(go1$Term %in% Terms),]$Term)
+go<-as.matrix(go)
+go<- -log10(go)
+colnames(go)<-c("Exc","Inh","Ast","Mic","Oli","OPC")
+
+
+ha<-HeatmapAnnotation(celltype=colnames(go), col= list(celltype=c("Ast"="darkgoldenrod1","Exc"="cornflowerblue","Inh"="seagreen3","Mic"="mediumorchid3","Oli"="coral3","OPC"="firebrick")), show_legend=F)
+ht2=Heatmap(go, cluster_rows=T,show_row_dend=F,cluster_columns=T,col=colorRamp2(c(0,3,6),brewer.pal(n = 3, name = "YlOrRd")),  name="-log10(Adj P)",  show_column_names=T, show_row_names=T, column_title=NULL,row_names_gp = gpar(fontsize = 10), top_annotation=ha, row_names_side = "left", row_names_max_width=max_text_width(
+        rownames(go), 
+        gp = gpar(fontsize = 12)
+    ))
+
+
+pdf("~/myers/scAnalysis/plots/RINdrop/CellType-specific_linked_genes_GO.pdf", width=8, height=5)
+ht2
+dev.off()
+
+
+```
+
+
+
+## Mic links
+```{r,eval=F}
+part1<-import("/cluster/home/aanderson/scMultiomics_AD/reanalyze_Microglia2/outs/analysis/feature_linkage/feature_linkage.bedpe", format="bedpe")
+
+
+
+a10<-as.data.frame(part1)
+
+a10<-a10[which(a10$NA.2!="peak-peak"),]
+
+
+
+{
+a10$seqnames<-a10$first.seqnames
+start<-as.integer(ifelse(a10$NA.2=="peak-gene", (a10$first.end+a10$first.start)/2, (a10$second.end+a10$second.start)/2))
+end<-ifelse(a10$NA.2=="gene-peak",a10$first.start, a10$second.start)
+a10$start<-ifelse(start<end, start,end)
+a10$end<-ifelse(start<end,end,start)
+a10$peak.seqnames<-paste0("chr",ifelse(a10$NA.2=="peak-gene",a10[,1], a10[,6]),sep="")
+a10$peak.start<-ifelse(a10$NA.2=="peak-gene",a10[,2], a10[,7])
+a10$peak.end<-ifelse(a10$NA.2=="peak-gene",a10[,3], a10[,8])
+a<-matrix(unlist(strsplit(a10$name,"><")),ncol=2,byrow=T)
+gene<-ifelse(a10$NA.2=="peak-gene",noquote(gsub(">","",a[,2])),noquote(gsub("<","",a[,1])))
+peak<-ifelse(a10$NA.2=="gene-peak",noquote(gsub(">","",a[,2])),noquote(gsub("<","",a[,1])))
+a10$gene<-gene
+a10$peak<-peak
+a10$gene.strand<-"*"
+a10$peak.strand<-"*"
+a10$gene.seqnames<-paste0("chr",ifelse(a10$NA.2=="gene-peak",a10[,1], a10[,6]),sep="")
+a10$gene.start<-ifelse(a10$NA.2=="gene-peak",a10[,2], a10[,7])
+a10$gene.end<-ifelse(a10$NA.2=="gene-peak",a10[,3], a10[,8])
+a10$Peak_pos<-paste0(a10$peak.seqnames,"-",a10$peak.start-1,"-", a10$peak.end)
+}# # #  format a10 ( ad)
+
+a10<-a10[which(abs(a10$score)>0.2),]
+
+# a10<-a10[,c(26,27,28,22,19,20,21,23,11,12,13,14,15,16,17,18,29)]
+
+annot_peaks<-read.csv("~/scMultiomics_AD/CTpeaks_wK27olap.csv")
+annot_peaks$peak<-gsub("X",23, annot_peaks$peak)
+annot_peaks$peak<-gsub("Y",24, annot_peaks$peak)
+a10_ct<-merge(a10, annot_peaks, by.x="Peak_pos", by.y="peak")
+a10_ct<-a10_ct[,c(20,21,22,23,24,13,14,17,18,19,37,38,39,40)]
+tmp<-a10_ct
+colnames(tmp)[c(8,9,10)]<-c("seqnames","start","end")
+colnames(a10_ct)[c(8,9,10)]<-c("signac.seqnames","signac.start","signac.end")
+a10.gr<-makeGRangesFromDataFrame(a10_ct, keep.extra.columns = T, seqnames.field="peak.seqnames",start.field="peak.start",end.field="peak.end")
+
+mic.gr<-a10.gr[grepl("Mic", a10.gr$peak_called_in),]
+over<-findOverlaps(mic.gr, c2)
+c2_o<-c2[subjectHits(over)]
+c2_o$o_gene<-mic.gr[queryHits(over)]$gene
+c2_o$o_score<-mic.gr[queryHits(over)]$score
+c2_o<-c2_o[which(c2_o$o_gene==c2_o$gene),]
+
+mic.gr$peak<-paste0(seqnames(mic.gr),"-",start(mic.gr)-1,"-",end(mic.gr))
+mic.gr$link<-paste0(mic.gr$peak,"-", mic.gr$gene)
+c2_o$link<-paste0(c2_o$peak,"-", c2_o$gene)
+
+mic.gr$c2<- ifelse((mic.gr$link %in% c2_o$link), T,F)
+mic.gr$deg<-mic.gr$gene %in% degs[which(degs$celltype=="Microglia"),]$gene
+mic.gr$dap<-mic.gr$peak %in% daps[which(daps$celltype=="Microglia"),]$gene
+```
+
+73 microglia links
+35 found in the full link set
+    AD common   Ctrl 
+     4     27      4 
+Links that overlapped full link set had higher scores
+7 are to microglia AD/ctrl deg
+5 are to microglia ad/ctrl dap
+2 links are both deg and dap
+-one is common and one ad-spec in full data
+
+
+## BIN1 snps
+Nott: rs6733839
+
+```{r,eval=F}
+signac_form<-as.data.frame(c2)[,-c(1,2,3)]
+colnames(signac_form)[c(19,20,21)]<-c("seqnames","start","end")
+signac_form$seqnames<-paste0("chr",signac_form$seqnames)
+signac_form$score<-ifelse(signac_form$group=="common", (signac_form$score.x+ signac_form$score.y)/2, 
+                          ifelse(signac_form$group=="Ctrl",signac_form$score.y, signac_form$score.x))
+signac.gr<-GRanges(signac_form)
+signac.gr$group2<-ifelse(signac.gr$group=="AD",0,
+                         ifelse(signac.gr$group=="common",1,2))
+
+
+snps<-read.table("/cluster/projects/ADFTD/Colombia/2019.12.20_Escaper-Arrays/PLINK_060420_1223/2021.11.30-E280A-340/mac3_mac1_EPACTS.txt", header=F)
+colnames(snps)[1:3]<-c("chr","start","end")
+snps$chr<-paste0("chr",snps$chr)
+snps.gr<-GRanges(snps)
+snps.gr$P<-snps.gr$V5
+
+
+
+
+gene="BIN1"
+tmp.gr<-signac.gr[which(signac.gr$gene==gene),]
+tmp.gr<-tmp.gr[which(tmp.gr$Microglia==T ),]
+
+min.cutoff<-min(tmp.gr$score)*2
+min.cutoff<-ifelse(min.cutoff<0, min.cutoff, 0)
+max.cutoff<-max(tmp.gr$score)*2
+
+region<-GRanges("chr2:127077002-127145234")
+
+Idents(subs$Microglia)<-subs$Microglia$Status
+DefaultAssay(subs$Microglia)<-"CTpeaks"
+cov_plot<-CoveragePlot(object=subs$Microglia, region=region,  assay="CTpeaks",annotation=F, idents=c("AD","Ctrl"),window=500,peaks=F, links=F)&
+  scale_fill_manual(values=c("red", "blue"))
+#
+Links(data)<-tmp.gr ## full
+link_plotA <- LinkPlot.height(tmp.gr, region=region, min.cutoff=min.cutoff, max.cutoff=max.cutoff)+ylab("Score")
+#
+snp<-"rs6733839"
+snps.gr$highlight<-ifelse(snps.gr$V4==snp, T, F)
+bgp<-Bed_GWASPlot(snps.gr[which(snps.gr$highlight==T),], region)+theme(legend.position="none")
+#
+DefaultAssay(data)<-"ATAC"
+gene_plot<-AnnotationPlot(data, region=region)
+
+
+p<-CombineTracks(plotlist=list(cov_plot,link_plotA, bgp,gene_plot), heights=c(4,2, 1,2))
+pdf(paste0("~/myers/scAnalysis/plots/RINdrop/",gene,"_linkPlot_w_snp.pdf"), width=8, height=8)
+p
+dev.off()
+
+
+
+```
+
+## permutations
+```{r,eval=F}
+### create sample lists
+args = commandArgs(trailingOnly=TRUE)
+i=args[1]
+
+print(i)
+set.seed(i)
+df<-read.csv("~/scMultiomics_AD/LinkPerm/ALL_cells.csv")
+id<-unique(df$Cluster)
+ctrl<-c("HCT17HEX","NT1261", "1230", "NT1271", "1238", "3586", "HCTZZT", "1224")
+
+sub<-sample(id, 7)
+if (sum(sub %in% ctrl)==8 | sum(!(sub %in% ctrl))==7 ) {
+  sub<-sample(id,7)
+}
+df_test<-df[which(df$id %in% sub),]
+df_test2<-df[!(df$id %in% sub),]
+write.csv(df_test, paste0("~/scMultiomics_AD/LinkPerm/AD.barcodes.",i,".csv"),quote=F, row.names=F )
+write.csv(df_test, paste0("~/scMultiomics_AD/LinkPerm/Ctrl.barcodes.",i,".csv"),quote=F, row.names=F )
+
+
+##Call Links with cellranger arc
+
+##bring perms in and reformat
+files=as.list(readLines("/cluster/home/aanderson/scMultiomics_AD/LinkPerm/random7/Linkages.txt"))
+
+FT_list=lapply(files,function(x){
+  FT=import(con=x,format="bedpe")
+    })
+
+format<-function(x){
+a10<-as.data.frame(x)
+a10<-a10[which(a10$NA.2!="peak-peak"),]
+a10$seqnames<-paste0("chr",ifelse(a10$NA.2=="peak-gene",a10[,1], a10[,6]),sep="")
+a10$start<-ifelse(a10$NA.2=="peak-gene",a10[,2], a10[,7])
+a10$end<-ifelse(a10$NA.2=="peak-gene",a10[,3], a10[,8])
+a<-matrix(unlist(strsplit(a10$name,"><")),ncol=2,byrow=T)
+gene<-ifelse(a10$NA.2=="peak-gene",noquote(gsub(">","",a[,2])),noquote(gsub("<","",a[,1])))
+peak<-ifelse(a10$NA.2=="gene-peak",noquote(gsub(">","",a[,2])),noquote(gsub("<","",a[,1])))
+a10$gene<-gene
+a10$peak<-peak
+a10$Peak_pos<-paste0(a10$peak.seqnames,"-",a10$peak.start-1,"-", a10$peak.end)
+a10<-a10[which(abs(a10$score)>0.2),]
+a10.gr<-GRanges(a10_ct)
+a10.gr$link<-paste0(a10.gr$gene,"-",a10.gr$index)
+return(a10.gr)
+}
+
+#format 
+FL_format<-lapply(FT_list, format)
+
+
+
+## distribution of group-specific
+ll<-data.frame(i=1, j=1, AD=0,common=0,Ctrl=0)
+
+for (i in 1:50){
+  for (j in 1:50){
+    if (i !=j){
+      AD<-as.data.frame(FL_format[[i]])
+      Ctrl<-as.data.frame(FL_format[[j]])
+      comp<-merge(AD,Ctrl, by=c("seqnames","start","end","gene"), all=T)
+      comp$group<-ifelse(is.na(comp$score.x)==T, "Ctrl",
+                     ifelse(is.na(comp$score.y)==T,"AD","common"))
+      t<-table(comp$group)
+      ll.tmp<-data.frame(i=i, j=j, AD=t[1],common=t[2],Ctrl=t[3])
+      ll<-rbind(ll, ll.tmp)
+ } }}
+
+ll<-ll[-1,]
+ll$propSpec<-(ll[,3]+ll[,5])/(ll[,3]+ll[,4]+ll[,5])
+
+
+pdf("~/myers/scAnalysis/plots/RINdrop/LinkPerm_propSpec_allCombinations_221118.pdf", width=5,height=4)
+ggplot(ll, aes(x=propSpec))+geom_histogram(bins=50)+theme_classic()+geom_vline(xintercept=0.359041, color="red", )+xlab("Proportion group-specific")
+dev.off()
+
+
+
+## number that are really AD-spec
+ALL_0.05<-do.call("c", FL_format)
+
+ table(c2[!(c2$link %in% ALL_0.05$link),]$group)
+```
+
+
+
+## pseudobulk links
+```{r,eval=F}
+
+data$bin<-paste0(data$id, "-",data$predicted.id)
+bin<-unique(data$bin)
+keep<-bin[!grepl("Pericytes", bin)]
+keep<-keep[!grepl("Endothelial", keep)]
+
+rna<-c()
+atac<-c()
+for(i in 1:length(keep)){
+  rna<-cbind(rna, rowSums(data@assays$RNA@counts[,which(data$bin ==keep[i])]))
+  atac<-cbind(atac, rowSums(data@assays$CTpeaks@counts[,which(data$bin ==keep[i])]))
+}
+colnames(rna)<-keep
+colnames(atac)<-keep
+
+bulk <- CreateSeuratObject(counts = rna,project="all")
+chrom_assay <- CreateChromatinAssay(
+  counts = atac,
+  sep = c(":", "-"),
+  genome = 'hg38',
+  annotation = Annotation(data)
+)
+
+bulk[["ATAC"]] <- chrom_assay
+DefaultAssay(bulk)<-"RNA"
+bulk<-NormalizeData(bulk)
+bulk$pseudobulk<-colnames(bulk)
+bulk$id<-sapply(strsplit(bulk$pseudobulk,"-"),`[`,1)
+bulk$Status<-ifelse(bulk$id %in% md[which(md$Status=="Ctrl"),]$id, "Ctrl","Ad")
+
+AD<-subset(bulk, Status=="Ad")
+Ctrl<-subset(bulk, Status=="Ctrl")
+
+DefaultAssay(AD)<-"ATAC"
+DefaultAssay(Ctrl)<-"ATAC"
+
+AD<-RegionStats(AD, genome=BSgenome.Hsapiens.UCSC.hg38)
+Ctrl<-RegionStats(Ctrl, genome=BSgenome.Hsapiens.UCSC.hg38)
+
+AD<-LinkPeaks(AD, peak.assay="ATAC", expression.assay="RNA")
+Ctrl<-LinkPeaks(Ctrl, peak.assay="ATAC", expression.assay="RNA")
+
+
+
+
+Ctrl.Links<-Links(Ctrl)
+AD.Links<-Links(AD)
+
+Cl2<-as.data.frame(Ctrl.Links)
+Al2<-as.data.frame(AD.Links)
+
+Cl2<-Cl2[which(abs(Cl2$score)>0.2),]
+Al2<-Al2[which(abs(Al2$score)>0.2),]
+
+Cl2$qvalue<-p.adjust(Cl2$pvalue)
+Al2$qvalue<-p.adjust(Al2$pvalue)
+
+Cl2<-Cl2[which(Cl2$qvalue<0.05),]
+Al2<-Al2[which(Al2$qvalue<0.05),]
+
+Cl2$link<-paste0(Cl2$peak, "-", Cl2$gene)
+Al2$link<-paste0(Al2$peak, "-", Al2$gene)
+
+me<-merge(Al2,Cl2, by=c("seqnames","start","end","gene","link"), all=T)
+me$group<-ifelse(is.na(me$score.x)==T, "Ctrl", ifelse(is.na(me$score.y)==T, "AD","common"))
+
+c2$link<-paste0(seqnames(c2),"-",start(c2),"-",end(c2),"-",c2$gene)
+df<-data.frame(link=c2$link, group=c2$group)
+me2<-merge(me, df, by="link", all=T)
+
+me2$group.x<-ifelse(is.na(me2$group.x), "NA",me2$group.x)
+me2$group.y<-ifelse(is.na(me2$group.y),"NA", me2$group.y)
+t<- table(me2$group.x, me2$group.y)
+ 
+ 
+sum(me$link %in% c2$link)/nrow(me)
+(t[1,1]+t[2,2]+t[3,3])/sum(t[-4,-4])
+
+
+
+
+
+
+
+
+
+df<-data.frame(PDE10A=AD@assays$RNA@data["PDE10A",], peak=AD@assays$ATAC@data["chr6-165694243-165694700",], ct=AD$ct,id=AD$id)
+pdf("~/myers/scAnalysis/plots/RINdrop/Cor_psuedobulk_links_PDE10A.pdf")
+ggplot(df, aes(x=PDE10A,y=peak, color=id, shape=ct))+geom_point()
+dev.off()
+```
+
+                           10X
+-                  AD common   Ctrl     NA
+        AD       4066  15585   1513  36953
+pBulk   common   1525  15698   1071  10501
+        Ctrl      403   4482   1746  20136
+        NA      34837 169281  69698      0
+
+
+
+We additionally evaluated the effect of cell-individual membership by calling links on counts that were pseudobulked by individual and cell type. A total of 16,421 links were identified, of which, 60% were found in the full link set. Additionally, 63% of shared links that we identified as AD-specific in our original analysis were also called as AD-specific in the pseudobulk analysis, showing that our approach has high concordance with methods that account for cell-individual membership.  However, we find that a pseudobulk link analysis is not well suited for our study given its small sample size, and that permutation analyses better address the question of an individual's contribution to link calling. Pseudobulking with a small sample size decreases the dynamic range across observations and leads to decreased sensitivity and fewer links called, but this approach could be more appropriate for studies with a larger sample size. Through our permutation analysis, we can assess the contribution of an AD individual to a link call. We identified a portion of our links that are only present in AD and not detectable across any individual controls (not detectable in any permutation where control individuals were included).
+
+
 
 
 
 # LIT-SEARCH Validation
-
-
 
 ## Nott PLACseq
 https://www-science-org.ezproxy3.lhl.uab.edu/doi/full/10.1126/science.aay0793
@@ -5586,7 +6289,7 @@ odds ratio
 
 #### crispr validated
 ```{r,eval=F}
-crispr<-read.csv("~/myers/scAnalysis/Cooper_CRISPR_validated.csv")
+crispr<-read.csv("~/myers/scAnalysis/lit_search_validation/Cooper_CRISPR_validated.csv")
 mp<-as.data.frame(mpra)[,c(1,2,3,7)]
 crispr.pos<-merge(crispr,mp,by.y="rsID",by.x="snp") ## get liftover positions from mpra grange
 ## add crispr-ex
@@ -5624,6 +6327,23 @@ c2.neu<-c2.neu[which(c2.neu$Inhibitory==T | c2.neu$Excitatory==T),]
 
 oops<-subsetByOverlaps(c2.neu,toTest)
 oops2<-subsetByOverlaps(toTest,c2.neu)
+
+
+library(SNPlocs.Hsapiens.dbSNP151.GRCh38)
+snps<-SNPlocs.Hsapiens.dbSNP151.GRCh38
+loc<-snpsById(snps,crispr$snp, ifnotfound="drop")
+loc<-merge(as.data.frame(loc),crispr, by.x="RefSNP_id", by.y="snp")
+loc$seqnames<-paste0("chr",loc$seqnames)
+loc$start<-loc$pos
+loc$end<-loc$start+1
+loc<-GRanges(loc)
+
+over<-findOverlaps(c2, loc)
+loc<-loc[subjectHits(over)]
+loc$linked_gene<-c2[queryHits(over)]$gene
+s<-loc[which(loc$gene==loc$linked_gene),]
+s[!duplicated(s$snp_target),]
+  
 ```
 
 overlaps regions on our test list
@@ -5656,7 +6376,7 @@ all CLU
 ## Weiss MPRAs
 ### NPC
 ```{r,eval=F}
-all<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_annotated.csv")
+all<-read.csv("~/scMultiomics_AD/CTpeaks_annotated.csv")
 all<-GRanges(all)
  all$peak<-paste0(start(all),"-",end(all))
 
@@ -5863,7 +6583,7 @@ dev.off()
 ## LINKED
 ### background
 ```{r,eval=F}
-peaks<-read.csv("~/myers/scAnalysis/RINdrop/CTpeaks_annotated.csv")
+peaks<-read.csv("~/scMultiomics_AD/CTpeaks_annotated.csv")
 peaks<-GRanges(peaks)
 gtf<-import("~/myers/quantseq/STAR/genes.gtf")
 gtf<-gtf[which(gtf$type=="start_codon"),]
@@ -6007,12 +6727,12 @@ odds ratio
 
 
 ```{r,eval=F}
-qtl<-read.csv("~/myers/scAnalysis/RINdrop/Link_overlap_Bryois_eQTLs.csv")
+qtl<-read.csv("~/scMultiomics_AD/Link_overlap_Bryois_eQTLs.csv")
 
 
 guides<-read.csv("~/myers/scrnaseq_cellranger/220729/feature_ref3.csv")
 
-c2<-readRDS("~/myers/scAnalysis/RINdrop/AD_Ctrl_links_filt0.02_wPerm_wQval.rds")
+c2<-readRDS("~/scMultiomics_AD/AD_Ctrl_links_filt0.02_wPerm_wQval.rds")
 
 guides<-unique(guides$id)
 df<-data.frame(seqnames=sapply(strsplit(guides,"_"),`[`,1), start=sapply(strsplit(guides,"_"),`[`,2))
@@ -6190,10 +6910,12 @@ HiC
 
 
 
+
+
 # Fig 5E) APP link plot
 ```{r,eval=F}
 ## APP
-gRNA<-read.xlsx("~/myers/scAnalysis/RINdrop/SingleCellValidation_Luciferase_HEKs_transformed.xlsx")
+gRNA<-read.xlsx("~/scMultiomics_AD/SingleCellValidation_Luciferase_HEKs_transformed.xlsx")
 gRNA<-gRNA[-1,]
 gRNA$seqnames<-sapply(strsplit(gRNA$Region,"_"), `[`,1)
 gRNA$start<-sapply(strsplit(gRNA$Region,"_"), `[`,2)

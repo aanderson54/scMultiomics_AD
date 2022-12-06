@@ -109,6 +109,72 @@ Bed_GWASPlot<-function (object, region, group.by = NULL,
 
 
 
+Manhattan_GWASPlot<-function (object, region, size=3,group.by = F, 
+                        color = "dimgrey") 
+{
+  if (!inherits(x = region, what = "GRanges")) {
+    region <- StringToGRanges(regions = region)
+  }
+  if(class(object) =="data.frame"){
+    colnames(object)[c(1,2,3)]<-c("chr","start","end")
+    peaks<-makeGRangesFromDataFrame(object,
+                                    keep.extra.columns=T,
+                                    seqnames.field="chr",
+                                    start.field="start",
+                                    end.field="end",
+                                    strand.field="strand")
+  }else{
+    peaks<-object
+  }
+  peak.intersect <- subsetByOverlaps(x = peaks, ranges = region)
+  peak.df <- as.data.frame(x = peak.intersect)
+  start.pos <- start(x = region)
+  end.pos <- end(x = region)
+  chromosome <- seqnames(x = region)
+  if (nrow(x = peak.df) > 0) {
+    if (group.by==T) {
+      if (!("highlight" %in% colnames(x = peak.df))) {
+        warning("Requested grouping variable not found")
+        group.by <- NULL
+      }
+      peak.df$start[peak.df$start < start.pos] <- start.pos
+      peak.df$end[peak.df$end > end.pos] <- end.pos
+      peak.plot <- ggplot(data = peak.df, aes(color = highlight)) + geom_point(aes(x = start, y = -log10(P), alpha=-log10(P), size = highlight), 
+                             shape=18,data = peak.df)+scale_color_manual(values=c("black","limegreen"))+scale_size_manual(values=c(2,4))
+    }else{
+      peak.df$start[peak.df$start < start.pos] <- start.pos
+      peak.df$end[peak.df$end > end.pos] <- end.pos
+      peak.plot <- ggplot(data = peak.df)  + geom_point(aes(x = start, y = -log10(P), alpha=-P), 
+                                                        size = size, shape=18,data = peak.df)
+      
+    } 
+    
+  }
+  else {
+    peak.plot <- ggplot(data = peak.df)
+  }
+  peak.plot <- peak.plot + theme_classic() + ylab(label = "-log10(P)")  + 
+    xlab(label = paste0(chromosome, " position (bp)")) + 
+    xlim(c(start.pos, end.pos))
+  if (is.null(x = group.by)) {
+    peak.plot <- peak.plot + scale_color_manual(values = color) + 
+      theme(legend.position = "none")
+  }
+  return(peak.plot)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 FindRegion <- function(
   object,
@@ -604,8 +670,8 @@ LinkPlot.height <- function(object, region, min.cutoff = -1.5, max.cutoff=1.7) {
   chromosome <- seqnames(x = region)
   
   # extract link information
-  links <- Links(object = object)
-  
+  #links <- Links(object = object)
+  links<-object
   # if links not set, return NULL
   if (length(x = links) == 0) {
     return(NULL)
@@ -657,7 +723,7 @@ LinkPlot.height <- function(object, region, min.cutoff = -1.5, max.cutoff=1.7) {
     p <- ggplot(data = df) +
       geom_bezier(
         mapping = aes_string(x = "x", y = "y", group = "group", color = "score")
-      ) +scale_color_gradient2(low="green",mid="orange",high="grey40", midpoint=1, na.value=alpha("white", 0),limits=c(0, 2))+
+      ) +scale_color_gradient2(low="red",mid="grey54",high="blue", midpoint=1, na.value=alpha("white", 0),limits=c(0, 2))+
       geom_hline(yintercept = 0, color = 'grey') 
   } else {
     p <- ggplot(data = link.df)
@@ -670,6 +736,9 @@ LinkPlot.height <- function(object, region, min.cutoff = -1.5, max.cutoff=1.7) {
     xlim(c(start(x = region), end(x = region)))
   return(p)
 }
+
+
+
 
 
 LinkPlot.height.Perm <- function(object, region, min.cutoff = -1.5, max.cutoff=1.7) {
@@ -828,6 +897,79 @@ LinkPlot.height.alpha <- function(object, region, min.cutoff = -1.5, max.cutoff=
 }
 
 
+#LinkPlot.height.ct <- function(object, region, min.cutoff = -1.5, max.cutoff=1.7) {
+  if (!inherits(x = region, what = "GRanges")) {
+    region <- StringToGRanges(regions = region)
+  }
+  chromosome <- seqnames(x = region)
+  
+  # extract link information
+  links <- Links(object = object)
+  
+  # if links not set, return NULL
+  if (length(x = links) == 0) {
+    return(NULL)
+  }
+  
+  # subset to those in region
+  links.keep <- subsetByOverlaps(x = links, ranges = region)
+  
+  # filter out links below threshold
+  link.df <- as.data.frame(x = links.keep)
+  
+  # remove links outside region
+  link.df <- link.df[link.df$start >= start(x = region) & link.df$end <= end(x = region), ]
+  
+  # plot
+  if (nrow(x = link.df) > 0) {
+    # convert to format for geom_bezier
+    link.df$group <- seq_len(length.out = nrow(x = link.df))
+    df <- data.frame(
+      x = c(link.df$start,
+            (link.df$start + link.df$end) / 2,
+            link.df$end),
+      y = c(rep(x = 0, nrow(x = link.df)),
+            rep(x = -1, nrow(x = link.df)),
+            rep(x = 0, nrow(x = link.df))),
+      group = rep(x = link.df$group, 3),
+      score = rep(link.df$group2, 3),
+      height=rep(link.df$score*2,3)
+    )
+    df$y<-ifelse(df$y==-1, df$height, df$y)
+    tmp<-data.frame(x = c(link.df$start[1],
+                          (link.df$start[1] + link.df$end[1]) / 2,
+                          link.df$end[1]),
+                    y = c(0,max.cutoff,0),
+                    group = rep(max(link.df$group)+1, 3),
+                    score = c(10,10,10),
+                    height=c(0,0,0))
+    if (nrow(df[which(df$y<0),])>0){
+      tmp2<-data.frame(x = c(link.df$start[1],
+                             (link.df$start[1] + link.df$end[1]) / 2,
+                             link.df$end[1]),
+                       y = c(0,min.cutoff,0),
+                       group = rep(max(link.df$group)+2, 3),
+                       score = c(10,10,10),
+                       height=c(0,0,0))
+      tmp<-rbind(tmp,tmp2)
+    }
+    df<-rbind(df, tmp)
+    p <- ggplot(data = df) +
+      geom_bezier(
+        mapping = aes_string(x = "x", y = "y", group = "group", color = "score")
+      ) +scale_color_gradient2(low="green",mid="orange",high="grey40", midpoint=1, na.value=alpha("white", 0),limits=c(0, 2))+
+      geom_hline(yintercept = 0, color = 'grey') 
+  } else {
+    p <- ggplot(data = link.df)
+  }
+  p <- p +
+    theme_classic() +
+    theme(legend.position="none") +
+    ylab("Links") +
+    xlab(label = paste0(chromosome, " position (bp)")) +
+    xlim(c(start(x = region), end(x = region)))
+  return(p)
+}
 
 
 

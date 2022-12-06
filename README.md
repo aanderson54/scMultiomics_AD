@@ -19,7 +19,7 @@ microglia, and previously identified active regulatory regions.
 
 https://www.biorxiv.org/content/10.1101/2022.10.04.510636v1
 
-![DOI](https://zenodo.org/badge/543281072.svg)](https://zenodo.org/badge/latestdoi/543281072)
+![DOI](https://zenodo.org/badge/543281072.svg)]
 ## Analysis
 
 **To view a vignette of all analyses click [here](https://aanderson54.github.io/scMultiomics_AD/)**

@@ -443,7 +443,7 @@ df$annot<-rownames(df)
 df<-melt(df)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Peaks_annot_encode2.pdf", width=8, height=3)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Peaks_annot_encode2.pdf", width=8, height=3)
 ggplot(df, aes(x=value, y=variable, fill=annot))+geom_bar(stat="identity")+xlab("Proportion of Linked peaks")+ylab("Cell type")+theme_classic()+scale_fill_brewer(palette="Dark2",labels=c("CTCF-only","dELS","DNase-H3K4me3","pELS","PLS","other"))+theme(legend.position="right", axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))
 dev.off()
 
@@ -610,7 +610,7 @@ df$color<-paste0(df$cat,"-",df$Var1)
 df$celltype<-substr(df$ct,start=1,stop=3)
 df$color<-ifelse(df$Var1==F, "AA No Overlap",df$color)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/CTpeaks_olapk27_barPlot2_filtered0.02_XY.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/CTpeaks_olapk27_barPlot2_filtered0.02_XY.pdf")
 ggplot(df, aes(y=Freq, x=cat,  fill=color))+geom_bar(color="grey60",stat="identity")+theme_classic()+ylab("#  of Peaks") + xlab("")+scale_x_discrete(labels=c("ATAC", "H3K27ac"))+
   theme(axis.text.x=element_text(angle=90, size=15), plot.title=element_text(hjust=0.5), legend.position="top", axis.title.y=element_text(size=17, angle=90), legend.title=element_text(size=0), legend.text=element_text(size=15), axis.text.y=element_text(size=15, angle=90))+scale_y_continuous(position = "right")+
   facet_wrap(~celltype ,  ncol=5, strip.position="bottom") +scale_fill_manual(limits=c("AA No Overlap","ATAC-TRUE","k27-TRUE"),labels=c( "No Overlap","Overlap H3K27ac",  "Overlap ATAC")
@@ -857,7 +857,7 @@ ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c("g
         grid.text("*", x, y, gp=gpar(fontsize=20, col="white"), vjust="center")
     } })
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Top_downDEG_GObp.pdf", width=13, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Top_downDEG_GObp.pdf", width=13, height=5)
 ht
 dev.off()
 
@@ -944,7 +944,7 @@ ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c("g
         grid.text("*", x, y, gp=gpar(fontsize=20, col="white"), vjust="center")
     } })
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Top_upDEG_GObp.pdf", width=10, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Top_upDEG_GObp.pdf", width=10, height=5)
 ht
 dev.off()
 
@@ -993,7 +993,7 @@ lab<-which(noDup$gene %in% c(ad_related$Gene,"PLCG2","MAPT","ARL17B","SAMD4A","P
 ht=Heatmap(mat, cluster_rows=F,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-1,0,1),c("blue","white","red")), name="MAST-adj log2FC",  show_column_names=T, show_row_names=F, column_title=NULL,row_names_gp = gpar(fontsize = 3), top_annotation=ha)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/AD_DEGs_MAST_heatmap_foldCs.pdf", width=6, height=8)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/AD_DEGs_MAST_heatmap_foldCs.pdf", width=6, height=8)
 rowAnnotation(gene=anno_mark(at=lab, labels=noDup[lab,]$gene, side="left", labels_gp=gpar(fontsize=10)))+ht
 dev.off()
 
@@ -1002,11 +1002,11 @@ dev.off()
 Add labels for specific genes
 ```{r,eval=F}
 
-genes<-read.csv("~/Documents/RINdrop/testing.csv", col.names=1)
+genes<-read.csv("~/Documents/scMultiomics_AD/testing.csv", col.names=1)
 genes$X1<-gsub(" ","", genes$X1)
 tmp<-strsplit(genes$X1, ",")
 tmp<-unlist(tmp)
-write.csv(tmp, "~/Documents/RINdrop/Luciferase_linked_genes.csv")
+write.csv(tmp, "~/Documents/scMultiomics_AD/Luciferase_linked_genes.csv")
 
 # back to cluster
 luc<-read.csv("~/scMultiomics_AD/Luciferase_linked_genes.csv")
@@ -1018,7 +1018,7 @@ lab<-which(noDup$gene %in% c(ad_related$Gene,"PLCG2","MAPT","ARL17B", show_genes
                              "ACSL1", "CD163", "CD44", "CR1", "CEMIP2", "DAB2", "FOXP1", "LYVE1", "MAFB", "MITF", "MYO5A", "NOTCH2", "SLC11A1", "TGFBI"))
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/AD_DEGs_MAST_heatmap_foldCs_wTestingLabel_otherColorScale2.pdf", width=6, height=8)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/AD_DEGs_MAST_heatmap_foldCs_wTestingLabel_otherColorScale2.pdf", width=6, height=8)
 rowAnnotation(gene=anno_mark(at=lab, labels=noDup[lab,]$gene, side="left", labels_gp=gpar(fontsize=10)))+ht
 dev.off()
 
@@ -1097,7 +1097,7 @@ ht2=Heatmap(mat2, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,34,35,36),
       }
     } })
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Shared_degs_heatmap_up.pdf", width=8,height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Shared_degs_heatmap_up.pdf", width=8,height=4)
 ht+ht2
 dev.off()
 
@@ -1159,7 +1159,7 @@ vv$Mor<-ifelse(is.na(vv$p_val.x)==T, F,T)
 vv$Our<-ifelse(is.na(vv$p_val.y)==T, F, T)
 
 x<-list(Mor=which(vv$Mor==T), Mat=which(vv$Mat==T), Our=which(vv$Our==T))
-pdf("~/myers/scAnalysis/plots/RINdrop/Mathys_morabito_our_degs.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Mathys_morabito_our_degs.pdf")
 ggVennDiagram(x)+theme(legend.position="none")
 dev.off()
 
@@ -1175,7 +1175,7 @@ nrow(x[which(x$Mor==T & x$Mat==T & x$Our==T),]) # 61
 dat<-c("Morabito"=2562, "Mathys"=5716,"Ours"=666,"Morabito&Mathys"=182, "Morabito&Ours"=280, "Mathys&Ours"=84, "Morabito&Mathys&Ours"=62)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Mathys_morabito_Our_degs_venn.pdf", width=4, height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Mathys_morabito_Our_degs_venn.pdf", width=4, height=4)
 v=venn(dat)
 plot(v)
 dev.off()
@@ -1208,7 +1208,7 @@ Astrocytes$subs<-paste0("Ast_", Astrocytes$seurat_clusters)
 ### S2D) UMAP
 ```{r, eval=F}
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Ast_subclusters.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Ast_subclusters.pdf")
 DimPlot(Astrocytes, group.by="subs",reduction="wnn.umap", cols=c("Ast_0"="darkgoldenrod1","Ast_1"="darkgoldenrod3", "Ast_2"="gold2",
       "Ast_3"="goldenrod","Ast_4"="goldenrod1"), pt.size=2, label=T)
 dev.off()
@@ -1318,7 +1318,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf("~/myers/scAnalysis/plots/RINdrop/Ast_subcluster_GObp.pdf", width=8, height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Ast_subcluster_GObp.pdf", width=8, height=4)
    ht 
 dev.off()
 
@@ -1388,7 +1388,7 @@ df<-df[order(match(df$Var2, lev2)),]
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Ast_stat_prop_bar_wTotalCells_log10.pdf", width=5,height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Ast_stat_prop_bar_wTotalCells_log10.pdf", width=5,height=6)
 p1=ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat="identity")+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab("%")+ylab("")+theme(legend.title=element_text(size=0), legend.position="none")+ggtitle("Donor")+scale_y_discrete(limits=rev(levels(df$Var2)))
 
 p2=ggplot(tab2.m, aes(x=Freq, y=Var1, fill=Var1))+geom_bar(stat="identity")+theme_classic()+theme(legend.position="none", axis.text.y=element_text(size=0))+ggtitle("Num. Cells")+ylab("")+scale_fill_manual(values=tab2.m$cols)+xlab(" Count")+scale_y_discrete(limits=rev(levels(tab2.m$Var1)))+geom_vline(xintercept=100)
@@ -1422,7 +1422,7 @@ ra<-rowAnnotation(cluster=top$clust, show_legend=F, col=list(cluster=c("Ast_0"="
 ht=Heatmap(mat_scaled,cluster_columns=T,cluster_rows=F, col=colorRamp2(c(-1.5,0,1.5),viridis(3)), top_annotation=ha, name="Z", left_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=top$clust)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Ast_top10DEG_heatmap.pdf", width=4, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Ast_top10DEG_heatmap.pdf", width=4, height=6)
 ht
 dev.off()
 
@@ -1459,7 +1459,7 @@ Astrocytes<-AddModuleScore(Astrocytes, features=list(top[which(top$LEN_so_astro_
 Astrocytes<-AddModuleScore(Astrocytes, features=list(top[which(top$LEN_so_astro_r2_cluster==8),]$gene), name="Clust8_score", search=T)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/topick_Astrocytes_subclusters.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/topick_Astrocytes_subclusters.pdf")
 FeaturePlot(Astrocytes, reduction="wnn.umap", features=c("Clust0_score1","Clust1_score1","Clust2_score1","Clust3_score1","Clust4_score1","Clust5_score1","Clust6_score1","Clust7_score1","Clust8_score1"))
 dev.off()
 
@@ -1494,7 +1494,7 @@ Inhibitory$batch<-ifelse(Inhibitory$id %in% c("1224","1238","3586","4064","4627"
 ### S2J) UMAP
 ```{r,eval=F}
 Inhibitory$subs<-paste0("Inh_", Inhibitory$seurat_clusters)
-pdf("~/myers/scAnalysis/plots/RINdrop/Inh_subclusters.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Inh_subclusters.pdf")
 DimPlot(Inhibitory, group.by="subs",reduction="wnn.umap", cols=c( "Inh_0"="palegreen",  "Inh_1"="springgreen",  "Inh_2"="darkolivegreen3",       "Inh_3"="seagreen3", "Inh_4"="forestgreen",       "Inh_5"="darkseagreen",       "Inh_6"="palegreen4",       "Inh_7"="darkolivegreen1"), pt.size=2, label=T)
 dev.off()
 
@@ -1534,7 +1534,7 @@ head(In[[i]][["Azimuth_Cell_Types_2021"]])
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/IN_marker_vlnplot_2.pdf", width=15,height=20)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/IN_marker_vlnplot_2.pdf", width=15,height=20)
 VlnPlot(Inhibitory, features=c("PVALB","SST","VIP","LAMP5", "SNCG"),  pt.size=0.5)
 dev.off()
 
@@ -1561,7 +1561,7 @@ Idents(Inhibitory)<-Inhibitory$seurat_clusters
 # Inhibitory$azimuth<-factor(Inhibitory$azimuth,levels=levels(Inhibitory)[order(levels(Inhibitory))])
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Azimuth_In_layers2.pdf", width=7, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_In_layers2.pdf", width=7, height=5)
 DimPlot(Inhibitory, reduction="wnn.umap",group.by="azimuth", cols=c(
   "PVALB+"="palegreen3",
   "SNCG+"="gold",
@@ -1579,7 +1579,7 @@ dev.off()
 
 
 Inhibitory$cluster<-paste("Inh_", Inhibitory$seurat_clusters, ": ", Inhibitory$azimuth,)
-pdf("~/myers/scAnalysis/plots/RINdrop/Azimuth_In_layers2.pdf", width=7, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_In_layers2.pdf", width=7, height=5)
 DimPlot(Inhibitory, reduction="wnn.umap",group.by="cluster", cols=c(
 "Inh_0: Pvalb+"         =cols.df[17,1],
 "Inh_1: VIP+"           =cols.df[18,1],
@@ -1601,7 +1601,7 @@ dev.off()
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/In_marker_expression_plot.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/In_marker_expression_plot.pdf")
 VlnPlot(Inhibitory, features=c("PVALB","VIP","LAMP5","SST","SNCG"), assay="PC", pt.size=0.5) & scale_fill_manual(values=c(
   "Pvalb+"="palegreen",
 "VIP+"="firebrick1",
@@ -1613,13 +1613,13 @@ VlnPlot(Inhibitory, features=c("PVALB","VIP","LAMP5","SST","SNCG"), assay="PC", 
 "Sst+ Chodl+"="skyblue1"  ))
 dev.off()
 
-pdf("~/myers/scAnalysis/plots/RINdrop/In_marker_featPlot.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/In_marker_featPlot.pdf")
 FeaturePlot(Inhibitory, reduction="wnn.umap", features=c("PVALB","VIP","LAMP5","SST"), max.cutoff=1)&scale_color_viridis()
 dev.off()
 
 
 Inhibitory$cluster<-paste("Inh_", Inhibitory$seurat_clusters)
-pdf("~/myers/scAnalysis/plots/RINdrop/IN_marker_dotplot.pdf", width=6, height=8)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/IN_marker_dotplot.pdf", width=6, height=8)
 DotPlot(Inhibitory, features=c("PVALB","VIP","LAMP5","SST"), col.min=0, col.max=1.5, dot.scale=20, group.by="cluster")+scale_color_viridis()
 dev.off()
 
@@ -1665,7 +1665,7 @@ ra<-rowAnnotation(subtype=markers_melt$variable, col=list(subtype=c("SST"="red",
 ht=Heatmap(mat_scaled,cluster_rows=T,cluster_columns=T,col=colorRamp2(c(-1.5,0,1.5),viridis(3)), top_annotation=ha2, name="Z", left_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_split=markers_melt$variable,row_title_gp=gpar(fontsize=14),row_names_gp=gpar(fontsize=7))
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/In_Subtype_heatmap.pdf", width=5,height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/In_Subtype_heatmap.pdf", width=5,height=6)
 ht
 dev.off()
 
@@ -1772,7 +1772,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf("~/myers/scAnalysis/plots/RINdrop/Inh_subcluster_GObp.pdf", width=8, height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Inh_subcluster_GObp.pdf", width=8, height=4)
    ht 
 dev.off()
 
@@ -1812,7 +1812,7 @@ stat.test <- df %>%
   add_significance("p.adj")
 stat.test <- stat.test %>% add_xy_position(x = "Var2")
 
-pdf("~/myers/scAnalysis/plots/RINdrop/In_CT_stat_prop_tt.pdf", width=10,height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/In_CT_stat_prop_tt.pdf", width=10,height=5)
 ggboxplot(df, y="Freq",x="Var2", fill="Status", alpha=0.8)+stat_pvalue_manual(stat.test, label="p")+xlab("")+scale_fill_manual(values=c("red","blue"))
 dev.off()
 
@@ -1868,7 +1868,7 @@ Excitatory$subs<-paste0("Exc_", Excitatory$seurat_clusters)
 
 
 Excitatory2<-subset(Excitatory, subset=seurat_clusters==10, invert=T)
-pdf("~/myers/scAnalysis/plots/RINdrop/Exc_subclusters.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Exc_subclusters.pdf")
 DimPlot(Excitatory2, group.by="subs",reduction="wnn.umap", cols=c( "Exc_0"="royalblue1",       "Exc_1"="deepskyblue2",     "Exc_2"="steelblue1", "Exc_3"="steelblue3",       "Exc_4"="cornflowerblue",       "Exc_5"="royalblue3",       "Exc_6"="cadetblue1", "Exc_7"="cadetblue3",
       "Exc_8"="dodgerblue","Exc_9"="dodgerblue3"), pt.size=2, label=T)
 dev.off()
@@ -1936,7 +1936,7 @@ Excitatory$seurat_clusters<-tmp
 Excitatory$azimuth<-factor(Excitatory$azimuth,levels=levels(Excitatory)[order(levels(Excitatory))])
 Excitatory$cluster<-paste("Exc_",Excitatory$seurat_clusters,": ",Excitatory$azimuth, sep="")
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Azimuth_Ex_layers.pdf", width=8, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_Ex_layers.pdf", width=8, height=5)
 DimPlot(Excitatory, reduction="wnn.umap", group.by="azimuth", pt.size=0.2, cols=c(
   "L2-3 Intratelencephalon-Projecting 1" ="firebrick1",     
                "L2-3 Intratelencephalon-Projecting 2"="firebrick3",   
@@ -1953,7 +1953,7 @@ dev.off()
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Azimuth_Ex_layers.pdf", width=8, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_Ex_layers.pdf", width=8, height=5)
 DimPlot(subs[[3]], reduction="wnn.umap", group.by="cluster", pt.size=0.2, cols=c(
                "Exc_0: L2-3 Intratelencephalon-Projecting 1" =cols.df[7,1],     
                "Exc_1: L2-3 Intratelencephalon-Projecting 2"=cols.df[8,1],   
@@ -1971,7 +1971,7 @@ dev.off()
 
 
 subs[[3]]$label<-paste("Exc_", subs[[3]]$seurat_clusters, sep="")
-pdf("~/myers/scAnalysis/plots/RINdrop/Azimuth_Ex_layers_label.pdf", width=5, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_Ex_layers_label.pdf", width=5, height=5)
 DimPlot(subs[[3]], reduction="wnn.umap", group.by="label", pt.size=0.2, cols=c(
                "Exc_0" =cols.df[7,1],     
                "Exc_1"=cols.df[8,1],   
@@ -2086,7 +2086,7 @@ ra<-rowAnnotation(subtype=a$subtype, col=list(subtype=sam))
 ht=Heatmap(mat_scaled,cluster_rows=F,cluster_columns=F,column_split=c("L23","L23","L5","L5","L6","L6","L5","L6","L56","L5"),col=colorRamp2(c(-1,0,1),viridis(3)), top_annotation=ha, name="Z",  show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=a$layer)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Neuron_Subtype_heatmap_Ex.pdf", width=4,height=8)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Neuron_Subtype_heatmap_Ex.pdf", width=4,height=8)
 ht
 dev.off()
 
@@ -2103,7 +2103,7 @@ top_mark<-plot_mark %>% group_by(variable) %>% top_n(n=2, wt=avg_log2FC)
 top_mark<-top_mark[order(top_mark$variable),]
 
 Excitatory2$cluster<-paste0("Exc_", Excitatory2$seurat_clusters)
-pdf("~/myers/scAnalysis/plots/RINdrop/Ex_marker_dotplot.pdf", width=10, height=9)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Ex_marker_dotplot.pdf", width=10, height=9)
 DotPlot(Excitatory2, features=unique(top_mark$value), col.min=0, col.max=1.5, dot.scale=10, group.by="cluster")+scale_color_viridis(option="plasma", direction=-1)+theme(axis.text.x=element_text(size=15, angle=90), axis.text.y=element_text(size=15),axis.title=element_text(size=0))
 dev.off()
 
@@ -2119,7 +2119,7 @@ mat<-as.matrix(tab)
 mat<-mat[rownames(avg_Exp),]
 df<-as.data.frame(mat)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/EX_marker_upset_annotation.pdf",width=3, height=10)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/EX_marker_upset_annotation.pdf",width=3, height=10)
 ggplot(df, aes(y=Var1, x=Var2, alpha=as.factor(Freq)))+geom_point()+theme_classic()+scale_alpha_manual(values=c(0,1))+ylab("")+xlab("")+
   theme(legend.position="none", axis.text.x=element_text(angle=90))+scale_y_discrete(position="right", limits=rev)+scale_x_discrete(labels=c("L23","L5 Extratelencephalon-Projecting","L5 Intratelencephalon-Projecting","L56 Near Projecting","L6 Corticothalamic-Projecting","L6 CAR3+ Intratelencephalon-Projecting","L6 THEMIS+ LINC00343+"))
 dev.off()
@@ -2232,7 +2232,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf("~/myers/scAnalysis/plots/RINdrop/Exc_subcluster_GObp.pdf", width=9, height=3.5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Exc_subcluster_GObp.pdf", width=9, height=3.5)
    ht 
 dev.off()
 
@@ -2275,7 +2275,7 @@ stat.test <- df %>%
   add_significance("p.adj")
 stat.test <- stat.test %>% add_xy_position(x = "Var2")
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Ex_CT_stat_prop_tt.pdf", width=10,height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Ex_CT_stat_prop_tt.pdf", width=10,height=5)
 ggboxplot(df, y="Freq",x="Var2", fill="Status", alpha=0.8)+stat_pvalue_manual(stat.test, label="p")+xlab("")+scale_fill_manual(values=c("red","blue"))
 dev.off()
 
@@ -2319,7 +2319,7 @@ Oligodendrocytes$batch<-ifelse(Oligodendrocytes$id %in% c("1224","1238","3586","
 ### S2F) UMAP
 ```{r,eval=F}
 Oligodendrocytes$subs<-paste0("Oli_", Oligodendrocytes$seurat_clusters)
-pdf("~/myers/scAnalysis/plots/RINdrop/Olig_subclusters.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Olig_subclusters.pdf")
 DimPlot(Oligodendrocytes, group.by="subs",reduction="wnn.umap", cols=c( "Oli_0"="lightsalmon", "Oli_1"="darksalmon", 
                "Oli_2"="coral", "Oli_3"="brown1"), pt.size=2, label=T)
 dev.off()
@@ -2409,7 +2409,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf("~/myers/scAnalysis/plots/RINdrop/Olig_subcluster_GObp.pdf", width=8, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Olig_subcluster_GObp.pdf", width=8, height=6)
    ht 
 dev.off()
 
@@ -2422,7 +2422,7 @@ df$term<-sapply(strsplit(df$Term, " (", fixed=T), `[`,1)
 df<-df[order(df$Odds.Ratio, decreasing=T),]
 df$term<-factor(df$term, levels=rev(df$term))
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Olig_GO_bp_cluster2.pdf", width=12, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Olig_GO_bp_cluster2.pdf", width=12, height=6)
 ggplot(df, aes(x=Odds.Ratio, y=term, fill=-log10(Adjusted.P.value)))+geom_bar(stat="identity")+theme_classic()+scale_fill_gradient2(low="white", mid="white",high="# 0F7010", limits=c(0,5))+theme(axis.text=element_text(size=12))
 dev.off()
 
@@ -2452,7 +2452,7 @@ stat.test <- stat.test %>% add_xy_position(x = "Var2")
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Olig_CT_stat_prop_tt.pdf", width=10,height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Olig_CT_stat_prop_tt.pdf", width=10,height=5)
 ggboxplot(df, y="Freq",x="Var2", fill="Status", alpha=0.8)+stat_pvalue_manual(stat.test, label="p")+xlab("")+scale_fill_manual(values=c("red","blue"))
 dev.off()
 
@@ -2498,7 +2498,7 @@ df<-df[order(match(df$Var2, lev2)),]
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Olig_stat_prop_bar_wTotalCells_log10.pdf", width=5,height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Olig_stat_prop_bar_wTotalCells_log10.pdf", width=5,height=6)
 p1=ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat="identity")+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab("%")+ylab("")+theme(legend.title=element_text(size=0), legend.position="none")+ggtitle("Donor")+scale_y_discrete(limits=rev(levels(df$Var2)))
 
 p2=ggplot(tab2.m, aes(x=Freq, y=Var1, fill=Var1))+geom_bar(stat="identity")+theme_classic()+theme(legend.position="none", axis.text.y=element_text(size=0))+ggtitle("Num. Cells")+ylab("")+scale_fill_manual(values=tab2.m$cols)+xlab(" Count")+scale_y_discrete(limits=rev(levels(tab2.m$Var1)))+geom_vline(xintercept=100)
@@ -2532,14 +2532,14 @@ ra<-rowAnnotation(cluster=top$clust, show_legend=F, col=list(cluster=c("Oli_0"="
 ht=Heatmap(mat_scaled,cluster_columns=T,cluster_rows=F, col=colorRamp2(c(-1.5,0,1.5),viridis(3)), top_annotation=ha, name="Z", left_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=top$clust)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Olig_top10DEG_heatmap.pdf", width=4, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Olig_top10DEG_heatmap.pdf", width=4, height=6)
 ht
 dev.off()
 
 
 ht2=Heatmap(t(mat_scaled),cluster_columns=T,cluster_rows=F, col=colorRamp2(c(-1.5,0,1.5),viridis(3)), left_annotation=ha, name="Z", top_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=top$clust)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Olig_top10DEG_heatmap_transpose.pdf", width=4, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Olig_top10DEG_heatmap_transpose.pdf", width=4, height=6)
 ht
 dev.off()
 
@@ -2573,7 +2573,7 @@ Microglia$batch<-ifelse(Microglia$id %in% c("1224","1238","3586","4064","4627","
 ```{r,eval=F}
 
 Microglia$subs<-paste0("Mic_", Microglia$seurat_clusters)
-pdf("~/myers/scAnalysis/plots/RINdrop/Mic_subclusters.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Mic_subclusters.pdf")
 DimPlot(Microglia, group.by="subs",reduction="wnn.umap", pt.size=2, label=F)
 dev.off()
 
@@ -2644,7 +2644,7 @@ ra<-rowAnnotation(cluster=paste0("Mic_",as.factor(top_genes$cluster)), col=list(
 colnames(avgExp.scale)<-paste("Mic_",colnames(avgExp.scale), sep="")
 ht=Heatmap(avgExp.scale, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(-1,0,1.5),viridis(3)), row_split=tmp$cluster,  name="Z",  show_column_names=T, show_row_names=T,row_names_gp = gpar(fontsize = 5), row_title_gp=gpar(fontsize=0), show_column_dend = FALSE, show_row_dend = FALSE, left_annotation=ra, top_annotation=ha)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Microglia_Degs_overlap_heatmap_dropCluster2.pdf", width=5,height=8)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Microglia_Degs_overlap_heatmap_dropCluster2.pdf", width=5,height=8)
 ht
 dev.off()
 
@@ -2655,7 +2655,7 @@ ra<-HeatmapAnnotation(cluster=paste0("Mic_",as.factor(top_genes$cluster)), col=l
 
 ht2=Heatmap(t(avgExp.scale), cluster_rows=F,cluster_columns=F,col=colorRamp2(c(-1,0,1.5),viridis(3)), row_split=tmp$cluster,  name="Z",  show_column_names=T, show_row_names=T,row_names_gp = gpar(fontsize = 10),column_names_gp=gpar(fontsize=6), row_title_gp=gpar(fontsize=0), show_column_dend = FALSE, show_row_dend = FALSE, left_annotation=ha, top_annotation=ra)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Microglia_Degs_overlap_heatmap_dropCluster2.pdf", width=7,height=3)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Microglia_Degs_overlap_heatmap_dropCluster2.pdf", width=7,height=3)
 ht2
 dev.off()
 
@@ -2689,7 +2689,7 @@ ra<-rowAnnotation(cluster=as.factor(mic_degs_H$cluster), col=list(cluster=c("0"=
 
 ht=Heatmap(avgExp.scale, cluster_rows=T,cluster_columns=F,col=colorRamp2(c(-1,0,1.5),viridis(3)), row_split=tmp$subtype.y,  name="Z",  show_column_names=T, show_row_names=T,row_names_gp = gpar(fontsize = 6), row_title_gp=gpar(fontsize=0), show_column_dend = FALSE, show_row_dend = FALSE, left_annotation=ra, top_annotation=ha)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Microglia_Degs_overlap_heatmap_0v1v2.pdf", width=4,height=3)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Microglia_Degs_overlap_heatmap_0v1v2.pdf", width=4,height=3)
 ht
 dev.off()
 
@@ -2755,7 +2755,7 @@ df$term<-sapply(strsplit(df$Term, " (", fixed=T), `[`,1)
 df<-df[order(df$Odds.Ratio, decreasing=T),]
 df$term<-factor(df$term, levels=rev(df$term))
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Mic_GO_bp_cluster2.pdf", width=12, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Mic_GO_bp_cluster2.pdf", width=12, height=6)
 ggplot(df, aes(x=Odds.Ratio, y=term, fill=-log10(Adjusted.P.value)))+geom_bar(stat="identity")+theme_classic()+scale_fill_gradient2(low="white", mid="# D4F9B0",high="# 0F7010", limits=c(0,5))+theme(axis.text=element_text(size=12))
 dev.off()
 
@@ -2802,7 +2802,7 @@ stat.test <- df %>%
   add_significance("p.adj")
 stat.test <- stat.test %>% add_xy_position(x = "cluster")
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Mic_CT_stat_prop_tt.pdf", width=6,height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Mic_CT_stat_prop_tt.pdf", width=6,height=5)
 ggboxplot(df, y="Freq",x="cluster", fill="Status", alpha=0.8)+stat_pvalue_manual(stat.test, label="p")+xlab("")+scale_fill_manual(values=c("firebrick","navyblue"))
 dev.off()
 
@@ -2861,7 +2861,7 @@ fullmeta<-rbind(a,b,c,d,e)
 data<-AddMetaData(data, fullmeta)
 data$subs<-ifelse(is.na(data$subs),substr(data$predicted.id,start=1,stop=3),data$subs)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/All_subclusters_plot_wLegend.pdf", width=9, height=10)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/All_subclusters_plot_wLegend.pdf", width=9, height=10)
 DimPlot(data, reduction="wnn.umap",group.by="subs", label=T, pt.size=0.1,cols=c(
       "Ast_0"="darkgoldenrod1","Ast_1"="darkgoldenrod3", "Ast_2"="gold2",
       "Ast_3"="goldenrod","Ast_4"="goldenrod1",
@@ -2926,7 +2926,7 @@ ht=Heatmap(mat_scaled,cluster_rows=F,cluster_columns=F,col=colorRamp2(c(-1,0,2),
 
 lab<-which(rownames(mat_scaled) %in% c("AQP4","NRGN","GAD2","P2RY12","MOBP","VCAN"))
 
-pdf("~/myers/scAnalysis/plots/RINdrop/scREAD_heatmap_byID.pdf", width=5,height=8)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/scREAD_heatmap_byID.pdf", width=5,height=8)
 ht+rowAnnotation(gene=anno_mark(at=lab, labels=rownames(mat_scaled[lab,]), side="right", labels_gp=gpar(fontsize=10)))
 dev.off()
 
@@ -2987,7 +2987,7 @@ p6<-CombineTracks(list(p6,anPlot),heights=c(5,1))
 
 
 library(cowplot)
-pdf("~/myers/scAnalysis/plots/RINdrop/marker_coverage_plot.pdf", width=12, height=7)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/marker_coverage_plot.pdf", width=12, height=7)
 plot_grid(p1,p2,p3,p4,p5,p6, ncol=6)
 dev.off()
 
@@ -3017,7 +3017,7 @@ df<-df[-seq(121,135),]
 df$Var1<-factor(df$Var1, levels= tmp$Var1)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Allsubs_stat_prop_bar.pdf", width=5,height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Allsubs_stat_prop_bar.pdf", width=5,height=6)
 ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat="identity")+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab("%")+ylab("")+theme(legend.title=element_text(size=0))
 dev.off()
 
@@ -3044,7 +3044,7 @@ df<-df[order(match(df$Var2, lev2)),]
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Allsubs_stat_prop_bar_wTotalCells_log10.pdf", width=5,height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Allsubs_stat_prop_bar_wTotalCells_log10.pdf", width=5,height=6)
 p1=ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat="identity")+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab("%")+ylab("")+theme(legend.title=element_text(size=0), legend.position="left")+ggtitle("Donor")+scale_y_discrete(limits=rev(levels(df$Var2)))
 
 p2=ggplot(tab2.m, aes(x=Freq, y=Var1, fill=Var1))+geom_bar(stat="identity")+theme_classic()+theme(legend.position="none", axis.text.y=element_text(size=0))+ggtitle("Number of Cells")+ylab("")+scale_fill_manual(values=tab2.m$cols)+xlab(" Count")+scale_y_discrete(limits=rev(levels(tab2.m$Var1)))+geom_vline(xintercept=100)+scale_x_continuous(breaks=c(0,6000,12000))
@@ -3114,7 +3114,7 @@ ra<-rowAnnotation(celltype=df.m$tmp, id=df.m$id,Status=df.m$Status,  show_legend
 
 ht=Heatmap(cor.mat,cluster_rows=T,cluster_columns=T,col=colorRamp2(c(0,0.5,1),plasma(3)),  top_annotation=ha, name="r", left_annotation=ra, show_column_names=F, show_row_names=F, column_title=NULL, row_title_gp=gpar(fontsize=14))
 
-pdf("~/myers/scAnalysis/plots/RINdrop/CT_id_corMat_heatmap.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/CT_id_corMat_heatmap.pdf")
 ht
 dev.off()
 
@@ -3562,7 +3562,7 @@ snps<-GRanges(c("chr3:42691682","chr3:42747019","chr3:42741460","chr3:42735109",
 
 p<-CombineTracks(plotlist=list(cov_plot,ChIP_track2,ChIP_track1,link_plotA, motif_track, gene_plot), heights=c(6,3,3, 2,1,2))
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/TBR1_trio_",index ,"_linkPlot.pdf"), width=6, height=7)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/TBR1_trio_",index ,"_linkPlot.pdf"), width=6, height=7)
 p
 dev.off()
 
@@ -4038,7 +4038,7 @@ df$annot<-rownames(df)
 df<-melt(df)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Trio_peak_annot_encode.pdf", width=8, height=3)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Trio_peak_annot_encode.pdf", width=8, height=3)
 ggplot(df, aes(x=value, y=variable, fill=annot))+geom_bar(stat="identity")+xlab("Proportion of Linked peaks")+ylab("Cell type")+theme_classic()+scale_fill_manual(values=c("dodgerblue","gold","lightpink","orange","red","forestgreen"),labels=c("CTCF-only","dELS","DNase-H3K4me3","pELS","PLS","other"))+theme(legend.position="right", axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))
 dev.off()
 
@@ -4154,7 +4154,7 @@ ra<-rowAnnotation(Group=changed$CTspec, TF=changed$TF, Class=changed$class, Clus
 ht1=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.2,0.1,0.4), plasma(3)), name="r",  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra, use_raster=T,raster_quality=5,row_split=changed$CTspec, row_title=NULL)
 
 lab<-which(changed$gene %in% "SPP1")
-pdf("~/myers/scAnalysis/plots/RINdrop/Triangle_correlations.pdf", width=10, height=10)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Triangle_correlations.pdf", width=10, height=10)
 # rowAnnotation(gene=anno_mark(at=lab, labels=changed[lab,]$Name, side="left", labels_gp=gpar(fontsize=10)))+
 ht1
 dev.off()
@@ -4173,7 +4173,7 @@ ra<-rowAnnotation(TF=changed[which(changed$CTspec==CT),]$TF,Class=changed[which(
 ht1=Heatmap(mat[which(changed$CTspec==CT),], cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.2,0.1,0.4), plasma(3)), name="r",  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra,row_title=NULL)
 
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/Triangle_correlations_",CT,".pdf"), width=10, height=10)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/Triangle_correlations_",CT,".pdf"), width=10, height=10)
 ht1
 dev.off()
 
@@ -4210,7 +4210,7 @@ ra<-rowAnnotation(TF=changed$TF, show_legend=T, col=list(TF=cols))
 
 ht1=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.1,0.1,0.4), plasma(3)), name="r",  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra, use_raster=T,raster_quality=5,row_split=changed$category, row_title=NULL)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Triangle_correlations_Neuron_ExIn.pdf", width=5, height=10)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Triangle_correlations_Neuron_ExIn.pdf", width=5, height=10)
 ht1
 dev.off()
 
@@ -4249,7 +4249,7 @@ mat.scale<-t(scale(t(avgExp.g), center=T))
 
 ht=Heatmap(mat.scale,cluster_columns=F,cluster_rows=T, col=colorRamp2(c(-1.8,0,2),viridis(3)),  name="Expression Z", show_column_names=T, show_row_names=F, column_title=NULL, row_names_gp=gpar(fontsize=7),right_annotation=ra, use_raster=T,raster_quality=5)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/MEF2C_trios_heatmap.pdf", width=6, height=7)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_trios_heatmap.pdf", width=6, height=7)
 ht
 dev.off()
 
@@ -4257,7 +4257,7 @@ dev.off()
 
 df<-data.frame(mef2c=data@assays$RNA@data["MEF2C",], ct=data$predicted.id)
 df<-df[which(df$ct %in% c("Astrocytes","Excitatory","Inhibitory","Microglia","Oligodendrocytes","OPCs")),]
-pdf("~/myers/scAnalysis/plots/RINdrop/MEF2C_boxplot.pdf", width=6, height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_boxplot.pdf", width=6, height=4)
 ggplot(df, aes(x=ct, y=mef2c, fill=ct))+geom_boxplot()+theme_classic()+ylab("MEF2C Normalize Expression")+scale_fill_manual(values=c("darkgoldenrod1", "cornflowerblue","seagreen3","mediumorchid3","coral3","firebrick"))+xlab("")+theme(legend.position="none")
 dev.off()
 ```
@@ -4288,7 +4288,7 @@ go$Name<-sapply(strsplit(go$Term, "(G", fixed=T), `[`,1)
 go<-go[order(go$CT, go$Odds.Ratio),]
 go$Name<-factor(go$Name, levels=go$Name)
 go.top<-go %>% group_by(CT) %>% top_n(n=5, wt=Odds.Ratio)
-pdf("~/myers/scAnalysis/plots/RINdrop/MEF2C_target_GOenrichment_byCT.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_target_GOenrichment_byCT.pdf")
 ggplot(go, aes(x=Odds.Ratio, y=Name, fill=CT))+geom_bar(stat="identity")+theme_classic()+scale_fill_manual(values=c("mediumorchid3","yellow2"))
 dev.off()
 ```
@@ -4308,7 +4308,7 @@ ChIP_track3<-BigwigTrack(region,"/cluster/home/jloupe/Outputs_other/Jan2021_ChIP
 
 p<-CombineTracks(plotlist=list(ChIP_track1,ChIP_track2,ChIP_track3), heights=c(2,2,2))
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/MEF2C_ADCtrl_NEUN.pdf"), width=6, height=7)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_ADCtrl_NEUN.pdf"), width=6, height=7)
 p
 dev.off()
 
@@ -4378,7 +4378,7 @@ gene_plot<-AnnotationPlot(data, region=region)
 
 p<-CombineTracks(plotlist=list(cov_plot,ChIP_track2,ChIP_track1,link_plotA, motif_track, gene_plot), heights=c(6,3,3, 2,1,2))
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/MEF2C_trio_",gene ,"_linkPlot.pdf"), width=6, height=7)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_trio_",gene ,"_linkPlot.pdf"), width=6, height=7)
 p
 dev.off()
 
@@ -4471,11 +4471,11 @@ gene_plot<-AnnotationPlot(data, region=region)
 
 p<-CombineTracks(plotlist=list(cov_plot,ChIP_track,link_plotA, k27_track, motif_track, gene_plot), heights=c(6,3,2,1,1,2))
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/ZEB1_trio_GABRA5_linkPlot_zoomed.pdf"), width=6, height=7)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_zoomed.pdf"), width=6, height=7)
 p
 dev.off()
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/ZEB1_trio_GABRA5_linkPlot_justchip.pdf"), width=6, height=3)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_justchip.pdf"), width=6, height=3)
 ChIP_track
 dev.off()
 
@@ -4491,7 +4491,7 @@ cov_plot<-CoveragePlot(object=donkey, region=region,  assay="CTpeaks",annotation
 
  p<-CombineTracks(plotlist=list(cov_plot,ChIP_track,link_plotA, k27_track, motif_track, gene_plot), heights=c(6,3,2,1,1,2))
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/ZEB1_trio_GABRA5_linkPlot_byCT.pdf"), width=6, height=7)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_byCT.pdf"), width=6, height=7)
 p
 dev.off()
 
@@ -4523,7 +4523,7 @@ stat.test2 <- stat.test2 %>% add_xy_position(x = "subs")
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/ZEB1_GABRA5_neuronSubtypes.pdf", width=8, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_GABRA5_neuronSubtypes.pdf", width=8, height=5)
 ggplot(df2, aes(x=subs,y=ZEB1,fill=Status))+geom_boxplot()+theme_classic()+stat_pvalue_manual(stat.test, label="p")
 ggplot(df2, aes(x=subs,y=GABRA5,fill=Status))+geom_boxplot()+theme_classic()
 dev.off()
@@ -4603,7 +4603,7 @@ ht1=Heatmap(acc.scale, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colo
 ht2=Heatmap(gex.scale, cluster_rows=F,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(quantile(gex.scale, probs=0.05, na.rm=T),0,quantile(gex.scale, probs=0.95, na.rm=T)),viridis(3)), name="Expression  Z",  show_column_names=F, show_row_names=F, column_title=NULL,row_names_gp = gpar(fontsize = 3), top_annotation=ha, right_annotation=ra,  row_title_gp=gpar(fontsize=0), use_raster=T, raster_quality=5)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Acc_GEX_link_filtered.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Acc_GEX_link_filtered.pdf")
 ht1+ht2
 dev.off()
 
@@ -4633,7 +4633,7 @@ p<-melt(p)
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/AD_linksPerGene_filt.pdf", height=5,width=7)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/AD_linksPerGene_filt.pdf", height=5,width=7)
 a=ggplot(t, aes(x=log(value), color=variable,fill=variable))+geom_density(aes(y = ..count..), alpha=0.2, adjust=2)+xlab("log(Links per Gene)")+theme_classic()+
   scale_fill_manual(values=c("red","blue"))+scale_color_manual(values=c("red","blue"))+
   theme(axis.text=element_text(size=8), legend.position="none")+ylab("counts")+
@@ -4647,7 +4647,7 @@ dev.off()
 
 t$value2<-ifelse(t$value>39,40,t$value)
 p$value2<-ifelse(p$value>3, 4,p$value)
-pdf("~/myers/scAnalysis/plots/RINdrop/AD_linksPerGene_Perm80.pdf", height=5,width=7)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/AD_linksPerGene_Perm80.pdf", height=5,width=7)
 a=ggplot(t, aes(x=value2, color=variable,fill=variable))+geom_histogram(position="dodge", alpha=0.2, binwidth=2)+xlab("Links per Gene")+theme_classic()+
   scale_fill_manual(values=c("red","blue"))+scale_color_manual(values=c("red","blue"))+
   theme(axis.text=element_text(size=8), legend.position="none")+ylab("counts")+
@@ -4696,7 +4696,7 @@ tab2<-tab2[names(tab)] ## do same order
 u<-upset(fromExpression(tab), nintersects=12, nsets=6,   sets.bar.color=c(
   "cornflowerblue","mediumorchid3","seagreen3","coral3","darkgoldenrod1","firebrick"), main.bar.color="red3", text.scale=1.3  , mainbar.y.label="AD Links", mainbar.y.max=60000, show.numbers=F, keep.order=T, order.by=c("freq","degree"))
 
-pdf("~/myers/scAnalysis/plots/RINdrop/AD_FL_upset_filt_XY.pdf", width=8, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/AD_FL_upset_filt_XY.pdf", width=8, height=5)
 u
 dev.off()
 
@@ -4704,7 +4704,7 @@ dev.off()
 u2<-upset(fromExpression(tab2), nintersects=12, nsets=6,  sets.bar.color=c(
   "cornflowerblue","seagreen3","coral3","darkgoldenrod1","mediumorchid3","firebrick"), main.bar.color="blue", text.scale=1.3,  mainbar.y.label="Ctrl Links", mainbar.y.max=60000, show.numbers=F, keep.order=T, order.by=c("freq","degree"))
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Ctrl_FL_upset_filt_XY.pdf", width=8, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Ctrl_FL_upset_filt_XY.pdf", width=8, height=5)
 u2
 dev.off()
 
@@ -4749,7 +4749,7 @@ df$annot<-rownames(df)
 df<-melt(df)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Link_annot_byCT_filtered_encode2.pdf", width=8, height=3)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Link_annot_byCT_filtered_encode2.pdf", width=8, height=3)
 ggplot(df, aes(x=value, y=variable, fill=annot))+geom_bar(stat="identity")+xlab("Proportion of Linked peaks")+ylab("Cell type")+theme_classic()+scale_fill_manual(values=c("dodgerblue","gold","lightpink","orange","red","forestgreen"),labels=c("CTCF-only","dELS","DNase-H3K4me3","pELS","PLS","other"))+theme(legend.position="right", axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))
 dev.off()
 
@@ -4792,7 +4792,7 @@ df$dir<-"pos"
 df2$dir<-"neg"
 df<-rbind(df, df2)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Link_annot_byCT_filtered_encode.pdf", width=5, height=8)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Link_annot_byCT_filtered_encode.pdf", width=5, height=8)
 ggplot(df, aes(y=value, x=dir, fill=annot))+geom_bar(stat="identity")+xlab("Proportion of Linked peaks")+ylab("Cell type")+theme_classic()+scale_fill_brewer(palette="Dark2")+theme(legend.position="right", axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))+facet_wrap(~variable)
 dev.off()
 
@@ -4929,7 +4929,7 @@ df<-rbind(Atab, Etab, Itab, Otab, Mtab)
 df$color<-paste0(df$Specific,"-",df$K27)
 df$color<-ifelse(df$color=="FALSE-FALSE","TRUE-FALSE", df$color)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Linked_peaks_olapk27_barPlot_filtered_XY.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Linked_peaks_olapk27_barPlot_filtered_XY.pdf")
 ggplot(df, aes(y=Freq/1000, x=Specific,  fill=K27))+geom_bar(stat="identity", color="grey40")+ theme_classic()+ylab("##  Linked peaks (x1,000)") + xlab("")+scale_x_discrete(labels=c("Shared", "Specific"))+
   theme(axis.text.x=element_text(angle=90, size=15), plot.title=element_text(hjust=0.5), legend.position="top", axis.title.y=element_text(size=17), legend.title=element_text(size=0), legend.text=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(~ct,  ncol=5,  strip.position="bottom") +scale_fill_manual(labels=c("No Overlap","Overlap H3K27ac"),values=c("grey80","darkseagreen2"))
 dev.off()
@@ -4938,7 +4938,7 @@ dev.off()
 
 df$ctSpec<-ifelse(df$Specific==T, "Specific","Shared")
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Linked_peaks_olapk27_barPlot_filtered_split.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Linked_peaks_olapk27_barPlot_filtered_split.pdf")
 ggplot(df, aes(y=Freq/1000, x=ct,  fill=K27))+geom_bar(stat="identity", color="grey40")+ theme_classic()+ylab("##  Linked peaks (x1,000)") + xlab("")+
   theme(axis.text.x=element_text(angle=90, size=15), plot.title=element_text(hjust=0.5), legend.position="top", axis.title.y=element_text(size=17), legend.title=element_text(size=0), legend.text=element_text(size=15), axis.text.y=element_text(size=15))+scale_fill_manual(labels=c("No Overlap","Overlap H3K27ac"),values=c("grey80","darkseagreen2"))+facet_wrap(~ctSpec, scales="free")
 dev.off()
@@ -5051,13 +5051,13 @@ gene_plot<-AnnotationPlot(data, region=region)
 
 p<-CombineTracks(plotlist=list(cov_plot,link_plotA, bgp,gene_plot), heights=c(6,2,1,2))
 
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/",gene,"_linkPlot.pdf"), width=8, height=8)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/",gene,"_linkPlot.pdf"), width=8, height=8)
 p
 dev.off()
 
 
 kansl1<-data.frame(kansl1=as.vector(data[["RNA"]]["KANSL1",]), celltype=data$predicted.id, Status=data$Status)
-pdf("~/myers/scAnalysis/plots/RINdrop/KANSL1_boxplots.pdf", width=8,height=2)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/KANSL1_boxplots.pdf", width=8,height=2)
 ggplot(kansl1[!(kansl1$celltype %in% c("Endothelial","Pericytes")),], aes(x=Status,y=kansl1, fill=celltype))+geom_boxplot()+theme_classic()+facet_wrap(~celltype, ncol=6)+ylab("KANSL1 expr.")+scale_fill_manual(values=c("darkgoldenrod1","cornflowerblue","seagreen3","mediumorchid3","coral3","firebrick"))+theme(legend.position="none")
 dev.off()
 
@@ -5087,7 +5087,7 @@ stat.test <- df %>%
   add_significance("p.adj")
 stat.test <- stat.test %>% add_xy_position(x = "Var2")
 
-pdf("~/myers/scAnalysis/plots/RINdrop/ALL_CT_BOXPLOT_prop_tt.pdf", width=10,height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/ALL_CT_BOXPLOT_prop_tt.pdf", width=10,height=5)
 ggboxplot(df, y="Freq",x="Var2", fill="Status", alpha=0.8)+stat_pvalue_manual(stat.test, label="p")+xlab("")+scale_fill_manual(values=c("red","blue"))
 dev.off()
 
@@ -5102,7 +5102,7 @@ md<-data@meta.data
 cells=rownames(md[which(md$subs !="Exc_10"),])
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/All_subclusters_WNN.pdf", width=15, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/All_subclusters_WNN.pdf", width=15, height=5)
 p1<-DimPlot(data, cells=cells,reduction="harmony.rna.umap",group.by="subs",  pt.size=0.1,cols=c(
       "Ast_0"="darkgoldenrod1","Ast_1"="darkgoldenrod3", "Ast_2"="gold2",
       "Ast_3"="goldenrod","Ast_4"="goldenrod1",
@@ -5160,7 +5160,7 @@ p4<-FeaturePlot(data,cells=cells, features="ATAC.weight", reduction="wnn.umap")+
 
 plot_grid(p1,p2,p3, ncol=3)
 dev.off()
-pdf("~/myers/scAnalysis/plots/RINdrop/All_subclusters_WNN_part2.pdf", width=10, height=10)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/All_subclusters_WNN_part2.pdf", width=10, height=10)
 p4
 p1+theme(legend.position="bottom")
 dev.off()
@@ -5204,7 +5204,7 @@ p5<-DimPlot(data, cells=cells,reduction="wnn.umap", group.by="Braak", pt.size=0.
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/WNN_diseasestat.pdf", width=6, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/WNN_diseasestat.pdf", width=6, height=6)
 
 p2
 
@@ -5226,7 +5226,7 @@ p1<-FeaturePlot(data,cells=cells, reduction="wnn.umap", features="PMI..h.", pt.s
 p2<-FeaturePlot(data, cells=cells,reduction="wnn.umap", features="RIN", pt.size=0.1)&ggtitle("RIN")&scale_color_viridis(option="rocket"
 )& theme(legend.position="bottom")
 
-pdf("~/myers/scAnalysis/plots/RINdrop/WNN_moreStats.pdf", width=6, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/WNN_moreStats.pdf", width=6, height=6)
 p1
 p2
 dev.off()
@@ -5289,7 +5289,7 @@ df2<-t(df2)
 frac<-paste0(df2[,2],"/",(df2[,1]+df2[,2]))
 
 df$frac<-frac
-pdf("~/myers/scAnalysis/plots/RINdrop/Peak_olap_ADsnp.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Peak_olap_ADsnp.pdf")
 ggplot(df, aes(y=ct, x=count*100, fill=ct))+geom_bar(stat="identity")+theme_classic()+ylab("")+xlab("% of Linked-Peaks Overlap AD SNPs")+scale_fill_manual(values=c("darkgoldenrod1","cornflowerblue","seagreen3","mediumorchid3","coral3","firebrick"))+theme(legend.position="none")+geom_text(aes(label=frac), nudge_x=0.05)+xlim(0,0.5)
 dev.off()
 
@@ -5310,13 +5310,13 @@ tmp$p1<-abs(tmp$start-tmp$TSS)
 tmp$p2<-abs(tmp$end-tmp$TSS)
 tmp$distLinkedGene<-ifelse(tmp$p1<tmp$p2, tmp$p1, tmp$p2)
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Distance_LinkedTSS_byScore.pdf",width=4,height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Distance_LinkedTSS_byScore.pdf",width=4,height=4)
 ggplot(tmp[which(tmp$score>0.2 & tmp$distLinkedGene<=500000),], aes(x=distLinkedGene, y=abs(score)))+geom_bin_2d(bins=100)+theme_classic()+xlab("Distance to Linked-Gene TSS")+ylab("Abs. Score")+scale_fill_continuous(type = "viridis")
 dev.off()
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Distance_LinkedTSS_byScore_boxplot.pdf",width=4,height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Distance_LinkedTSS_byScore_boxplot.pdf",width=4,height=4)
 ggplot(tmp[which(tmp$score>0.2 & tmp$distLinkedGene<=500000),], aes(y=distLinkedGene, x=bin))+geom_boxplot()+theme_classic()+ylab("Distance to Linked-Gene TSS")+xlab("Abs. Score")
 dev.off()
 
@@ -5354,7 +5354,7 @@ t.test(mer3[which(mer3$bin40==">=40"),]$`abs(score)`, mer3[which(mer3$bin40=="ot
 t.test(mer3[which(mer3$bin40=="other"),]$`abs(score)`, mer3[which(mer3$bin40=="<=2"),]$`abs(score)`)
 
 ## ## ## DON'T INCLUDE OTHER
-pdf("~/myers/scAnalysis/plots/RINdrop/Score_Expression_GeneSize_by_LinkPerGene.pdf", width=10, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Score_Expression_GeneSize_by_LinkPerGene.pdf", width=10, height=6)
 p1<-ggplot(mer[which(mer$bin40!="other"),], aes(x=bin40, y=log10(size), color=bin40))+geom_boxplot()+theme_classic()+ylab("log10(Gene Length)")+ stat_compare_means(method = "anova")+theme(legend.position="none")
 
 p2<-ggplot(mer2[which(mer2$bin40!="other" & mer2$sumR<12622522),], aes(x=bin40, y=log10(sumR), color=bin40))+geom_boxplot()+theme_classic()+ylab("log10(Total UMIs)")+ stat_compare_means(method = "t.test")+theme(legend.position="none")
@@ -5368,7 +5368,7 @@ mer$bin40<-factor(mer$bin40, levels=c("<=2", "other",">=40"))
 mer2$bin40<-factor(mer2$bin40, levels=c("<=2", "other",">=40"))
 mer3$bin40<-factor(mer3$bin40, levels=c("<=2", "other",">=40"))
 mycomp<-list(c("<=2", ">=40"), c("other",">=40"), c("<=2","other"))
-pdf("~/myers/scAnalysis/plots/RINdrop/Score_Expression_GeneSize_by_LinkPerGene.pdf", width=10, height=6)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Score_Expression_GeneSize_by_LinkPerGene.pdf", width=10, height=6)
 p1<-ggplot(mer, aes(x=bin40, y=log10(size), color=bin40))+geom_boxplot()+stat_compare_means(comparisons=mycomp,method="t.test", label="p.signif")+theme_classic()+theme(legend.position="none")
 
 p2<-ggplot(mer2[which(mer2$sumR<12622522),], aes(x=bin40, y=log10(sumR), color=bin40))+geom_boxplot()+theme_classic()+ylab("log10(Total UMIs)")+ stat_compare_means(comparisons=mycomp,method = "t.test",label="p.signif")+theme(legend.position="none")
@@ -5414,7 +5414,7 @@ jD$stresiduals<-rstandard(lmod)
 jD2<-jD[which((jD$stresiduals>3| jD$residuals< -3)& jD$deg !="NS"),]
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Peaks_per_gene_wDEGs_80Perm_StRes3.pdf", width=4, height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Peaks_per_gene_wDEGs_80Perm_StRes3.pdf", width=4, height=4)
 ggplot(jD, aes(x=AD, y=Ctrl, color=deg))+geom_point(aes(color=deg, alpha=alpha),size=0.5)+ scale_color_manual(values=c("blue","grey50","red"))+xlab("##  of connected Peaks (AD)")+ylab("##  of connected Peaks (Ctrl)")+theme_classic()+theme(legend.position="none", axis.text=element_text(size=12), axis.title=element_text(size=14))+geom_text_repel(data=jD[which(jD$alpha==1&jD$deg!="NS"),], aes(x=AD,y=Ctrl,label=Var1), box.padding=1,point.padding=0,label.padding=1,segment.colour="black", size=3, min.segment.length=0, max.overlaps=60)+geom_abline(slope=1.092114,intercept=0)+geom_abline(slope=1.092114, intercept=24.33, linetype="dashed")+geom_abline(slope=1.092114, intercept=-19.9523, linetype="dashed")+scale_alpha_discrete(range=c(0.1,1))
 dev.off()
 
@@ -5427,7 +5427,7 @@ jD$fitted.values<-lmod$fitted.values
 jD<-jD[order(jD$residuals),]
 jD$Rank<-seq(1,nrow(jD))
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Peaks_per_gene_Residuals.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Peaks_per_gene_Residuals.pdf")
 ggplot(jD, aes(x=Rank, y=residuals, color=deg))+geom_jitter(width=6)+theme_classic()+scale_color_manual(values=c("blue","grey60","red"))+theme(legend.position="none")+facet_wrap(~deg)+geom_text_repel(data=jD[which(jD$residuals>30 | jD$residuals< -30),], aes(x=Rank, y=residuals, label=Var1),box.padding=1,point.padding=0.3,segment.colour="black", size=2, min.segment.length=0, max.overlaps=80)
 dev.off()
 
@@ -5645,7 +5645,7 @@ gene_plot<-AnnotationPlot(data, region=region)
 
 
 p<-CombineTracks(plotlist=list(cov_plot,link_plotA,dap_plot,gene_plot), heights=c(4,2, 1,2))
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/",gene,"_linkPlot_w_DAP_",CT,".pdf"), width=8, height=5)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/",gene,"_linkPlot_w_DAP_",CT,".pdf"), width=8, height=5)
 p
 dev.off()
 
@@ -5753,7 +5753,7 @@ ht2=Heatmap(go, cluster_rows=T,show_row_dend=F,cluster_columns=T,col=colorRamp2(
     ))
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/CellType-specific_linked_genes_GO.pdf", width=8, height=5)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/CellType-specific_linked_genes_GO.pdf", width=8, height=5)
 ht2
 dev.off()
 
@@ -5887,7 +5887,7 @@ gene_plot<-AnnotationPlot(data, region=region)
 
 
 p<-CombineTracks(plotlist=list(cov_plot,link_plotA, bgp,gene_plot), heights=c(4,2, 1,2))
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/",gene,"_linkPlot_w_snp.pdf"), width=8, height=8)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/",gene,"_linkPlot_w_snp.pdf"), width=8, height=8)
 p
 dev.off()
 
@@ -5969,7 +5969,7 @@ ll<-ll[-1,]
 ll$propSpec<-(ll[,3]+ll[,5])/(ll[,3]+ll[,4]+ll[,5])
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/LinkPerm_propSpec_allCombinations_221118.pdf", width=5,height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/LinkPerm_propSpec_allCombinations_221118.pdf", width=5,height=4)
 ggplot(ll, aes(x=propSpec))+geom_histogram(bins=50)+theme_classic()+geom_vline(xintercept=0.359041, color="red", )+xlab("Proportion group-specific")
 dev.off()
 
@@ -6072,7 +6072,7 @@ sum(me$link %in% c2$link)/nrow(me)
 
 
 df<-data.frame(PDE10A=AD@assays$RNA@data["PDE10A",], peak=AD@assays$ATAC@data["chr6-165694243-165694700",], ct=AD$ct,id=AD$id)
-pdf("~/myers/scAnalysis/plots/RINdrop/Cor_psuedobulk_links_PDE10A.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Cor_psuedobulk_links_PDE10A.pdf")
 ggplot(df, aes(x=PDE10A,y=peak, color=id, shape=ct))+geom_point()
 dev.off()
 ```
@@ -6569,7 +6569,7 @@ df<-data.frame(source=c("Bryois_eQTL_2022","Cooper_HEK_MPRA_2022","Weiss_NPC_MPR
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/lit_search_validation_OR.pdf", width=6, height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/lit_search_validation_OR.pdf", width=6, height=4)
 ggplot(df[!(df$source %in% c("Bryois_eQTL_2022","GTEx_Brain_FC")),])+geom_bar(stat="identity",aes(y=source,x=OR), fill="slategray3")+geom_errorbar(aes(y=source,xmin=ymin,xmax=ymax))+theme_classic()+ylab("")+ggtitle("Enrichment in linked-peaks")
 dev.off()
 
@@ -6820,7 +6820,7 @@ df<-data.frame(source=c("Bryois_eQTL_2022","GTEx_Brain_FC","Hu_NEUN_HiC"), OR=c(
 
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/lit_search_validation_eQTL_HiC.pdf", width=6, height=4)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/lit_search_validation_eQTL_HiC.pdf", width=6, height=4)
 ggplot(df)+geom_bar(stat="identity",aes(y=source,x=OR, fill=as.factor(type)))+geom_errorbar(aes(y=source,xmin=ymin,xmax=ymax))+theme_classic()+ylab("")+theme(legend.position="none")+ggtitle("Enrichment in Links")
 dev.off()
 
@@ -6956,7 +6956,7 @@ expr_plot <- ExpressionPlot(object = data,features = gene,assay = "RNA", idents=
 DefaultAssay(data)<-"ATAC"
 gene_plot<-AnnotationPlot(data, region=region)
 p<-CombineTracks(plotlist=list(cov_plot,link_plotA, gene_plot), heights=c(6,2,2))
-pdf(paste0("~/myers/scAnalysis/plots/RINdrop/APP_linkPlot_olap_Luciferase.pdf"), width=8, height=8)
+pdf(paste0("~/myers/scAnalysis/plots/scMultiomics_AD/APP_linkPlot_olap_Luciferase.pdf"), width=8, height=8)
 p
 dev.off()
 
@@ -6987,7 +6987,7 @@ colnames(p)<-c("Var1","AD","Ctrl")
 p<-melt(p)
 
 
-pdf("~/myers/scAnalysis/plots/RINdrop/AD_linksPerGene_patch.pdf", height=5,width=7)
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/AD_linksPerGene_patch.pdf", height=5,width=7)
 a=ggplot(t, aes(x=value, color=variable,fill=variable))+geom_density(aes(y = ..count..), alpha=0.2, adjust=2)+xlab("Links per Gene")+theme_classic()+
   scale_fill_manual(values=c("red","blue"))+scale_color_manual(values=c("red","blue"))+
   theme(axis.text=element_text(size=8), legend.position="none")+ylab("counts")
@@ -7097,7 +7097,7 @@ both2<-both2[is.na(both2$var)==F,]
 both2$var<-as.numeric(both2$var)
 both2<-both2[order(-both2$mean, -both2$var),]
 
-pdf("~/myers/scAnalysis/plots/RINdrop/Links_score_var_byMean.pdf")
+pdf("~/myers/scAnalysis/plots/scMultiomics_AD/Links_score_var_byMean.pdf")
 ggplot(both2, aes(x=mean, y=var))+geom_point()+xlab("Mean |score|")+ylab("Var |score|")+theme_classic()+geom_smooth()+geom_text_repel(data=subset(both2, var>0.06 | mean>0.52), aes(x=mean,y=var, label=gene), color="firebrick")+theme(axis.text=element_text(size=10),axis.title=element_text(size=15))
 dev.off()
 

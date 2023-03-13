@@ -22,7 +22,7 @@ https://www.biorxiv.org/content/10.1101/2022.10.04.510636v1
 ![DOI](https://zenodo.org/badge/543281072.svg)]
 ## Analysis
 
-**To view a vignette of all analyses click [here](https://aanderson54.github.io/scMultiomics_AD/)**
+**To view all analyses click [here](https://aanderson54.github.io/scMultiomics_AD/)**
 
 Additional pre-processing scripts can be found in the scripts directory. This includes scripts for sample demultiplexing using cellSNP and vireo, plotting functions, and LDSC.
 

@@ -17,7 +17,7 @@ microglia, respectively. Links were globally enriched for heritability of AD ris
 microglia, and previously identified active regulatory regions.
 
 
-https://www.cell.com/cell-genomics/pdf/S2666-979X(23)00019-8.pdf
+https://www.sciencedirect.com/science/article/pii/S2666979X23000198?via%3Dihub
 
 ![DOI](https://zenodo.org/badge/543281072.svg)]
 ## Analysis

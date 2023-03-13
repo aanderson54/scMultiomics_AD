@@ -17,12 +17,12 @@ microglia, respectively. Links were globally enriched for heritability of AD ris
 microglia, and previously identified active regulatory regions.
 
 
-https://www.biorxiv.org/content/10.1101/2022.10.04.510636v1
+https://www.cell.com/cell-genomics/fulltext/S2666-979X(23)00019-8?rss=yes&utm_source=dlvr.it&utm_medium=twitter
 
 ![DOI](https://zenodo.org/badge/543281072.svg)]
 ## Analysis
 
-**To view a vignette of all analyses click [here](https://aanderson54.github.io/scMultiomics_AD/)**
+**To view all analyses click [here](https://aanderson54.github.io/scMultiomics_AD/)**
 
 Additional pre-processing scripts can be found in the scripts directory. This includes scripts for sample demultiplexing using cellSNP and vireo, plotting functions, and LDSC.
 

@@ -274,9 +274,15 @@ pre code {
 <li><a href="#format">Format</a></li>
 </ul></li>
 <li><a href="#define-trios">Define Trios</a></li>
+<li><a href="#fig4b-annotation">Fig4B: annotation</a></li>
 <li><a href="#adctrl-only">AD/Ctrl-only</a>
 <ul>
 <li><a href="#fig4f-heatmap">Fig4F: heatmap</a></li>
+</ul></li>
+<li><a href="#mef2c">MEF2C</a>
+<ul>
+<li><a href="#fig4cd">Fig4C,D</a></li>
+<li><a href="#fig4e">Fig4E</a></li>
 <li><a href="#mef2c-link-plot">MEF2C link plot</a></li>
 </ul></li>
 <li><a href="#zeb1-link-plot">ZEB1 link plot</a></li>
@@ -352,6 +358,7 @@ pre code {
 
 <div id="preprocessing" class="section level1">
 <h1>Preprocessing</h1>
+<p>PMI associated gene list from [<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5511187/#sec-16title" class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5511187/#sec-16title</a>]</p>
 <pre class="r"><code>library(Seurat)
 library(sctransform)
 library(dplyr)
@@ -373,7 +380,7 @@ library(biovizBase)
 
 
 
-data.data &lt;- Read10X(data.dir = &quot;/cluster/home/aanderson/myers/multiomics_cellranger/211206/aggr_211206_210222/outs/filtered_feature_bc_matrix/&quot;)
+data.data &lt;- Read10X(data.dir = &quot;~/outs/filtered_feature_bc_matrix/&quot;)
 rna_counts &lt;- data.data$`Gene Expression`
 atac_counts &lt;- data.data$Peaks
 
@@ -382,7 +389,7 @@ step&lt;-&quot;Init&quot;
 numCells&lt;-nrow(data@meta.data)
 ###################################################################################
 #   Remove PMI genes
-PMI&lt;-read.csv(&quot;/cluster/home/lrizzardi/BrainTF-ADSupp/scRNA_analysis/PMI_assoc_genes.csv&quot;,header=T)
+PMI&lt;-read.csv(&quot;~/PMI_assoc_genes.csv&quot;,header=T)
 PMI&lt;-PMI[which(PMI$Tissuename==&quot;Cerebral Cortex&quot;),]
 threshold&lt;-c()
 
@@ -407,7 +414,7 @@ annotations &lt;- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86)
 seqlevelsStyle(annotations) &lt;- &#39;UCSC&#39;
 genome(annotations) &lt;- &quot;hg38&quot;
 
-frag.file &lt;- paste0(&quot;/cluster/home/aanderson/myers/multiomics_cellranger/211206/aggr_211206_210222/outs/atac_fragments.tsv.gz&quot;)
+frag.file &lt;- paste0(&quot;~/outs/atac_fragments.tsv.gz&quot;)
 chrom_assay &lt;- CreateChromatinAssay(
   counts = atac_counts,
   sep = c(&quot;:&quot;, &quot;-&quot;),
@@ -425,33 +432,33 @@ data$blacklist_fraction &lt;- FractionCountsInRegion(object = data, assay = &#39
 
 
 ###################################################################################
-sam_BEB18034&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample2_barcodes_BEB18034.csv&quot;) 
+sam_BEB18034&lt;-read.csv(&quot;~/sample2_barcodes_BEB18034.csv&quot;) 
 sam_BEB18034$x&lt;-gsub(&quot;2&quot;,&quot;1&quot;,sam_BEB18034$x)
-sam_BNT1261&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample2_barcodes_BNT1261.csv&quot;)
+sam_BNT1261&lt;-read.csv(&quot;~/sample2_barcodes_BNT1261.csv&quot;)
 sam_BNT1261$x&lt;-gsub(&quot;2&quot;,&quot;1&quot;,sam_BNT1261$x)
-sam_BEB19157&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample3_barcodes_BEB19157.csv&quot;)
+sam_BEB19157&lt;-read.csv(&quot;~/sample3_barcodes_BEB19157.csv&quot;)
 sam_BEB19157$x&lt;-gsub(&quot;3&quot;,&quot;2&quot;,sam_BEB19157$x)
-sam_1230&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample3_barcodes_1230.csv&quot;)
+sam_1230&lt;-read.csv(&quot;~/sample3_barcodes_1230.csv&quot;)
 sam_1230$x&lt;-gsub(&quot;3&quot;,&quot;2&quot;,sam_1230$x)
-sam_3329&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample4_barcodes_3329.csv&quot;)
+sam_3329&lt;-read.csv(&quot;~/sample4_barcodes_3329.csv&quot;)
 sam_3329$x&lt;-gsub(&quot;4&quot;,&quot;3&quot;,sam_3329$x)
-sam_HBQS&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample4_barcodes_HBQS.csv&quot;)
+sam_HBQS&lt;-read.csv(&quot;~/sample4_barcodes_HBQS.csv&quot;)
 sam_HBQS$x&lt;-gsub(&quot;4&quot;,&quot;3&quot;,sam_HBQS$x)
-sam_BEB18062&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample5_barcodes_BEB18062.csv&quot;)
+sam_BEB18062&lt;-read.csv(&quot;~/sample5_barcodes_BEB18062.csv&quot;)
 sam_BEB18062$x&lt;-gsub(&quot;5&quot;,&quot;4&quot;,sam_BEB18062$x)
-sam_NT1271&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample5_barcodes_NT1271.csv&quot;)
+sam_NT1271&lt;-read.csv(&quot;~/sample5_barcodes_NT1271.csv&quot;)
 sam_NT1271$x&lt;-gsub(&quot;5&quot;,&quot;4&quot;,sam_NT1271$x)
-sam_4313&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample9_barcodes_4313.csv&quot;)
+sam_4313&lt;-read.csv(&quot;~/sample9_barcodes_4313.csv&quot;)
 sam_4313$x&lt;-gsub(&quot;9&quot;,&quot;5&quot;,sam_4313$x)
-sam_4482&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample9_barcodes_4482.csv&quot;)
+sam_4482&lt;-read.csv(&quot;~/sample9_barcodes_4482.csv&quot;)
 sam_4482$x&lt;-gsub(&quot;9&quot;,&quot;5&quot;,sam_4482$x)
-sam_HCT17HEX&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample10_barcodes_HCT17HEX.csv&quot;)
+sam_HCT17HEX&lt;-read.csv(&quot;~/sample10_barcodes_HCT17HEX.csv&quot;)
 sam_HCT17HEX$x&lt;-gsub(&quot;10&quot;,&quot;6&quot;,sam_HCT17HEX$x)
-sam_HCTZZT&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample10_barcodes_HCTZZT.csv&quot;)
+sam_HCTZZT&lt;-read.csv(&quot;~/sample10_barcodes_HCTZZT.csv&quot;)
 sam_HCTZZT$x&lt;-gsub(&quot;10&quot;,&quot;6&quot;,sam_HCTZZT$x)
-sam_4305&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample11_barcodes_4305.csv&quot;)
+sam_4305&lt;-read.csv(&quot;~/sample11_barcodes_4305.csv&quot;)
 sam_4305$x&lt;-gsub(&quot;11&quot;,&quot;7&quot;,sam_4305$x)
-sam_4443&lt;-read.csv(&quot;~/myers/scAnalysis/211206_chrY_decon/sample11_barcodes_4443.csv&quot;)
+sam_4443&lt;-read.csv(&quot;~/sample11_barcodes_4443.csv&quot;)
 sam_4443$x&lt;-gsub(&quot;11&quot;,&quot;7&quot;,sam_4443$x)
 ###################################################################################
 
@@ -486,7 +493,7 @@ data$id&lt;-ifelse(grepl(&quot;-8$|-9$&quot;,rownames(data@meta.data)), &quot;46
 
 md&lt;-data@meta.data
 md$cell&lt;-rownames(md)
-meta&lt;-read.csv(&quot;~/myers/scAnalysis/22_restart/Meta.csv&quot;)
+meta&lt;-read.csv(&quot;~/Meta.csv&quot;)
 colnames(meta)[1]&lt;-&quot;id&quot;
 
 tmp&lt;-merge(md, meta, by=&quot;id&quot;)
@@ -501,7 +508,7 @@ data&lt;-subset(data, id==&quot;Other&quot;, invert=T) #removed those called as 
 
 
 ###################################################################################
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/VlnPlot_init.pdf&quot;, width=14, height=8)
+pdf(&quot;~/VlnPlot_init.pdf&quot;, width=14, height=8)
 VlnPlot(data, features =  c(&quot;nCount_ATAC&quot;, &quot;nFeature_RNA&quot;,&quot;nCount_RNA&quot;,&quot;percent.mt&quot;,&quot;blacklist_fraction&quot;,&#39;TSS.enrichment&#39;,&#39;nucleosome_signal&#39;), ncol = 4, pt.size = 0, group.by=&quot;id&quot;) + NoLegend() &amp;theme(text=element_text(size=8, angle=20), axis.text.x=element_text(size=7))    
 dev.off()
 ###################################################################################</code></pre>
@@ -524,7 +531,7 @@ step&lt;-c(step,&quot;filter&quot;)
 numCells&lt;-c(numCells, nrow(data@meta.data))
 ###################################################################################
 ###################################################################################
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/Init_Umap.pdf&quot;)
+pdf(&quot;~/Init_Umap.pdf&quot;)
 p1&lt;-DimPlot(data, reduction=&quot;umap.rna&quot;)
 p2&lt;-DimPlot(data, reduction=&quot;umap.atac&quot;)
 p1+p2
@@ -542,7 +549,7 @@ data$isDbl&lt;-ifelse(dbl&lt;3.5,1,0)
 data$dbl&lt;-dbl
 ###################################################################################
 ###################################################################################
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/Doublet.pdf&quot;)
+pdf(&quot;~/Doublet.pdf&quot;)
 p1&lt;-DimPlot( data,group.by=&quot;isDbl&quot;,reduction=&quot;umap.rna&quot;)
 p2&lt;-FeaturePlot(data, features=&quot;dbl&quot;,reduction=&quot;umap.rna&quot;, max.cutoff=10)
 p1+p2
@@ -574,7 +581,7 @@ data&lt;-subset(data, subset= isDbl==1)
 
 ###################################################################################
 #                         Subset to Protein coding genes &amp; recluster
-PC_genes&lt;-read.csv(&quot;/cluster/home/aanderson/myers/scAnalysis/PC_genes.csv&quot;,header=T)
+PC_genes&lt;-read.csv(&quot;~/PC_genes.csv&quot;,header=T)
 
 tmp_assay&lt;-subset(data[[&quot;RNA&quot;]],features =PC_genes$x)
 Key(tmp_assay)&lt;-&quot;pc_&quot;
@@ -587,7 +594,7 @@ data&lt;-RunUMAP(data,nn.name=&quot;weighted.nn&quot;, reduction.name=&quot;wnn.
 data&lt;-FindClusters(data, graph.name=&quot;wsnn&quot;, algorithm=3)
 
 ###################################################################################
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/rna_atac.umap.RECLUSTER.pdf&quot;, width=14, height=8)
+pdf(&quot;~/rna_atac.umap.RECLUSTER.pdf&quot;, width=14, height=8)
 p1=DimPlot(data, reduction = &quot;umap.rna&quot;) + ggtitle(&quot;RNA&quot;)+theme(legend.position=&quot;none&quot;)
 p2=DimPlot(data, reduction = &quot;umap.atac&quot;) + ggtitle(&quot;ATAC&quot;)+theme(legend.position=&quot;none&quot;)
 p3=DimPlot(data, reduction=&quot;wnn.umap&quot;)+ ggtitle(&quot;WNN&quot;)
@@ -599,7 +606,7 @@ dev.off()
 <h2>Reference Mapping</h2>
 <pre class="r"><code>###################################################################################
 #                       Map to Ref
-Map&lt;-readRDS(&quot;~/myers/scAnalysis/Mathys_DLPFC_SCT_normalized.rds&quot;)
+Map&lt;-readRDS(&quot;~/Mathys_DLPFC_SCT_normalized.rds&quot;)
 
 anchors&lt;-FindTransferAnchors(reference=Map, query=data, dims=1:30, normalization.method=&quot;SCT&quot;, 
                              query.assay=&quot;SCT&quot;)
@@ -608,7 +615,7 @@ predictions&lt;-TransferData(anchorset=anchors, reference=Map, query=data,
 data$predicted.id&lt;-predictions$predicted.id
 data$predicted.id.score&lt;-predictions$predicted.id.score
 ###################################################################################
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/predicted.id.pdf&quot;,width=12,height=7)
+pdf(&quot;~/predicted.id.pdf&quot;,width=12,height=7)
 p1&lt;-DimPlot(data, group.by=&quot;predicted.id&quot;, reduction=&quot;wnn.umap&quot;)
 p2&lt;-FeaturePlot(data, features=&quot;predicted.id.score&quot;, reduction=&quot;wnn.umap&quot;,cols=c(&quot;coral1&quot;,&quot;deepskyblue3&quot;))
 p1+p2
@@ -632,13 +639,13 @@ integrated&lt;-RunUMAP(integrated,reduction=&quot;harmony.rna&quot;,dims=1:40,re
 integrated&lt;-FindNeighbors(integrated,dims=1:30, reduction=&quot;harmony.rna&quot;)
 integrated&lt;-FindClusters(integrated, graph.name=&quot;SCT_nn&quot;, resolution=2.8)
 
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/WNN_Harmony_plot_CT.pdf&quot;, width=15, height=7)
+pdf(&quot;~/WNN_Harmony_plot_CT.pdf&quot;, width=15, height=7)
 p1&lt;-DimPlot(integrated, group.by=&quot;predicted.id&quot;, reduction=&quot;harmony.rna.umap&quot;)
 p2&lt;-DimPlot(integrated, group.by=&quot;id&quot;, reduction=&quot;harmony.rna.umap&quot;)
 p3&lt;-DimPlot(integrated, reduction=&quot;harmony.rna.umap&quot;, label=T)
 p1+p2+p3
 dev.off()
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/WNN_Harmony_plot_batch.pdf&quot;, width=15, height=7)
+pdf(&quot;~/WNN_Harmony_plot_batch.pdf&quot;, width=15, height=7)
 DimPlot(integrated, group.by=&quot;predicted.id&quot;, reduction=&quot;harmony.rna.umap&quot;)
 dev.off()
 
@@ -682,7 +689,7 @@ data&lt;-integrated_sub2
 <h2>Peak-calling</h2>
 <pre class="r"><code>###################################################################################
 DefaultAssay(data)&lt;-&quot;ATAC&quot;
-CTpeaks&lt;-CallPeaks(data, macs2.path=&quot;/cluster/home/aanderson/miniconda3/envs/env1/bin/macs2&quot;, group.by=&quot;predicted.id&quot;)
+CTpeaks&lt;-CallPeaks(data, macs2.path=&quot;~/miniconda3/envs/env1/bin/macs2&quot;, group.by=&quot;predicted.id&quot;)
 
 chr&lt;-c()
 for (i in 1:22){
@@ -696,28 +703,28 @@ CTpeaks2&lt;-CTpeaks[seqnames(CTpeaks) %in% chr]
 df &lt;- as.data.frame(CTpeaks)
 df&lt;-df[which(df$seqnames %in% chr),]
 #bed file for reanalyze [sort -k1,1 -k2,2n CT_peak_set.bed]
-write.table(df[,1:3], file=&quot;~/myers/scAnalysis/22_restart/CT_peak_set.bed&quot;, quote=F, sep=&quot;\t&quot;, row.names=F, col.names=F)
+write.table(df[,1:3], file=&quot;~/CT_peak_set.bed&quot;, quote=F, sep=&quot;\t&quot;, row.names=F, col.names=F)
 CTpeaks2&lt;-makeGRangesFromDataFrame(df)
 macs2_counts&lt;-FeatureMatrix(fragments=Fragments(data), features=CTpeaks2,cells=colnames(data))
 annotation &lt;- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86)
 seqlevelsStyle(annotation) &lt;- &quot;UCSC&quot;
 data[[&quot;CTpeaks&quot;]]&lt;-CreateChromatinAssay(counts=macs2_counts,  fragments=Fragments(data))
 #get peak list labeled by celltype
-write.csv(df,&quot;~/myers/scAnalysis/22_restart/CTpeaks_annotated.csv&quot;)
+write.csv(df,&quot;~/22_restart/CTpeaks_annotated.csv&quot;)
 
 
 
-saveRDS(data, &quot;~/myers/scAnalysis/22_restart/final.rds&quot;)
+saveRDS(data, &quot;~/final.rds&quot;)
 
 # get AD and Ctrl barcodes
 df$status&lt;-data$Status
 AD&lt;-df[which(df$status==&quot;AD&quot;),1:2]
 Ctrl&lt;-df[which(df$status==&quot;Ctrl&quot;),1:2]
-write.csv(AD, &quot;~/myers/scAnalysis/22_restart/barcodes_AD.csv&quot;, row.names=F, quote=F)
-write.csv(Ctrl, &quot;~/myers/scAnalysis/22_restart/barcodes_Ctrl.csv&quot;, row.names=F, quote=F)</code></pre>
+write.csv(AD, &quot;/barcodes_AD.csv&quot;, row.names=F, quote=F)
+write.csv(Ctrl, &quot;~/barcodes_Ctrl.csv&quot;, row.names=F, quote=F)</code></pre>
 <div id="peak-annot-encode" class="section level3">
 <h3>Peak-annot: encode</h3>
-<pre class="r"><code>load(&quot;/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
+<pre class="r"><code>load(&quot;~/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
 enc=full_annot_encode_cre_def_GR
 enc&lt;-enc[!grepl(&quot;iCell&quot;,enc$accesionLabel),]
 u2&lt;-read.csv(&quot;~/scMultiomics_AD/CTpeaks_annotated.csv&quot;)
@@ -759,7 +766,7 @@ df$annot&lt;-rownames(df)
 df&lt;-melt(df)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Peaks_annot_encode2.pdf&quot;, width=8, height=3)
+pdf(&quot;~/scMultiomics_AD/Peaks_annot_encode2.pdf&quot;, width=8, height=3)
 ggplot(df, aes(x=value, y=variable, fill=annot))+geom_bar(stat=&quot;identity&quot;)+xlab(&quot;Proportion of Linked peaks&quot;)+ylab(&quot;Cell type&quot;)+theme_classic()+scale_fill_brewer(palette=&quot;Dark2&quot;,labels=c(&quot;CTCF-only&quot;,&quot;dELS&quot;,&quot;DNase-H3K4me3&quot;,&quot;pELS&quot;,&quot;PLS&quot;,&quot;other&quot;))+theme(legend.position=&quot;right&quot;, axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))
 dev.off()</code></pre>
 </div>
@@ -771,11 +778,11 @@ peaks&lt;-GRanges(peaks)
 
 
 
-load(file=&quot;/cluster/home/lrizzardi/BrainTF-ADSupp/Nott_k27ac.rda&quot;)
-ch&lt;-import.chain(&quot;~/myers/liftover/hg19ToHg38.over.chain&quot;)
+load(file=&quot;~/Nott_k27ac.rda&quot;)
+ch&lt;-import.chain(&quot;~/liftover/hg19ToHg38.over.chain&quot;)
 Nott_k27ac_38&lt;-liftOver(Nott_k27ac, ch)
 Nott_k27ac_38&lt;-unlist(Nott_k27ac_38)  # lost 1,700
-load(&quot;/cluster/home/lrizzardi/PsychENCODE_Data/EpiGABA/ChIPseq/Dracheva_K27ac.rda&quot;)
+load(&quot;~/Dracheva_K27ac.rda&quot;)
 all.k27&lt;-c(Nott_k27ac_38, K27List$GABA[,1], K27List$GLU[,1])
 over&lt;-findOverlaps(peaks, all.k27)
 
@@ -915,7 +922,7 @@ df$color&lt;-paste0(df$cat,&quot;-&quot;,df$Var1)
 df$celltype&lt;-substr(df$ct,start=1,stop=3)
 df$color&lt;-ifelse(df$Var1==F, &quot;AA No Overlap&quot;,df$color)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/CTpeaks_olapk27_barPlot2_filtered0.02_XY.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/CTpeaks_olapk27_barPlot2_filtered0.02_XY.pdf&quot;)
 ggplot(df, aes(y=Freq, x=cat,  fill=color))+geom_bar(color=&quot;grey60&quot;,stat=&quot;identity&quot;)+theme_classic()+ylab(&quot;#  of Peaks&quot;) + xlab(&quot;&quot;)+scale_x_discrete(labels=c(&quot;ATAC&quot;, &quot;H3K27ac&quot;))+
   theme(axis.text.x=element_text(angle=90, size=15), plot.title=element_text(hjust=0.5), legend.position=&quot;top&quot;, axis.title.y=element_text(size=17, angle=90), legend.title=element_text(size=0), legend.text=element_text(size=15), axis.text.y=element_text(size=15, angle=90))+scale_y_continuous(position = &quot;right&quot;)+
   facet_wrap(~celltype ,  ncol=5, strip.position=&quot;bottom&quot;) +scale_fill_manual(limits=c(&quot;AA No Overlap&quot;,&quot;ATAC-TRUE&quot;,&quot;k27-TRUE&quot;),labels=c( &quot;No Overlap&quot;,&quot;Overlap H3K27ac&quot;,  &quot;Overlap ATAC&quot;)
@@ -960,7 +967,7 @@ c$OPCs            &lt;-ct[,7]
 c$Pericytes       &lt;-ct[,8]
 
 
-meta&lt;-read.csv(&quot;~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv&quot;)
+meta&lt;-read.csv(&quot;~/22_restart/meta_RIN_PMI.csv&quot;)
 meta$ID[16]&lt;-&quot;HCTZZT&quot;
 meta2&lt;-merge(meta, c, by.x=&quot;ID&quot;,by.y=&quot;id&quot;)
 
@@ -968,7 +975,7 @@ write.csv(meta2, &quot;~/scMultiomics_AD/Sample_stats.csv&quot;, quote=F, row.na
 </div>
 <div id="degs" class="section level1">
 <h1>DEGs</h1>
-<pre class="r"><code>extra&lt;-read.csv(&quot;~/myers/scAnalysis/22_restart/meta_RIN_PMI.csv&quot;)
+<pre class="r"><code>extra&lt;-read.csv(&quot;~/meta_RIN_PMI.csv&quot;)
 extra[16,1]&lt;-&quot;HCTZZT&quot;
 meta&lt;-data@meta.data
 meta$X&lt;-rownames(meta)
@@ -1133,7 +1140,7 @@ ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c(&q
         grid.text(&quot;*&quot;, x, y, gp=gpar(fontsize=20, col=&quot;white&quot;), vjust=&quot;center&quot;)
     } })
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Top_downDEG_GObp.pdf&quot;, width=13, height=5)
+pdf(&quot;~/scMultiomics_AD/Top_downDEG_GObp.pdf&quot;, width=13, height=5)
 ht
 dev.off()</code></pre>
 </div>
@@ -1216,7 +1223,7 @@ ht=Heatmap(mat, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,35,100),c(&q
         grid.text(&quot;*&quot;, x, y, gp=gpar(fontsize=20, col=&quot;white&quot;), vjust=&quot;center&quot;)
     } })
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Top_upDEG_GObp.pdf&quot;, width=10, height=5)
+pdf(&quot;~/scMultiomics_AD/Top_upDEG_GObp.pdf&quot;, width=10, height=5)
 ht
 dev.off()</code></pre>
 </div>
@@ -1255,21 +1262,21 @@ ha&lt;-c( bar1, ha2)
 
 # 
 # # 
-ad_related&lt;-read.csv(&quot;~/myers/scAnalysis/AD_gwas_genes_012822.csv&quot;)
+ad_related&lt;-read.csv(&quot;~/AD_gwas_genes_012822.csv&quot;)
 noDup&lt;-noDup[order(noDup$celltype, noDup$avg_log2FC),]
 lab&lt;-which(noDup$gene %in% c(ad_related$Gene,&quot;PLCG2&quot;,&quot;MAPT&quot;,&quot;ARL17B&quot;,&quot;SAMD4A&quot;,&quot;PTPRG&quot;,&quot;MDGA2&quot;,&quot;GPR158&quot;) &amp; abs(noDup$avg_log2FC)&gt;0.5)
 ht=Heatmap(mat, cluster_rows=F,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-1,0,1),c(&quot;blue&quot;,&quot;white&quot;,&quot;red&quot;)), name=&quot;MAST-adj log2FC&quot;,  show_column_names=T, show_row_names=F, column_title=NULL,row_names_gp = gpar(fontsize = 3), top_annotation=ha)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/AD_DEGs_MAST_heatmap_foldCs.pdf&quot;, width=6, height=8)
+pdf(&quot;~/scMultiomics_AD/AD_DEGs_MAST_heatmap_foldCs.pdf&quot;, width=6, height=8)
 rowAnnotation(gene=anno_mark(at=lab, labels=noDup[lab,]$gene, side=&quot;left&quot;, labels_gp=gpar(fontsize=10)))+ht
 dev.off()</code></pre>
 <p>Add labels for specific genes</p>
-<pre class="r"><code>genes&lt;-read.csv(&quot;~/Documents/scMultiomics_AD/testing.csv&quot;, col.names=1)
+<pre class="r"><code>genes&lt;-read.csv(&quot;~/scMultiomics_AD/testing.csv&quot;, col.names=1)
 genes$X1&lt;-gsub(&quot; &quot;,&quot;&quot;, genes$X1)
 tmp&lt;-strsplit(genes$X1, &quot;,&quot;)
 tmp&lt;-unlist(tmp)
-write.csv(tmp, &quot;~/Documents/scMultiomics_AD/Luciferase_linked_genes.csv&quot;)
+write.csv(tmp, &quot;~/scMultiomics_AD/Luciferase_linked_genes.csv&quot;)
 
 # back to cluster
 luc&lt;-read.csv(&quot;~/scMultiomics_AD/Luciferase_linked_genes.csv&quot;)
@@ -1281,7 +1288,7 @@ lab&lt;-which(noDup$gene %in% c(ad_related$Gene,&quot;PLCG2&quot;,&quot;MAPT&quo
                              &quot;ACSL1&quot;, &quot;CD163&quot;, &quot;CD44&quot;, &quot;CR1&quot;, &quot;CEMIP2&quot;, &quot;DAB2&quot;, &quot;FOXP1&quot;, &quot;LYVE1&quot;, &quot;MAFB&quot;, &quot;MITF&quot;, &quot;MYO5A&quot;, &quot;NOTCH2&quot;, &quot;SLC11A1&quot;, &quot;TGFBI&quot;))
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/AD_DEGs_MAST_heatmap_foldCs_wTestingLabel_otherColorScale2.pdf&quot;, width=6, height=8)
+pdf(&quot;~/scMultiomics_AD/AD_DEGs_MAST_heatmap_foldCs_wTestingLabel_otherColorScale2.pdf&quot;, width=6, height=8)
 rowAnnotation(gene=anno_mark(at=lab, labels=noDup[lab,]$gene, side=&quot;left&quot;, labels_gp=gpar(fontsize=10)))+ht
 dev.off()</code></pre>
 </div>
@@ -1356,19 +1363,19 @@ ht2=Heatmap(mat2, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(0,34,35,36),
       }
     } })
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Shared_degs_heatmap_up.pdf&quot;, width=8,height=4)
+pdf(&quot;~/scMultiomics_AD/Shared_degs_heatmap_up.pdf&quot;, width=8,height=4)
 ht+ht2
 dev.off()</code></pre>
 </div>
 <div id="fig2d-compare" class="section level3">
 <h3>Fig2D) compare</h3>
 <pre class="r"><code># MATHYS
-m1&lt;-read.csv(&quot;~/myers/scAnalysis/mathys_data/MathysDE_Ast.csv&quot;)
-m2&lt;-read.csv(&quot;~/myers/scAnalysis/mathys_data/MathysDE_Ex.csv&quot;)
-m3&lt;-read.csv(&quot;~/myers/scAnalysis/mathys_data/MathysDE_In.csv&quot;)
-m4&lt;-read.csv(&quot;~/myers/scAnalysis/mathys_data/MathysDE_Microglia.csv&quot;)
-m5&lt;-read.csv(&quot;~/myers/scAnalysis/mathys_data/MathysDE_Oli.csv&quot;)
-m6&lt;-read.csv(&quot;~/myers/scAnalysis/mathys_data/MathysDE_opc.csv&quot;)
+m1&lt;-read.csv(&quot;~/mathys_data/MathysDE_Ast.csv&quot;)
+m2&lt;-read.csv(&quot;~/mathys_data/MathysDE_Ex.csv&quot;)
+m3&lt;-read.csv(&quot;~/mathys_data/MathysDE_In.csv&quot;)
+m4&lt;-read.csv(&quot;~/mathys_data/MathysDE_Microglia.csv&quot;)
+m5&lt;-read.csv(&quot;~/mathys_data/MathysDE_Oli.csv&quot;)
+m6&lt;-read.csv(&quot;~/mathys_data/MathysDE_opc.csv&quot;)
 m1$celltype&lt;-&quot;Astrocytes&quot;
 m2$celltype&lt;-&quot;Excitatory&quot;
 m3$celltype&lt;-&quot;Inhibitory&quot;
@@ -1389,7 +1396,7 @@ sum(sign(mat_v_our$avg_log2FC)==sign(mat_v_our$IndModel.FC))
 
 
 # MORABITO
-mor_degs&lt;-read.csv(&quot;~/myers/scAnalysis/morabito/morabito_degs.csv&quot;)
+mor_degs&lt;-read.csv(&quot;~/morabito/morabito_degs.csv&quot;)
 mor_degs&lt;-mor_degs[which(mor_degs$celltype!=&quot;PER.END&quot;),]
 mor_degs$celltype&lt;-ifelse(mor_degs$celltype==&quot;ASC&quot;, &quot;Astrocytes&quot;,
                           ifelse(mor_degs$celltype==&quot;EX&quot;, &quot;Excitatory&quot;,
@@ -1412,7 +1419,7 @@ vv$Mor&lt;-ifelse(is.na(vv$p_val.x)==T, F,T)
 vv$Our&lt;-ifelse(is.na(vv$p_val.y)==T, F, T)
 
 x&lt;-list(Mor=which(vv$Mor==T), Mat=which(vv$Mat==T), Our=which(vv$Our==T))
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Mathys_morabito_our_degs.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Mathys_morabito_our_degs.pdf&quot;)
 ggVennDiagram(x)+theme(legend.position=&quot;none&quot;)
 dev.off()
 
@@ -1428,7 +1435,7 @@ nrow(x[which(x$Mor==T &amp; x$Mat==T &amp; x$Our==T),]) # 61
 dat&lt;-c(&quot;Morabito&quot;=2562, &quot;Mathys&quot;=5716,&quot;Ours&quot;=666,&quot;Morabito&amp;Mathys&quot;=182, &quot;Morabito&amp;Ours&quot;=280, &quot;Mathys&amp;Ours&quot;=84, &quot;Morabito&amp;Mathys&amp;Ours&quot;=62)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Mathys_morabito_Our_degs_venn.pdf&quot;, width=4, height=4)
+pdf(&quot;~/scMultiomics_AD/Mathys_morabito_Our_degs_venn.pdf&quot;, width=4, height=4)
 v=venn(dat)
 plot(v)
 dev.off()</code></pre>
@@ -1455,7 +1462,7 @@ dev.off()</code></pre>
 Astrocytes$subs&lt;-paste0(&quot;Ast_&quot;, Astrocytes$seurat_clusters)</code></pre>
 <div id="s2d-umap" class="section level3">
 <h3>S2D) UMAP</h3>
-<pre class="r"><code>pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Ast_subclusters.pdf&quot;)
+<pre class="r"><code>pdf(&quot;~/scMultiomics_AD/Ast_subclusters.pdf&quot;)
 DimPlot(Astrocytes, group.by=&quot;subs&quot;,reduction=&quot;wnn.umap&quot;, cols=c(&quot;Ast_0&quot;=&quot;darkgoldenrod1&quot;,&quot;Ast_1&quot;=&quot;darkgoldenrod3&quot;, &quot;Ast_2&quot;=&quot;gold2&quot;,
       &quot;Ast_3&quot;=&quot;goldenrod&quot;,&quot;Ast_4&quot;=&quot;goldenrod1&quot;), pt.size=2, label=T)
 dev.off()</code></pre>
@@ -1556,7 +1563,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Ast_subcluster_GObp.pdf&quot;, width=8, height=4)
+pdf(&quot;~/scMultiomics_AD/Ast_subcluster_GObp.pdf&quot;, width=8, height=4)
    ht 
 dev.off()</code></pre>
 </div>
@@ -1620,7 +1627,7 @@ df&lt;-df[order(match(df$Var2, lev2)),]
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Ast_stat_prop_bar_wTotalCells_log10.pdf&quot;, width=5,height=6)
+pdf(&quot;~/scMultiomics_AD/Ast_stat_prop_bar_wTotalCells_log10.pdf&quot;, width=5,height=6)
 p1=ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab(&quot;%&quot;)+ylab(&quot;&quot;)+theme(legend.title=element_text(size=0), legend.position=&quot;none&quot;)+ggtitle(&quot;Donor&quot;)+scale_y_discrete(limits=rev(levels(df$Var2)))
 
 p2=ggplot(tab2.m, aes(x=Freq, y=Var1, fill=Var1))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+theme(legend.position=&quot;none&quot;, axis.text.y=element_text(size=0))+ggtitle(&quot;Num. Cells&quot;)+ylab(&quot;&quot;)+scale_fill_manual(values=tab2.m$cols)+xlab(&quot; Count&quot;)+scale_y_discrete(limits=rev(levels(tab2.m$Var1)))+geom_vline(xintercept=100)
@@ -1647,14 +1654,14 @@ ra&lt;-rowAnnotation(cluster=top$clust, show_legend=F, col=list(cluster=c(&quot;
 ht=Heatmap(mat_scaled,cluster_columns=T,cluster_rows=F, col=colorRamp2(c(-1.5,0,1.5),viridis(3)), top_annotation=ha, name=&quot;Z&quot;, left_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=top$clust)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Ast_top10DEG_heatmap.pdf&quot;, width=4, height=6)
+pdf(&quot;~/scMultiomics_AD/Ast_top10DEG_heatmap.pdf&quot;, width=4, height=6)
 ht
 dev.off()</code></pre>
 </div>
 <div id="sadick-scores" class="section level3">
 <h3>sadick scores</h3>
 <p>This analysis was not shown in publication</p>
-<pre class="r"><code>sad&lt;-read.csv(&quot;~/myers/scAnalysis/Sadick/Sadick_Ast_subDEGs.csv&quot;)
+<pre class="r"><code>sad&lt;-read.csv(&quot;~/Sadick/Sadick_Ast_subDEGs.csv&quot;)
 sad&lt;-sad[which(sad$p_val_adj&lt;0.01 &amp; sad$avg_log2FC&gt;0.35),]
 
 top&lt;-sad %&gt;% group_by(LEN_so_astro_r2_cluster) %&gt;% top_n(n=30, wt=avg_log2FC)
@@ -1677,7 +1684,7 @@ Astrocytes&lt;-AddModuleScore(Astrocytes, features=list(top[which(top$LEN_so_ast
 Astrocytes&lt;-AddModuleScore(Astrocytes, features=list(top[which(top$LEN_so_astro_r2_cluster==8),]$gene), name=&quot;Clust8_score&quot;, search=T)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/topick_Astrocytes_subclusters.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/topick_Astrocytes_subclusters.pdf&quot;)
 FeaturePlot(Astrocytes, reduction=&quot;wnn.umap&quot;, features=c(&quot;Clust0_score1&quot;,&quot;Clust1_score1&quot;,&quot;Clust2_score1&quot;,&quot;Clust3_score1&quot;,&quot;Clust4_score1&quot;,&quot;Clust5_score1&quot;,&quot;Clust6_score1&quot;,&quot;Clust7_score1&quot;,&quot;Clust8_score1&quot;))
 dev.off()</code></pre>
 </div>
@@ -1702,7 +1709,7 @@ Inhibitory$batch&lt;-ifelse(Inhibitory$id %in% c(&quot;1224&quot;,&quot;1238&quo
 <div id="s2j-umap" class="section level3">
 <h3>S2J) UMAP</h3>
 <pre class="r"><code>Inhibitory$subs&lt;-paste0(&quot;Inh_&quot;, Inhibitory$seurat_clusters)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Inh_subclusters.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Inh_subclusters.pdf&quot;)
 DimPlot(Inhibitory, group.by=&quot;subs&quot;,reduction=&quot;wnn.umap&quot;, cols=c( &quot;Inh_0&quot;=&quot;palegreen&quot;,  &quot;Inh_1&quot;=&quot;springgreen&quot;,  &quot;Inh_2&quot;=&quot;darkolivegreen3&quot;,       &quot;Inh_3&quot;=&quot;seagreen3&quot;, &quot;Inh_4&quot;=&quot;forestgreen&quot;,       &quot;Inh_5&quot;=&quot;darkseagreen&quot;,       &quot;Inh_6&quot;=&quot;palegreen4&quot;,       &quot;Inh_7&quot;=&quot;darkolivegreen1&quot;), pt.size=2, label=T)
 dev.off()</code></pre>
 </div>
@@ -1733,7 +1740,7 @@ head(In[[i]][[&quot;Azimuth_Cell_Types_2021&quot;]])
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/IN_marker_vlnplot_2.pdf&quot;, width=15,height=20)
+pdf(&quot;~/scMultiomics_AD/IN_marker_vlnplot_2.pdf&quot;, width=15,height=20)
 VlnPlot(Inhibitory, features=c(&quot;PVALB&quot;,&quot;SST&quot;,&quot;VIP&quot;,&quot;LAMP5&quot;, &quot;SNCG&quot;),  pt.size=0.5)
 dev.off()
 
@@ -1760,7 +1767,7 @@ Idents(Inhibitory)&lt;-Inhibitory$seurat_clusters
 # Inhibitory$azimuth&lt;-factor(Inhibitory$azimuth,levels=levels(Inhibitory)[order(levels(Inhibitory))])
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_In_layers2.pdf&quot;, width=7, height=5)
+pdf(&quot;~/scMultiomics_AD/Azimuth_In_layers2.pdf&quot;, width=7, height=5)
 DimPlot(Inhibitory, reduction=&quot;wnn.umap&quot;,group.by=&quot;azimuth&quot;, cols=c(
   &quot;PVALB+&quot;=&quot;palegreen3&quot;,
   &quot;SNCG+&quot;=&quot;gold&quot;,
@@ -1778,7 +1785,7 @@ dev.off()
 
 
 Inhibitory$cluster&lt;-paste(&quot;Inh_&quot;, Inhibitory$seurat_clusters, &quot;: &quot;, Inhibitory$azimuth,)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_In_layers2.pdf&quot;, width=7, height=5)
+pdf(&quot;~/scMultiomics_AD/Azimuth_In_layers2.pdf&quot;, width=7, height=5)
 DimPlot(Inhibitory, reduction=&quot;wnn.umap&quot;,group.by=&quot;cluster&quot;, cols=c(
 &quot;Inh_0: Pvalb+&quot;         =cols.df[17,1],
 &quot;Inh_1: VIP+&quot;           =cols.df[18,1],
@@ -1800,7 +1807,7 @@ dev.off()
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/In_marker_expression_plot.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/In_marker_expression_plot.pdf&quot;)
 VlnPlot(Inhibitory, features=c(&quot;PVALB&quot;,&quot;VIP&quot;,&quot;LAMP5&quot;,&quot;SST&quot;,&quot;SNCG&quot;), assay=&quot;PC&quot;, pt.size=0.5) &amp; scale_fill_manual(values=c(
   &quot;Pvalb+&quot;=&quot;palegreen&quot;,
 &quot;VIP+&quot;=&quot;firebrick1&quot;,
@@ -1812,13 +1819,13 @@ VlnPlot(Inhibitory, features=c(&quot;PVALB&quot;,&quot;VIP&quot;,&quot;LAMP5&quo
 &quot;Sst+ Chodl+&quot;=&quot;skyblue1&quot;  ))
 dev.off()
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/In_marker_featPlot.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/In_marker_featPlot.pdf&quot;)
 FeaturePlot(Inhibitory, reduction=&quot;wnn.umap&quot;, features=c(&quot;PVALB&quot;,&quot;VIP&quot;,&quot;LAMP5&quot;,&quot;SST&quot;), max.cutoff=1)&amp;scale_color_viridis()
 dev.off()
 
 
 Inhibitory$cluster&lt;-paste(&quot;Inh_&quot;, Inhibitory$seurat_clusters)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/IN_marker_dotplot.pdf&quot;, width=6, height=8)
+pdf(&quot;~/scMultiomics_AD/IN_marker_dotplot.pdf&quot;, width=6, height=8)
 DotPlot(Inhibitory, features=c(&quot;PVALB&quot;,&quot;VIP&quot;,&quot;LAMP5&quot;,&quot;SST&quot;), col.min=0, col.max=1.5, dot.scale=20, group.by=&quot;cluster&quot;)+scale_color_viridis()
 dev.off()</code></pre>
 </div>
@@ -1856,7 +1863,7 @@ ra&lt;-rowAnnotation(subtype=markers_melt$variable, col=list(subtype=c(&quot;SST
 ht=Heatmap(mat_scaled,cluster_rows=T,cluster_columns=T,col=colorRamp2(c(-1.5,0,1.5),viridis(3)), top_annotation=ha2, name=&quot;Z&quot;, left_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_split=markers_melt$variable,row_title_gp=gpar(fontsize=14),row_names_gp=gpar(fontsize=7))
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/In_Subtype_heatmap.pdf&quot;, width=5,height=6)
+pdf(&quot;~/scMultiomics_AD/In_Subtype_heatmap.pdf&quot;, width=5,height=6)
 ht
 dev.off()</code></pre>
 </div>
@@ -1952,7 +1959,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Inh_subcluster_GObp.pdf&quot;, width=8, height=4)
+pdf(&quot;~/scMultiomics_AD/Inh_subcluster_GObp.pdf&quot;, width=8, height=4)
    ht 
 dev.off()</code></pre>
 </div>
@@ -1987,7 +1994,7 @@ stat.test &lt;- df %&gt;%
   add_significance(&quot;p.adj&quot;)
 stat.test &lt;- stat.test %&gt;% add_xy_position(x = &quot;Var2&quot;)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/In_CT_stat_prop_tt.pdf&quot;, width=10,height=5)
+pdf(&quot;~/scMultiomics_AD/In_CT_stat_prop_tt.pdf&quot;, width=10,height=5)
 ggboxplot(df, y=&quot;Freq&quot;,x=&quot;Var2&quot;, fill=&quot;Status&quot;, alpha=0.8)+stat_pvalue_manual(stat.test, label=&quot;p&quot;)+xlab(&quot;&quot;)+scale_fill_manual(values=c(&quot;red&quot;,&quot;blue&quot;))
 dev.off()</code></pre>
 <pre><code>    AD Ctrl</code></pre>
@@ -2020,7 +2027,7 @@ Excitatory$subs&lt;-paste0(&quot;Exc_&quot;, Excitatory$seurat_clusters)</code><
 <div id="s2h-umap" class="section level3">
 <h3>S2H) UMAP</h3>
 <pre class="r"><code>Excitatory2&lt;-subset(Excitatory, subset=seurat_clusters==10, invert=T)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Exc_subclusters.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Exc_subclusters.pdf&quot;)
 DimPlot(Excitatory2, group.by=&quot;subs&quot;,reduction=&quot;wnn.umap&quot;, cols=c( &quot;Exc_0&quot;=&quot;royalblue1&quot;,       &quot;Exc_1&quot;=&quot;deepskyblue2&quot;,     &quot;Exc_2&quot;=&quot;steelblue1&quot;, &quot;Exc_3&quot;=&quot;steelblue3&quot;,       &quot;Exc_4&quot;=&quot;cornflowerblue&quot;,       &quot;Exc_5&quot;=&quot;royalblue3&quot;,       &quot;Exc_6&quot;=&quot;cadetblue1&quot;, &quot;Exc_7&quot;=&quot;cadetblue3&quot;,
       &quot;Exc_8&quot;=&quot;dodgerblue&quot;,&quot;Exc_9&quot;=&quot;dodgerblue3&quot;), pt.size=2, label=T)
 dev.off()</code></pre>
@@ -2079,7 +2086,7 @@ Excitatory$seurat_clusters&lt;-tmp
 Excitatory$azimuth&lt;-factor(Excitatory$azimuth,levels=levels(Excitatory)[order(levels(Excitatory))])
 Excitatory$cluster&lt;-paste(&quot;Exc_&quot;,Excitatory$seurat_clusters,&quot;: &quot;,Excitatory$azimuth, sep=&quot;&quot;)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_Ex_layers.pdf&quot;, width=8, height=5)
+pdf(&quot;~/scMultiomics_AD/Azimuth_Ex_layers.pdf&quot;, width=8, height=5)
 DimPlot(Excitatory, reduction=&quot;wnn.umap&quot;, group.by=&quot;azimuth&quot;, pt.size=0.2, cols=c(
   &quot;L2-3 Intratelencephalon-Projecting 1&quot; =&quot;firebrick1&quot;,     
                &quot;L2-3 Intratelencephalon-Projecting 2&quot;=&quot;firebrick3&quot;,   
@@ -2096,7 +2103,7 @@ dev.off()
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_Ex_layers.pdf&quot;, width=8, height=5)
+pdf(&quot;~/scMultiomics_AD/Azimuth_Ex_layers.pdf&quot;, width=8, height=5)
 DimPlot(subs[[3]], reduction=&quot;wnn.umap&quot;, group.by=&quot;cluster&quot;, pt.size=0.2, cols=c(
                &quot;Exc_0: L2-3 Intratelencephalon-Projecting 1&quot; =cols.df[7,1],     
                &quot;Exc_1: L2-3 Intratelencephalon-Projecting 2&quot;=cols.df[8,1],   
@@ -2114,7 +2121,7 @@ dev.off()
 
 
 subs[[3]]$label&lt;-paste(&quot;Exc_&quot;, subs[[3]]$seurat_clusters, sep=&quot;&quot;)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Azimuth_Ex_layers_label.pdf&quot;, width=5, height=5)
+pdf(&quot;~/scMultiomics_AD/Azimuth_Ex_layers_label.pdf&quot;, width=5, height=5)
 DimPlot(subs[[3]], reduction=&quot;wnn.umap&quot;, group.by=&quot;label&quot;, pt.size=0.2, cols=c(
                &quot;Exc_0&quot; =cols.df[7,1],     
                &quot;Exc_1&quot;=cols.df[8,1],   
@@ -2222,7 +2229,7 @@ ra&lt;-rowAnnotation(subtype=a$subtype, col=list(subtype=sam))
 ht=Heatmap(mat_scaled,cluster_rows=F,cluster_columns=F,column_split=c(&quot;L23&quot;,&quot;L23&quot;,&quot;L5&quot;,&quot;L5&quot;,&quot;L6&quot;,&quot;L6&quot;,&quot;L5&quot;,&quot;L6&quot;,&quot;L56&quot;,&quot;L5&quot;),col=colorRamp2(c(-1,0,1),viridis(3)), top_annotation=ha, name=&quot;Z&quot;,  show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=a$layer)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Neuron_Subtype_heatmap_Ex.pdf&quot;, width=4,height=8)
+pdf(&quot;~/scMultiomics_AD/Neuron_Subtype_heatmap_Ex.pdf&quot;, width=4,height=8)
 ht
 dev.off()
 
@@ -2239,7 +2246,7 @@ top_mark&lt;-plot_mark %&gt;% group_by(variable) %&gt;% top_n(n=2, wt=avg_log2FC
 top_mark&lt;-top_mark[order(top_mark$variable),]
 
 Excitatory2$cluster&lt;-paste0(&quot;Exc_&quot;, Excitatory2$seurat_clusters)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Ex_marker_dotplot.pdf&quot;, width=10, height=9)
+pdf(&quot;~/scMultiomics_AD/Ex_marker_dotplot.pdf&quot;, width=10, height=9)
 DotPlot(Excitatory2, features=unique(top_mark$value), col.min=0, col.max=1.5, dot.scale=10, group.by=&quot;cluster&quot;)+scale_color_viridis(option=&quot;plasma&quot;, direction=-1)+theme(axis.text.x=element_text(size=15, angle=90), axis.text.y=element_text(size=15),axis.title=element_text(size=0))
 dev.off()</code></pre>
 <pre class="r"><code>tab&lt;-table(markers_melt$value, markers_melt$variable)
@@ -2247,7 +2254,7 @@ mat&lt;-as.matrix(tab)
 mat&lt;-mat[rownames(avg_Exp),]
 df&lt;-as.data.frame(mat)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/EX_marker_upset_annotation.pdf&quot;,width=3, height=10)
+pdf(&quot;~/scMultiomics_AD/EX_marker_upset_annotation.pdf&quot;,width=3, height=10)
 ggplot(df, aes(y=Var1, x=Var2, alpha=as.factor(Freq)))+geom_point()+theme_classic()+scale_alpha_manual(values=c(0,1))+ylab(&quot;&quot;)+xlab(&quot;&quot;)+
   theme(legend.position=&quot;none&quot;, axis.text.x=element_text(angle=90))+scale_y_discrete(position=&quot;right&quot;, limits=rev)+scale_x_discrete(labels=c(&quot;L23&quot;,&quot;L5 Extratelencephalon-Projecting&quot;,&quot;L5 Intratelencephalon-Projecting&quot;,&quot;L56 Near Projecting&quot;,&quot;L6 Corticothalamic-Projecting&quot;,&quot;L6 CAR3+ Intratelencephalon-Projecting&quot;,&quot;L6 THEMIS+ LINC00343+&quot;))
 dev.off()</code></pre>
@@ -2345,7 +2352,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Exc_subcluster_GObp.pdf&quot;, width=9, height=3.5)
+pdf(&quot;~/scMultiomics_AD/Exc_subcluster_GObp.pdf&quot;, width=9, height=3.5)
    ht 
 dev.off()</code></pre>
 </div>
@@ -2383,7 +2390,7 @@ stat.test &lt;- df %&gt;%
   add_significance(&quot;p.adj&quot;)
 stat.test &lt;- stat.test %&gt;% add_xy_position(x = &quot;Var2&quot;)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Ex_CT_stat_prop_tt.pdf&quot;, width=10,height=5)
+pdf(&quot;~/scMultiomics_AD/Ex_CT_stat_prop_tt.pdf&quot;, width=10,height=5)
 ggboxplot(df, y=&quot;Freq&quot;,x=&quot;Var2&quot;, fill=&quot;Status&quot;, alpha=0.8)+stat_pvalue_manual(stat.test, label=&quot;p&quot;)+xlab(&quot;&quot;)+scale_fill_manual(values=c(&quot;red&quot;,&quot;blue&quot;))
 dev.off()</code></pre>
 </div>
@@ -2409,7 +2416,7 @@ Oligodendrocytes$batch&lt;-ifelse(Oligodendrocytes$id %in% c(&quot;1224&quot;,&q
 <div id="s2f-umap" class="section level3">
 <h3>S2F) UMAP</h3>
 <pre class="r"><code>Oligodendrocytes$subs&lt;-paste0(&quot;Oli_&quot;, Oligodendrocytes$seurat_clusters)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Olig_subclusters.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Olig_subclusters.pdf&quot;)
 DimPlot(Oligodendrocytes, group.by=&quot;subs&quot;,reduction=&quot;wnn.umap&quot;, cols=c( &quot;Oli_0&quot;=&quot;lightsalmon&quot;, &quot;Oli_1&quot;=&quot;darksalmon&quot;, 
                &quot;Oli_2&quot;=&quot;coral&quot;, &quot;Oli_3&quot;=&quot;brown1&quot;), pt.size=2, label=T)
 dev.off()</code></pre>
@@ -2490,7 +2497,7 @@ ht=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(
 
 
 library(stringr)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Olig_subcluster_GObp.pdf&quot;, width=8, height=6)
+pdf(&quot;~/scMultiomics_AD/Olig_subcluster_GObp.pdf&quot;, width=8, height=6)
    ht 
 dev.off()
 
@@ -2503,7 +2510,7 @@ df$term&lt;-sapply(strsplit(df$Term, &quot; (&quot;, fixed=T), `[`,1)
 df&lt;-df[order(df$Odds.Ratio, decreasing=T),]
 df$term&lt;-factor(df$term, levels=rev(df$term))
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Olig_GO_bp_cluster2.pdf&quot;, width=12, height=6)
+pdf(&quot;~/scMultiomics_AD/Olig_GO_bp_cluster2.pdf&quot;, width=12, height=6)
 ggplot(df, aes(x=Odds.Ratio, y=term, fill=-log10(Adjusted.P.value)))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+scale_fill_gradient2(low=&quot;white&quot;, mid=&quot;white&quot;,high=&quot;# 0F7010&quot;, limits=c(0,5))+theme(axis.text=element_text(size=12))
 dev.off()</code></pre>
 </div>
@@ -2531,7 +2538,7 @@ stat.test &lt;- stat.test %&gt;% add_xy_position(x = &quot;Var2&quot;)
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Olig_CT_stat_prop_tt.pdf&quot;, width=10,height=5)
+pdf(&quot;~/scMultiomics_AD/Olig_CT_stat_prop_tt.pdf&quot;, width=10,height=5)
 ggboxplot(df, y=&quot;Freq&quot;,x=&quot;Var2&quot;, fill=&quot;Status&quot;, alpha=0.8)+stat_pvalue_manual(stat.test, label=&quot;p&quot;)+xlab(&quot;&quot;)+scale_fill_manual(values=c(&quot;red&quot;,&quot;blue&quot;))
 dev.off()</code></pre>
 </div>
@@ -2571,7 +2578,7 @@ df&lt;-df[order(match(df$Var2, lev2)),]
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Olig_stat_prop_bar_wTotalCells_log10.pdf&quot;, width=5,height=6)
+pdf(&quot;~/scMultiomics_AD/Olig_stat_prop_bar_wTotalCells_log10.pdf&quot;, width=5,height=6)
 p1=ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab(&quot;%&quot;)+ylab(&quot;&quot;)+theme(legend.title=element_text(size=0), legend.position=&quot;none&quot;)+ggtitle(&quot;Donor&quot;)+scale_y_discrete(limits=rev(levels(df$Var2)))
 
 p2=ggplot(tab2.m, aes(x=Freq, y=Var1, fill=Var1))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+theme(legend.position=&quot;none&quot;, axis.text.y=element_text(size=0))+ggtitle(&quot;Num. Cells&quot;)+ylab(&quot;&quot;)+scale_fill_manual(values=tab2.m$cols)+xlab(&quot; Count&quot;)+scale_y_discrete(limits=rev(levels(tab2.m$Var1)))+geom_vline(xintercept=100)
@@ -2598,14 +2605,14 @@ ra&lt;-rowAnnotation(cluster=top$clust, show_legend=F, col=list(cluster=c(&quot;
 ht=Heatmap(mat_scaled,cluster_columns=T,cluster_rows=F, col=colorRamp2(c(-1.5,0,1.5),viridis(3)), top_annotation=ha, name=&quot;Z&quot;, left_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=top$clust)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Olig_top10DEG_heatmap.pdf&quot;, width=4, height=6)
+pdf(&quot;~/scMultiomics_AD/Olig_top10DEG_heatmap.pdf&quot;, width=4, height=6)
 ht
 dev.off()
 
 
 ht2=Heatmap(t(mat_scaled),cluster_columns=T,cluster_rows=F, col=colorRamp2(c(-1.5,0,1.5),viridis(3)), left_annotation=ha, name=&quot;Z&quot;, top_annotation=ra, show_column_names=T, show_row_names=T, column_title=NULL, row_title_gp=gpar(fontsize=10),row_names_gp=gpar(fontsize=7), row_split=top$clust)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Olig_top10DEG_heatmap_transpose.pdf&quot;, width=4, height=6)
+pdf(&quot;~/scMultiomics_AD/Olig_top10DEG_heatmap_transpose.pdf&quot;, width=4, height=6)
 ht
 dev.off()</code></pre>
 </div>
@@ -2632,7 +2639,7 @@ Microglia$batch&lt;-ifelse(Microglia$id %in% c(&quot;1224&quot;,&quot;1238&quot;
 <div id="s2a-umap" class="section level3">
 <h3>S2A) UMAP</h3>
 <pre class="r"><code>Microglia$subs&lt;-paste0(&quot;Mic_&quot;, Microglia$seurat_clusters)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Mic_subclusters.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Mic_subclusters.pdf&quot;)
 DimPlot(Microglia, group.by=&quot;subs&quot;,reduction=&quot;wnn.umap&quot;, pt.size=2, label=F)
 dev.off()</code></pre>
 </div>
@@ -2685,7 +2692,7 @@ ra&lt;-rowAnnotation(cluster=paste0(&quot;Mic_&quot;,as.factor(top_genes$cluster
 colnames(avgExp.scale)&lt;-paste(&quot;Mic_&quot;,colnames(avgExp.scale), sep=&quot;&quot;)
 ht=Heatmap(avgExp.scale, cluster_rows=F,cluster_columns=F,col=colorRamp2(c(-1,0,1.5),viridis(3)), row_split=tmp$cluster,  name=&quot;Z&quot;,  show_column_names=T, show_row_names=T,row_names_gp = gpar(fontsize = 5), row_title_gp=gpar(fontsize=0), show_column_dend = FALSE, show_row_dend = FALSE, left_annotation=ra, top_annotation=ha)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Microglia_Degs_overlap_heatmap_dropCluster2.pdf&quot;, width=5,height=8)
+pdf(&quot;~/scMultiomics_AD/Microglia_Degs_overlap_heatmap_dropCluster2.pdf&quot;, width=5,height=8)
 ht
 dev.off()
 
@@ -2696,7 +2703,7 @@ ra&lt;-HeatmapAnnotation(cluster=paste0(&quot;Mic_&quot;,as.factor(top_genes$clu
 
 ht2=Heatmap(t(avgExp.scale), cluster_rows=F,cluster_columns=F,col=colorRamp2(c(-1,0,1.5),viridis(3)), row_split=tmp$cluster,  name=&quot;Z&quot;,  show_column_names=T, show_row_names=T,row_names_gp = gpar(fontsize = 10),column_names_gp=gpar(fontsize=6), row_title_gp=gpar(fontsize=0), show_column_dend = FALSE, show_row_dend = FALSE, left_annotation=ha, top_annotation=ra)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Microglia_Degs_overlap_heatmap_dropCluster2.pdf&quot;, width=7,height=3)
+pdf(&quot;~/scMultiomics_AD/Microglia_Degs_overlap_heatmap_dropCluster2.pdf&quot;, width=7,height=3)
 ht2
 dev.off()</code></pre>
 <pre class="r"><code>mic_degs&lt;-read.csv(&quot;~/scMultiomics_AD/DEGs/DEGs_Microglia.csv&quot;)
@@ -2723,7 +2730,7 @@ ra&lt;-rowAnnotation(cluster=as.factor(mic_degs_H$cluster), col=list(cluster=c(&
 
 ht=Heatmap(avgExp.scale, cluster_rows=T,cluster_columns=F,col=colorRamp2(c(-1,0,1.5),viridis(3)), row_split=tmp$subtype.y,  name=&quot;Z&quot;,  show_column_names=T, show_row_names=T,row_names_gp = gpar(fontsize = 6), row_title_gp=gpar(fontsize=0), show_column_dend = FALSE, show_row_dend = FALSE, left_annotation=ra, top_annotation=ha)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Microglia_Degs_overlap_heatmap_0v1v2.pdf&quot;, width=4,height=3)
+pdf(&quot;~/scMultiomics_AD/Microglia_Degs_overlap_heatmap_0v1v2.pdf&quot;, width=4,height=3)
 ht
 dev.off()</code></pre>
 </div>
@@ -2777,7 +2784,7 @@ df$term&lt;-sapply(strsplit(df$Term, &quot; (&quot;, fixed=T), `[`,1)
 df&lt;-df[order(df$Odds.Ratio, decreasing=T),]
 df$term&lt;-factor(df$term, levels=rev(df$term))
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Mic_GO_bp_cluster2.pdf&quot;, width=12, height=6)
+pdf(&quot;~/scMultiomics_AD/Mic_GO_bp_cluster2.pdf&quot;, width=12, height=6)
 ggplot(df, aes(x=Odds.Ratio, y=term, fill=-log10(Adjusted.P.value)))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+scale_fill_gradient2(low=&quot;white&quot;, mid=&quot;# D4F9B0&quot;,high=&quot;# 0F7010&quot;, limits=c(0,5))+theme(axis.text=element_text(size=12))
 dev.off()</code></pre>
 <p>GO BP 1 receptor-mediated endocytosis (<a href="GO:0006898" class="uri">GO:0006898</a>) 2 clathrin-dependent endocytosis (<a href="GO:0072583" class="uri">GO:0072583</a>) 3 membrane organization (<a href="GO:0061024" class="uri">GO:0061024</a>) 4 connective tissue development (<a href="GO:0061448" class="uri">GO:0061448</a>) 5 transmembrane receptor protein tyrosine kinase signaling pathway (<a href="GO:0007169" class="uri">GO:0007169</a>) 6 hyaluronan catabolic process (<a href="GO:0030214" class="uri">GO:0030214</a>) 7 positive regulation of epithelial cell migration (<a href="GO:0010634" class="uri">GO:0010634</a>) 8 positive regulation of protein phosphorylation (<a href="GO:0001934" class="uri">GO:0001934</a>) 9 hyaluronan metabolic process (<a href="GO:0030212" class="uri">GO:0030212</a>)</p>
@@ -2807,7 +2814,7 @@ stat.test &lt;- df %&gt;%
   add_significance(&quot;p.adj&quot;)
 stat.test &lt;- stat.test %&gt;% add_xy_position(x = &quot;cluster&quot;)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Mic_CT_stat_prop_tt.pdf&quot;, width=6,height=5)
+pdf(&quot;~/scMultiomics_AD/Mic_CT_stat_prop_tt.pdf&quot;, width=6,height=5)
 ggboxplot(df, y=&quot;Freq&quot;,x=&quot;cluster&quot;, fill=&quot;Status&quot;, alpha=0.8)+stat_pvalue_manual(stat.test, label=&quot;p&quot;)+xlab(&quot;&quot;)+scale_fill_manual(values=c(&quot;firebrick&quot;,&quot;navyblue&quot;))
 dev.off()</code></pre>
 </div>
@@ -2859,7 +2866,7 @@ fullmeta&lt;-rbind(a,b,c,d,e)
 data&lt;-AddMetaData(data, fullmeta)
 data$subs&lt;-ifelse(is.na(data$subs),substr(data$predicted.id,start=1,stop=3),data$subs)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/All_subclusters_plot_wLegend.pdf&quot;, width=9, height=10)
+pdf(&quot;~/scMultiomics_AD/All_subclusters_plot_wLegend.pdf&quot;, width=9, height=10)
 DimPlot(data, reduction=&quot;wnn.umap&quot;,group.by=&quot;subs&quot;, label=T, pt.size=0.1,cols=c(
       &quot;Ast_0&quot;=&quot;darkgoldenrod1&quot;,&quot;Ast_1&quot;=&quot;darkgoldenrod3&quot;, &quot;Ast_2&quot;=&quot;gold2&quot;,
       &quot;Ast_3&quot;=&quot;goldenrod&quot;,&quot;Ast_4&quot;=&quot;goldenrod1&quot;,
@@ -2883,7 +2890,7 @@ dev.off()</code></pre>
 </div>
 <div id="d-scread-heatmap" class="section level2">
 <h2>D) scREAD heatmap</h2>
-<pre class="r"><code>BrainMarkers&lt;-read.csv(&quot;/cluster/home/aanderson/myers/scAnalysis/scREAD/scREAD_BrainMarkers.csv&quot;, header=T)
+<pre class="r"><code>BrainMarkers&lt;-read.csv(&quot;~/scREAD/scREAD_BrainMarkers.csv&quot;, header=T)
 BrainMarkers&lt;-BrainMarkers[which(BrainMarkers$Name!=&quot;PDGRFA&quot;),]
 
 DefaultAssay(data)&lt;-&quot;RNA&quot;
@@ -2917,7 +2924,7 @@ ht=Heatmap(mat_scaled,cluster_rows=F,cluster_columns=F,col=colorRamp2(c(-1,0,2),
 
 lab&lt;-which(rownames(mat_scaled) %in% c(&quot;AQP4&quot;,&quot;NRGN&quot;,&quot;GAD2&quot;,&quot;P2RY12&quot;,&quot;MOBP&quot;,&quot;VCAN&quot;))
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/scREAD_heatmap_byID.pdf&quot;, width=5,height=8)
+pdf(&quot;~/scMultiomics_AD/scREAD_heatmap_byID.pdf&quot;, width=5,height=8)
 ht+rowAnnotation(gene=anno_mark(at=lab, labels=rownames(mat_scaled[lab,]), side=&quot;right&quot;, labels_gp=gpar(fontsize=10)))
 dev.off()</code></pre>
 </div>
@@ -2974,7 +2981,7 @@ p6&lt;-CombineTracks(list(p6,anPlot),heights=c(5,1))
 
 
 library(cowplot)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/marker_coverage_plot.pdf&quot;, width=12, height=7)
+pdf(&quot;~/scMultiomics_AD/marker_coverage_plot.pdf&quot;, width=12, height=7)
 plot_grid(p1,p2,p3,p4,p5,p6, ncol=6)
 dev.off()</code></pre>
 </div>
@@ -2995,7 +3002,7 @@ df&lt;-df[-seq(121,135),]
 df$Var1&lt;-factor(df$Var1, levels= tmp$Var1)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Allsubs_stat_prop_bar.pdf&quot;, width=5,height=6)
+pdf(&quot;~/scMultiomics_AD/Allsubs_stat_prop_bar.pdf&quot;, width=5,height=6)
 ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab(&quot;%&quot;)+ylab(&quot;&quot;)+theme(legend.title=element_text(size=0))
 dev.off()
 
@@ -3022,7 +3029,7 @@ df&lt;-df[order(match(df$Var2, lev2)),]
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Allsubs_stat_prop_bar_wTotalCells_log10.pdf&quot;, width=5,height=6)
+pdf(&quot;~/scMultiomics_AD/Allsubs_stat_prop_bar_wTotalCells_log10.pdf&quot;, width=5,height=6)
 p1=ggplot(df, aes(x=Freq*100,y=Var2,fill=Var1))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+scale_fill_manual(values=c(AD,Ctrl))+xlab(&quot;%&quot;)+ylab(&quot;&quot;)+theme(legend.title=element_text(size=0), legend.position=&quot;left&quot;)+ggtitle(&quot;Donor&quot;)+scale_y_discrete(limits=rev(levels(df$Var2)))
 
 p2=ggplot(tab2.m, aes(x=Freq, y=Var1, fill=Var1))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+theme(legend.position=&quot;none&quot;, axis.text.y=element_text(size=0))+ggtitle(&quot;Number of Cells&quot;)+ylab(&quot;&quot;)+scale_fill_manual(values=tab2.m$cols)+xlab(&quot; Count&quot;)+scale_y_discrete(limits=rev(levels(tab2.m$Var1)))+geom_vline(xintercept=100)+scale_x_continuous(breaks=c(0,6000,12000))
@@ -3088,7 +3095,7 @@ ra&lt;-rowAnnotation(celltype=df.m$tmp, id=df.m$id,Status=df.m$Status,  show_leg
 
 ht=Heatmap(cor.mat,cluster_rows=T,cluster_columns=T,col=colorRamp2(c(0,0.5,1),plasma(3)),  top_annotation=ha, name=&quot;r&quot;, left_annotation=ra, show_column_names=F, show_row_names=F, column_title=NULL, row_title_gp=gpar(fontsize=14))
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/CT_id_corMat_heatmap.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/CT_id_corMat_heatmap.pdf&quot;)
 ht
 dev.off()</code></pre>
 </div>
@@ -3181,7 +3188,7 @@ Peak2&lt;-rsPeak[which(rsPeak&gt;0)]
 peak_set&lt;-write.table(rownames(Peak2),&quot;~/scMultiomics_AD/CT_filtered_peaks.bed&quot;)</code></pre>
 <div id="ad" class="section level2">
 <h2>AD</h2>
-<pre class="r"><code>part1&lt;-import(&quot;/cluster/home/aanderson/scMultiomics_AD/reanalyze_filterPeaks_AD/outs/analysis/feature_linkage/feature_linkage.bedpe&quot;, format=&quot;bedpe&quot;)
+<pre class="r"><code>part1&lt;-import(&quot;~/AD/outs/analysis/feature_linkage/feature_linkage.bedpe&quot;, format=&quot;bedpe&quot;)
 
 
 
@@ -3236,7 +3243,7 @@ a10_qval&lt;-data.frame(Qval=a10_ct$NA., link=a10_ct$link)</code></pre>
 </div>
 <div id="ctrl" class="section level2">
 <h2>Ctrl</h2>
-<pre class="r"><code>part1&lt;-import(&quot;/cluster/home/aanderson/scMultiomics_AD/reanalyze_filterPeaks_Ctrl/outs/analysis/feature_linkage/feature_linkage.bedpe&quot;, format=&quot;bedpe&quot;)
+<pre class="r"><code>part1&lt;-import(&quot;~/Ctrl/outs/analysis/feature_linkage/feature_linkage.bedpe&quot;, format=&quot;bedpe&quot;)
 
 
 c10&lt;-as.data.frame(part1)
@@ -3413,7 +3420,7 @@ library(TFBSTools)
 library(motifmatchr)
 library(BSgenome.Hsapiens.UCSC.hg38)
 
-pfm2&lt;-readJASPARMatrix(&quot;~/myers/JASPAR_reformat_10X.pfm&quot;, matrixClass=&quot;PFM&quot;)
+pfm2&lt;-readJASPARMatrix(&quot;~/JASPAR_reformat_10X.pfm&quot;, matrixClass=&quot;PFM&quot;)
 test&lt;-c(&quot;TBR1&quot;)
 pfm3&lt;-pfm2[grepl(test, names(pfm2))]
 motif_pos&lt;-matchMotifs(pfm3,resize(ahh, width=2000, fix=&quot;center&quot;), genome = BSgenome.Hsapiens.UCSC.hg38,  out=&quot;positions&quot;, p.cutoff=0.0005)
@@ -3462,8 +3469,8 @@ cov_plot&lt;-CoveragePlot(object=data, region=region,  assay=&quot;CTpeaks&quot;
   scale_fill_manual(values=c(&quot;blue&quot;, &quot;red&quot;))
 Links(data)&lt;-ex.gr #full
 link_plotA &lt;- LinkPlot.height(data, region=region, min.cutoff=min.cutoff, max.cutoff=max.cutoff)+ylab(&quot;Score&quot;)
-ChIP_track1&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/TBR1_AD-B6_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)+ylim(0,20)
-ChIP_track2&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/TBR1_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,20)+scale_fill_manual(values=&quot;blue&quot;)
+ChIP_track1&lt;-BigwigTrack(region,&quot;~/TBR1_AD-B6_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)+ylim(0,20)
+ChIP_track2&lt;-BigwigTrack(region,&quot;~/TBR1_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,20)+scale_fill_manual(values=&quot;blue&quot;)
 motif_pos&lt;-matchMotifs(pfm3,resize(c2[which(c2$index %in% ex.gr$index),], width=2000, fix=&quot;center&quot;), genome = BSgenome.Hsapiens.UCSC.hg38,  out=&quot;positions&quot;, p.cutoff=0.0005)
 motif_track&lt;-Bed_PeakPlot(resize(motif_pos, width=500, fix=&quot;center&quot;),region)+ylab(&quot;TBR1&quot;)
 DefaultAssay(data)&lt;-&quot;ATAC&quot;
@@ -3472,10 +3479,10 @@ snps&lt;-GRanges(c(&quot;chr3:42691682&quot;,&quot;chr3:42747019&quot;,&quot;chr
 
 p&lt;-CombineTracks(plotlist=list(cov_plot,ChIP_track2,ChIP_track1,link_plotA, motif_track, gene_plot), heights=c(6,3,3, 2,1,2))
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/TBR1_trio_&quot;,index ,&quot;_linkPlot.pdf&quot;), width=6, height=7)
+pdf(paste0(&quot;~/scMultiomics_AD/TBR1_trio_&quot;,index ,&quot;_linkPlot.pdf&quot;), width=6, height=7)
 p
 dev.off()</code></pre>
-<p>TBR1-HHATL link (HHATL-242389) -CSAW diff for TBR1. Only present in Ctrl (also more acc in control) -in CCDC13 intron. Link also to CCDC13 &amp; only AD (score=0.25) -link is common (score=0.47) and present in all cell types besides excitatory -motif is 200bp upstream of peak –gene-TF significant in both &amp; peak-TF significant in both but negative (does not classify as trio) -is also control-specific trio for ZNF189 (242389-ZNF189_MA1725.1-HHAT) -rs3916334 eQTL for HHATL, CCDC13-AS1</p>
+<p>TBR1-HHATL link (HHATL-242389) - CSAW diff for TBR1. Only present in Ctrl (also more acc in control) - in CCDC13 intron. Link also to CCDC13 &amp; only AD (score=0.25) - link is common (score=0.47) and present in all cell types besides excitatory - motif is 200bp upstream of peak - gene-TF significant in both &amp; peak-TF significant in both but negative (does not classify as trio) - is also control-specific trio for ZNF189 (242389-ZNF189_MA1725.1-HHAT) - rs3916334 eQTL for HHATL, CCDC13-AS1</p>
 </div>
 </div>
 </div>
@@ -3498,7 +3505,7 @@ redo_format$Excitatory.k27&lt;-grepl(&quot;Neuron&quot;,redo_format$k27) | grepl
 redo_format$Inhbitory.k27&lt;-grepl(&quot;Neuron&quot;,redo_format$k27) | grepl(&quot;GABA&quot;,redo_format$k27)
 redo_format$Microglia.k27&lt;-grepl(&quot;Microglia&quot;,redo_format$k27)
 redo_format$Oligodendrocytes.k27&lt;-grepl(&quot;Oligodendrocytes&quot;,redo_format$k27)
-write.csv(redo_format,&quot;/cluster/home/aanderson/scMultiomics_AD/celltype_specific_links_anno_hg38.csv&quot;)
+write.csv(redo_format,&quot;~/scMultiomics_AD/celltype_specific_links_anno_hg38.csv&quot;)
 
 
 tmp&lt;-c2
@@ -3512,7 +3519,7 @@ redo_format$Excitatory.k27&lt;-grepl(&quot;Neuron&quot;,redo_format$k27) | grepl
 redo_format$Inhbitory.k27&lt;-grepl(&quot;Neuron&quot;,redo_format$k27) | grepl(&quot;GABA&quot;,redo_format$k27)
 redo_format$Microglia.k27&lt;-grepl(&quot;Microglia&quot;,redo_format$k27)
 redo_format$Oligodendrocytes.k27&lt;-grepl(&quot;Oligodendrocytes&quot;,redo_format$k27)
-write.csv(redo_format,&quot;/cluster/home/aanderson/scMultiomics_AD/all_links_anno_hg38.csv&quot;)
+write.csv(redo_format,&quot;~/scMultiomics_AD/all_links_anno_hg38.csv&quot;)
 
 
 
@@ -3549,10 +3556,19 @@ write.table(as.data.frame(unique(c2[which(c2$OPCs==T &amp; c2$group==&quot;Ctrl&
 </div>
 <div id="trios" class="section level1">
 <h1>TRIOS</h1>
-<p>-input links already formatted for cor calculation -ad and control correlation sep -take all ad/ctrl links and filter: -100kb of TSS -exclude links to peaks w/ &gt;100 motifs -do one row per tf-gene-peak link</p>
+<ul>
+<li>input links already formatted for cor calculation</li>
+<li>ad and control correlation sep</li>
+<li>take all ad/ctrl links and filter:
+<ul>
+<li>100kb of TSS</li>
+<li>exclude links to peaks w/ &gt;100 motifs</li>
+<li>do one row per tf-gene-peak link</li>
+</ul></li>
+</ul>
 <div id="processing" class="section level2">
 <h2>processing</h2>
-<pre class="r"><code>gtf&lt;-import(&quot;~/myers/quantseq/STAR/genes.gtf&quot;)
+<pre class="r"><code>gtf&lt;-import(&quot;~/STAR/genes.gtf&quot;)
 gtf&lt;-gtf[which(gtf$type==&quot;gene&quot;),]
 gtf$TSS&lt;-ifelse(strand(gtf)==&quot;+&quot;, start(gtf), end(gtf))
 TSS.df&lt;-data.frame(gene=gtf$gene_name, TSS=gtf$TSS)
@@ -3594,7 +3610,10 @@ saveRDS(c10,&quot;~/scMultiomics_AD/GRN/c10.rds&quot;)
 saveRDS(a10,&quot;~/scMultiomics_AD/GRN/a10.rds&quot;)</code></pre>
 <div id="motif-score" class="section level3">
 <h3>motif score</h3>
-<p>motif score from signac wrapper of motifmatchr max accessibility is the max average accessibility for any subcluster</p>
+<ul>
+<li>motif score from signac wrapper of motifmatchr</li>
+<li>max accessibility is the max average accessibility for any subcluster</li>
+</ul>
 <pre class="r"><code>m=motifs@positions
 
 for (i in 72:length(m)){
@@ -3724,14 +3743,20 @@ write.csv(df, paste0(&quot;~/scMultiomics_AD/GRN/&quot;,group,&quot;_gene_tf_pea
 </div>
 <div id="format" class="section level3">
 <h3>Format</h3>
-<p>+add TF expression -&gt;correlated with peak acc. lowly expressed TFs will score lower bc of lower variance -&gt;can be expressed in multiple cell types but not correlated with peak in all</p>
-<pre class="r"><code>files=as.list(readLines(&quot;/cluster/home/aanderson/scMultiomics_AD/GRN/AD_list.csv&quot;))
+<ul>
+<li>add TF expression
+<ul>
+<li>correlated with peak acc. lowly expressed TFs will score lower bc of lower variance</li>
+<li>can be expressed in multiple cell types but not correlated with peak in all</li>
+</ul></li>
+</ul>
+<pre class="r"><code>files=as.list(readLines(&quot;~/scMultiomics_AD/GRN/AD_list.csv&quot;))
 files[[11]]&lt;-files[[1]]
 files[[1]]&lt;-NULL
 AD_list=lapply(files,function(x){
   FT=read.csv(x)})
 
-files=as.list(readLines(&quot;/cluster/home/aanderson/scMultiomics_AD/GRN/Ctrl_list.csv&quot;))
+files=as.list(readLines(&quot;~/scMultiomics_AD/GRN/Ctrl_list.csv&quot;))
 files[[11]]&lt;-files[[1]]
 files[[1]]&lt;-NULL
 Ctrl_list=lapply(files,function(x){
@@ -3792,7 +3817,13 @@ mer2&lt;-merge(mer2,rs.df, by=&quot;peak&quot;)</code></pre>
 </div>
 <div id="define-trios" class="section level2">
 <h2>Define Trios</h2>
-<p>A is all trios B is all significant trios with positive sig P-TF cor and sig G-TF cor C2 is only AD and control have different gene-tf effect directions D2 is only significant in AD E2 is only significant in control</p>
+<ul>
+<li>A is all trios</li>
+<li>B is all significant trios with positive sig P-TF cor and sig G-TF cor</li>
+<li>C2 is only AD and control have different gene-tf effect directions</li>
+<li>D2 is only significant in AD</li>
+<li>E2 is only significant in control</li>
+</ul>
 <pre class="r"><code>a&lt;-mer2[!duplicated(mer2$GRN),]
 
 # Is Gene-TF cor significant?
@@ -3820,8 +3851,10 @@ b$category&lt;-ifelse(b$GRN %in% c2$GRN, &quot;DiffDir&quot;,
                           ifelse(b$GRN %in% e2$GRN, &quot;Ctrl-only&quot;,&quot;Sig&quot;)))
 trios&lt;-as.data.frame(b)
 write.table(trios, &quot;~/scMultiomics_AD/Significant_trios.txt&quot;, sep=&quot;\t&quot;, row.names=F, quote=F)</code></pre>
-<p>##Fig4B: annotation</p>
-<pre class="r"><code>load(&quot;/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
+</div>
+<div id="fig4b-annotation" class="section level2">
+<h2>Fig4B: annotation</h2>
+<pre class="r"><code>load(&quot;~/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
 enc=full_annot_encode_cre_def_GR
 enc&lt;-enc[!grepl(&quot;iCell&quot;,enc$accesionLabel),]
 u2&lt;-unique(b)
@@ -3852,10 +3885,10 @@ df$annot&lt;-rownames(df)
 df&lt;-melt(df)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Trio_peak_annot_encode.pdf&quot;, width=8, height=3)
+pdf(&quot;~/scMultiomics_AD/Trio_peak_annot_encode.pdf&quot;, width=8, height=3)
 ggplot(df, aes(x=value, y=variable, fill=annot))+geom_bar(stat=&quot;identity&quot;)+xlab(&quot;Proportion of Linked peaks&quot;)+ylab(&quot;Cell type&quot;)+theme_classic()+scale_fill_manual(values=c(&quot;dodgerblue&quot;,&quot;gold&quot;,&quot;lightpink&quot;,&quot;orange&quot;,&quot;red&quot;,&quot;forestgreen&quot;),labels=c(&quot;CTCF-only&quot;,&quot;dELS&quot;,&quot;DNase-H3K4me3&quot;,&quot;pELS&quot;,&quot;PLS&quot;,&quot;other&quot;))+theme(legend.position=&quot;right&quot;, axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))
 dev.off()</code></pre>
-<pre class="r"><code>load(&quot;/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
+<pre class="r"><code>load(&quot;~/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
 enc=full_annot_encode_cre_def_GR
 enc&lt;-enc[!grepl(&quot;iCell&quot;,enc$accesionLabel),]
 
@@ -3927,7 +3960,7 @@ changed$CTspec&lt;-ifelse(changed$CT %in% c(&quot;Inhibitory&quot;,&quot;Excitat
                        ifelse(changed$CT %in% c(&quot;Microglia&quot;,&quot;Excitatory&quot;,&quot;Oligodendrocytes&quot;,&quot;OPCs&quot;,&quot;Astrocytes&quot;), changed$CT, &quot;shared&quot;))
 
 # add cluster
-clusters&lt;-read.table(&quot;~/myers/scAnalysis/JASPAR/clusters_motif_names.tab&quot;)
+clusters&lt;-read.table(&quot;~/JASPAR/clusters_motif_names.tab&quot;)
 clust&lt;-strsplit(clusters$V2,&quot;,&quot;)
 len&lt;-lapply(clust, length)
 clust&lt;-unlist(clust)
@@ -3959,7 +3992,7 @@ ra&lt;-rowAnnotation(Group=changed$CTspec, TF=changed$TF, Class=changed$class, C
 ht1=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.2,0.1,0.4), plasma(3)), name=&quot;r&quot;,  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra, use_raster=T,raster_quality=5,row_split=changed$CTspec, row_title=NULL)
 
 lab&lt;-which(changed$gene %in% &quot;SPP1&quot;)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Triangle_correlations.pdf&quot;, width=10, height=10)
+pdf(&quot;~/scMultiomics_AD/Triangle_correlations.pdf&quot;, width=10, height=10)
 # rowAnnotation(gene=anno_mark(at=lab, labels=changed[lab,]$Name, side=&quot;left&quot;, labels_gp=gpar(fontsize=10)))+
 ht1
 dev.off()
@@ -3978,7 +4011,7 @@ ra&lt;-rowAnnotation(TF=changed[which(changed$CTspec==CT),]$TF,Class=changed[whi
 ht1=Heatmap(mat[which(changed$CTspec==CT),], cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.2,0.1,0.4), plasma(3)), name=&quot;r&quot;,  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra,row_title=NULL)
 
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Triangle_correlations_&quot;,CT,&quot;.pdf&quot;), width=10, height=10)
+pdf(paste0(&quot;~/scMultiomics_AD/Triangle_correlations_&quot;,CT,&quot;.pdf&quot;), width=10, height=10)
 ht1
 dev.off()
 
@@ -4015,10 +4048,15 @@ ra&lt;-rowAnnotation(TF=changed$TF, show_legend=T, col=list(TF=cols))
 
 ht1=Heatmap(mat, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(-0.1,0.1,0.4), plasma(3)), name=&quot;r&quot;,  show_column_names=T, show_row_names=F, row_names_gp = gpar(fontsize = 2), top_annotation=ha,   right_annotation=ra, use_raster=T,raster_quality=5,row_split=changed$category, row_title=NULL)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Triangle_correlations_Neuron_ExIn.pdf&quot;, width=5, height=10)
+pdf(&quot;~/scMultiomics_AD/Triangle_correlations_Neuron_ExIn.pdf&quot;, width=5, height=10)
 ht1
 dev.off()</code></pre>
-<p>##MEF2C ###Fig4C,D</p>
+</div>
+</div>
+<div id="mef2c" class="section level2">
+<h2>MEF2C</h2>
+<div id="fig4cd" class="section level3">
+<h3>Fig4C,D</h3>
 <pre class="r"><code>avgExp&lt;-as.data.frame(AverageExpression(data, features=unique(b[which(b$TF==&quot;MEF2C&quot;),]$gene), assay=&quot;RNA&quot;, group.by=&quot;predicted.id&quot;))
 avgExp$gene&lt;-rownames(avgExp)
 avgExp&lt;-avgExp[,c(1,3,4,5,6,7,9)]
@@ -4045,7 +4083,7 @@ mat.scale&lt;-t(scale(t(avgExp.g), center=T))
 
 ht=Heatmap(mat.scale,cluster_columns=F,cluster_rows=T, col=colorRamp2(c(-1.8,0,2),viridis(3)),  name=&quot;Expression Z&quot;, show_column_names=T, show_row_names=F, column_title=NULL, row_names_gp=gpar(fontsize=7),right_annotation=ra, use_raster=T,raster_quality=5)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_trios_heatmap.pdf&quot;, width=6, height=7)
+pdf(&quot;~/scMultiomics_AD/MEF2C_trios_heatmap.pdf&quot;, width=6, height=7)
 ht
 dev.off()
 
@@ -4053,10 +4091,12 @@ dev.off()
 
 df&lt;-data.frame(mef2c=data@assays$RNA@data[&quot;MEF2C&quot;,], ct=data$predicted.id)
 df&lt;-df[which(df$ct %in% c(&quot;Astrocytes&quot;,&quot;Excitatory&quot;,&quot;Inhibitory&quot;,&quot;Microglia&quot;,&quot;Oligodendrocytes&quot;,&quot;OPCs&quot;)),]
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_boxplot.pdf&quot;, width=6, height=4)
+pdf(&quot;~/scMultiomics_AD/MEF2C_boxplot.pdf&quot;, width=6, height=4)
 ggplot(df, aes(x=ct, y=mef2c, fill=ct))+geom_boxplot()+theme_classic()+ylab(&quot;MEF2C Normalize Expression&quot;)+scale_fill_manual(values=c(&quot;darkgoldenrod1&quot;, &quot;cornflowerblue&quot;,&quot;seagreen3&quot;,&quot;mediumorchid3&quot;,&quot;coral3&quot;,&quot;firebrick&quot;))+xlab(&quot;&quot;)+theme(legend.position=&quot;none&quot;)
 dev.off()</code></pre>
-<p>###Fig4E</p>
+</div>
+<div id="fig4e" class="section level3">
+<h3>Fig4E</h3>
 <pre class="r"><code>####################
 #GO
 g1&lt;-unique(mef[which(mef$Microglia==T),]$gene)
@@ -4079,7 +4119,7 @@ go$Name&lt;-sapply(strsplit(go$Term, &quot;(G&quot;, fixed=T), `[`,1)
 go&lt;-go[order(go$CT, go$Odds.Ratio),]
 go$Name&lt;-factor(go$Name, levels=go$Name)
 go.top&lt;-go %&gt;% group_by(CT) %&gt;% top_n(n=5, wt=Odds.Ratio)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_target_GOenrichment_byCT.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/MEF2C_target_GOenrichment_byCT.pdf&quot;)
 ggplot(go, aes(x=Odds.Ratio, y=Name, fill=CT))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+scale_fill_manual(values=c(&quot;mediumorchid3&quot;,&quot;yellow2&quot;))
 dev.off()</code></pre>
 </div>
@@ -4088,14 +4128,14 @@ dev.off()</code></pre>
 <pre class="r"><code>region&lt;-GRanges(&quot;chr4:90030247-90031491&quot;)
 start(region)&lt;-start(region)-1000
 end(region)&lt;-end(region)+1000
-ChIP_track1&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)+ylim(0,10)
-ChIP_track2&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;blue&quot;)
-ChIP_track3&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_other/Jan2021_ChIPseq/MEF2C_OL-NEUN_PT2_test/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;NEUN&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;grey54&quot;)
+ChIP_track1&lt;-BigwigTrack(region,&quot;/~/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)+ylim(0,10)
+ChIP_track2&lt;-BigwigTrack(region,&quot;~/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;blue&quot;)
+ChIP_track3&lt;-BigwigTrack(region,&quot;~/MEF2C_OL-NEUN_PT2_test/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;NEUN&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;grey54&quot;)
 
 
 p&lt;-CombineTracks(plotlist=list(ChIP_track1,ChIP_track2,ChIP_track3), heights=c(2,2,2))
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_ADCtrl_NEUN.pdf&quot;), width=6, height=7)
+pdf(paste0(&quot;~/scMultiomics_AD/MEF2C_ADCtrl_NEUN.pdf&quot;), width=6, height=7)
 p
 dev.off()
 
@@ -4104,9 +4144,9 @@ sig&lt;-GRanges(c(&quot;chr1:9852501-9852660&quot;,&quot;chr1:233567051-23356711
 
 subsetByOverlaps(b, sig[7])$GRN</code></pre>
 <p>2</p>
-<pre class="r"><code>mef_neurn=import(&quot;/cluster/home/jloupe/Outputs_other/Jan2021_ChIPseq/MEF2C_OL-NEUN_PT2_test/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
-mef=import(&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
-mef2&lt;-import(&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output//peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
+<pre class="r"><code>mef_neurn=import(&quot;~/MEF2C_OL-NEUN_PT2_test/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
+mef=import(&quot;~/MEF2C_AD-CTL_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
+mef2&lt;-import(&quot;~/MEF2C_AD-CTL_Output//peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
 
 mef2c&lt;-reduce(c(mef_neurn,mef))
 b_mef&lt;-subsetByOverlaps(b[which(b$TF==&quot;MEF2C&quot;),], mef2c)</code></pre>
@@ -4135,14 +4175,11 @@ cov_plot&lt;-CoveragePlot(object=data, region=region,  assay=&quot;CTpeaks&quot;
 Links(data)&lt;-ex.gr #full
 link_plotA &lt;- LinkPlot.height(data, region=region, min.cutoff=min.cutoff, max.cutoff=max.cutoff)+ylab(&quot;Score&quot;)
 
-ChIP_track1&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)+ylim(0,10)
+ChIP_track1&lt;-BigwigTrack(region,&quot;~/MEF2C_AD-B5_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;AD&quot;)+theme(legend.position=&quot;none&quot;)+scale_fill_manual(values=&quot;red&quot;)+ylim(0,10)
 
-ChIP_track2&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_AD-supp/Jul2021_ChIPseq/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;blue&quot;)
-
-#ChIP_track&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_DLPFC-NEUN_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;ZEB1 ChIP&quot;)+theme(legend.position=&quot;none&quot;)
+ChIP_track2&lt;-BigwigTrack(region,&quot;~/MEF2C_AD-CTL_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 100)+ylab(&quot;Ctrl&quot;)+theme(legend.position=&quot;none&quot;)+ylim(0,10)+scale_fill_manual(values=&quot;blue&quot;)
 
 
-#motifs&lt;-readRDS(&quot;~/scMultiomics_AD/motif/motifs_object.rds&quot;)
 motif_track&lt;-Bed_PeakPlot(resize(motifs@positions$MEF2C_MA0497.1, width=500, fix=&quot;center&quot;),region)+ylab(&quot;MEF2C&quot;)
 motif2&lt;-Bed_PeakPlot(resize(motifs@positions$ZEB1_MA0103.3, width=500, fix=&quot;center&quot;),region)+ylab(&quot;ZEB1&quot;)
 
@@ -4152,7 +4189,7 @@ gene_plot&lt;-AnnotationPlot(data, region=region)
 
 p&lt;-CombineTracks(plotlist=list(cov_plot,ChIP_track2,ChIP_track1,link_plotA, motif_track, gene_plot), heights=c(6,3,3, 2,1,2))
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/MEF2C_trio_&quot;,gene ,&quot;_linkPlot.pdf&quot;), width=6, height=7)
+pdf(paste0(&quot;~/scMultiomics_AD/MEF2C_trio_&quot;,gene ,&quot;_linkPlot.pdf&quot;), width=6, height=7)
 p
 dev.off()</code></pre>
 </div>
@@ -4160,7 +4197,7 @@ dev.off()</code></pre>
 <div id="zeb1-link-plot" class="section level2">
 <h2>ZEB1 link plot</h2>
 <pre class="r"><code>extraCols_narrowPeak &lt;- c(signalValue = &quot;numeric&quot;, pValue = &quot;numeric&quot;,qValue = &quot;numeric&quot;, peak = &quot;integer&quot;)
-ZEB1_DLPFC=import(con=&quot;/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_DLPFC-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
+ZEB1_DLPFC=import(con=&quot;~/ZEB1_DLPFC-NEUN_Output/peak/idr_reproducibility/idr.optimal_peak.regionPeak.gz&quot;,format=&quot;bed&quot;,extraCols=extraCols_narrowPeak)
 ZEB1_DLPFC$Tissue=&quot;DLPFC&quot;
 
 ZEB1_trio&lt;-subsetByOverlaps(changed[which(changed$TF==&quot;ZEB1&quot;),],ZEB1_DLPFC)
@@ -4211,17 +4248,17 @@ cov_plot&lt;-CoveragePlot(object=neuron, region=region,  assay=&quot;CTpeaks&quo
 Links(data)&lt;-ex.gr #full
 link_plotA &lt;- LinkPlot.height(data, region=region, min.cutoff=min.cutoff, max.cutoff=max.cutoff)+ylab(&quot;Score&quot;)
 
-load(file=&quot;/cluster/home/lrizzardi/BrainTF-ADSupp/Nott_k27ac.rda&quot;)
-ch&lt;-import.chain(&quot;~/myers/liftover/hg19ToHg38.over.chain&quot;)
+load(file=&quot;~/Nott_k27ac.rda&quot;)
+ch&lt;-import.chain(&quot;~/liftover/hg19ToHg38.over.chain&quot;)
 Nott_k27ac_38&lt;-liftOver(Nott_k27ac, ch)
 Nott_k27ac_38&lt;-unlist(Nott_k27ac_38)  #lost 1,700
 Nott_neuron&lt;-Nott_k27ac_38[which(Nott_k27ac_38$cell_type ==&quot;Neuron&quot;),]
 k27_track&lt;-Bed_PeakPlot(Nott_neuron, region)+ylab(&quot;Neuron H3K27ac&quot;)
 
 
-ChIP_track&lt;-BigwigTrack(region,&quot;/cluster/home/jloupe/Outputs_sorted_cromwell/Oct2020_ChIPseq/ZEB1_DLPFC-NEUN_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;ZEB1 ChIP&quot;)+theme(legend.position=&quot;none&quot;)
+ChIP_track&lt;-BigwigTrack(region,&quot;~/ZEB1_DLPFC-NEUN_Output/signal/pooled-rep/basename_prefix.pooled_x_basename_prefix.pooled.pval.signal.bigwig&quot;,smooth = 300)+ylab(&quot;ZEB1 ChIP&quot;)+theme(legend.position=&quot;none&quot;)
 
-#motifs&lt;-readRDS(&quot;~/scMultiomics_AD/motif/motifs_object.rds&quot;)
+
 motif_track&lt;-Bed_PeakPlot(resize(motifs@positions$ZEB1_MA0103.3, width=500, fix=&quot;center&quot;),region)+ylab(&quot;ZEB1 motif&quot;)
 
 DefaultAssay(data)&lt;-&quot;ATAC&quot;
@@ -4230,11 +4267,11 @@ gene_plot&lt;-AnnotationPlot(data, region=region)
 
 p&lt;-CombineTracks(plotlist=list(cov_plot,ChIP_track,link_plotA, k27_track, motif_track, gene_plot), heights=c(6,3,2,1,1,2))
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_zoomed.pdf&quot;), width=6, height=7)
+pdf(paste0(&quot;~/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_zoomed.pdf&quot;), width=6, height=7)
 p
 dev.off()
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_justchip.pdf&quot;), width=6, height=3)
+pdf(paste0(&quot;~/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_justchip.pdf&quot;), width=6, height=3)
 ChIP_track
 dev.off()
 
@@ -4250,7 +4287,7 @@ cov_plot&lt;-CoveragePlot(object=donkey, region=region,  assay=&quot;CTpeaks&quo
 
  p&lt;-CombineTracks(plotlist=list(cov_plot,ChIP_track,link_plotA, k27_track, motif_track, gene_plot), heights=c(6,3,2,1,1,2))
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_byCT.pdf&quot;), width=6, height=7)
+pdf(paste0(&quot;~/scMultiomics_AD/ZEB1_trio_GABRA5_linkPlot_byCT.pdf&quot;), width=6, height=7)
 p
 dev.off()</code></pre>
 <pre class="r"><code>df&lt;-data.frame(ZEB1=data@assays$RNA@data[&quot;ZEB1&quot;,], GABRA5=data@assays$RNA@data[&quot;GABRA5&quot;,], Status=data$Status, ct=data$predicted.id, subs=data$subs)
@@ -4274,7 +4311,7 @@ stat.test2 &lt;- stat.test2 %&gt;% add_xy_position(x = &quot;subs&quot;)
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/ZEB1_GABRA5_neuronSubtypes.pdf&quot;, width=8, height=5)
+pdf(&quot;~/scMultiomics_AD/ZEB1_GABRA5_neuronSubtypes.pdf&quot;, width=8, height=5)
 ggplot(df2, aes(x=subs,y=ZEB1,fill=Status))+geom_boxplot()+theme_classic()+stat_pvalue_manual(stat.test, label=&quot;p&quot;)
 ggplot(df2, aes(x=subs,y=GABRA5,fill=Status))+geom_boxplot()+theme_classic()
 dev.off()</code></pre>
@@ -4331,7 +4368,7 @@ ht1=Heatmap(acc.scale, cluster_rows=T,show_row_dend=F,cluster_columns=F,col=colo
 ht2=Heatmap(gex.scale, cluster_rows=F,show_row_dend=F,cluster_columns=F,col=colorRamp2(c(quantile(gex.scale, probs=0.05, na.rm=T),0,quantile(gex.scale, probs=0.95, na.rm=T)),viridis(3)), name=&quot;Expression  Z&quot;,  show_column_names=F, show_row_names=F, column_title=NULL,row_names_gp = gpar(fontsize = 3), top_annotation=ha, right_annotation=ra,  row_title_gp=gpar(fontsize=0), use_raster=T, raster_quality=5)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Acc_GEX_link_filtered.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Acc_GEX_link_filtered.pdf&quot;)
 ht1+ht2
 dev.off()</code></pre>
 </div>
@@ -4356,7 +4393,7 @@ p&lt;-melt(p)
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/AD_linksPerGene_filt.pdf&quot;, height=5,width=7)
+pdf(&quot;~/scMultiomics_AD/AD_linksPerGene_filt.pdf&quot;, height=5,width=7)
 a=ggplot(t, aes(x=log(value), color=variable,fill=variable))+geom_density(aes(y = ..count..), alpha=0.2, adjust=2)+xlab(&quot;log(Links per Gene)&quot;)+theme_classic()+
   scale_fill_manual(values=c(&quot;red&quot;,&quot;blue&quot;))+scale_color_manual(values=c(&quot;red&quot;,&quot;blue&quot;))+
   theme(axis.text=element_text(size=8), legend.position=&quot;none&quot;)+ylab(&quot;counts&quot;)+
@@ -4370,7 +4407,7 @@ dev.off()
 
 t$value2&lt;-ifelse(t$value&gt;39,40,t$value)
 p$value2&lt;-ifelse(p$value&gt;3, 4,p$value)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/AD_linksPerGene_Perm80.pdf&quot;, height=5,width=7)
+pdf(&quot;~/scMultiomics_AD/AD_linksPerGene_Perm80.pdf&quot;, height=5,width=7)
 a=ggplot(t, aes(x=value2, color=variable,fill=variable))+geom_histogram(position=&quot;dodge&quot;, alpha=0.2, binwidth=2)+xlab(&quot;Links per Gene&quot;)+theme_classic()+
   scale_fill_manual(values=c(&quot;red&quot;,&quot;blue&quot;))+scale_color_manual(values=c(&quot;red&quot;,&quot;blue&quot;))+
   theme(axis.text=element_text(size=8), legend.position=&quot;none&quot;)+ylab(&quot;counts&quot;)+
@@ -4416,7 +4453,7 @@ tab2&lt;-tab2[names(tab)] ## do same order
 u&lt;-upset(fromExpression(tab), nintersects=12, nsets=6,   sets.bar.color=c(
   &quot;cornflowerblue&quot;,&quot;mediumorchid3&quot;,&quot;seagreen3&quot;,&quot;coral3&quot;,&quot;darkgoldenrod1&quot;,&quot;firebrick&quot;), main.bar.color=&quot;red3&quot;, text.scale=1.3  , mainbar.y.label=&quot;AD Links&quot;, mainbar.y.max=60000, show.numbers=F, keep.order=T, order.by=c(&quot;freq&quot;,&quot;degree&quot;))
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/AD_FL_upset_filt_XY.pdf&quot;, width=8, height=5)
+pdf(&quot;~/scMultiomics_AD/AD_FL_upset_filt_XY.pdf&quot;, width=8, height=5)
 u
 dev.off()
 
@@ -4424,13 +4461,13 @@ dev.off()
 u2&lt;-upset(fromExpression(tab2), nintersects=12, nsets=6,  sets.bar.color=c(
   &quot;cornflowerblue&quot;,&quot;seagreen3&quot;,&quot;coral3&quot;,&quot;darkgoldenrod1&quot;,&quot;mediumorchid3&quot;,&quot;firebrick&quot;), main.bar.color=&quot;blue&quot;, text.scale=1.3,  mainbar.y.label=&quot;Ctrl Links&quot;, mainbar.y.max=60000, show.numbers=F, keep.order=T, order.by=c(&quot;freq&quot;,&quot;degree&quot;))
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Ctrl_FL_upset_filt_XY.pdf&quot;, width=8, height=5)
+pdf(&quot;~/scMultiomics_AD/Ctrl_FL_upset_filt_XY.pdf&quot;, width=8, height=5)
 u2
 dev.off()</code></pre>
 </div>
 <div id="d-annotation" class="section level3">
 <h3>D) annotation</h3>
-<pre class="r"><code>load(&quot;/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
+<pre class="r"><code>load(&quot;~/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
 enc=full_annot_encode_cre_def_GR
 enc&lt;-enc[!grepl(&quot;iCell&quot;,enc$accesionLabel),]
 u2&lt;-unique(c2.2)
@@ -4461,7 +4498,7 @@ df$annot&lt;-rownames(df)
 df&lt;-melt(df)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Link_annot_byCT_filtered_encode2.pdf&quot;, width=8, height=3)
+pdf(&quot;~/scMultiomics_AD/Link_annot_byCT_filtered_encode2.pdf&quot;, width=8, height=3)
 ggplot(df, aes(x=value, y=variable, fill=annot))+geom_bar(stat=&quot;identity&quot;)+xlab(&quot;Proportion of Linked peaks&quot;)+ylab(&quot;Cell type&quot;)+theme_classic()+scale_fill_manual(values=c(&quot;dodgerblue&quot;,&quot;gold&quot;,&quot;lightpink&quot;,&quot;orange&quot;,&quot;red&quot;,&quot;forestgreen&quot;),labels=c(&quot;CTCF-only&quot;,&quot;dELS&quot;,&quot;DNase-H3K4me3&quot;,&quot;pELS&quot;,&quot;PLS&quot;,&quot;other&quot;))+theme(legend.position=&quot;right&quot;, axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))
 dev.off()
 
@@ -4504,12 +4541,12 @@ df$dir&lt;-&quot;pos&quot;
 df2$dir&lt;-&quot;neg&quot;
 df&lt;-rbind(df, df2)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Link_annot_byCT_filtered_encode.pdf&quot;, width=5, height=8)
+pdf(&quot;~/scMultiomics_AD/Link_annot_byCT_filtered_encode.pdf&quot;, width=5, height=8)
 ggplot(df, aes(y=value, x=dir, fill=annot))+geom_bar(stat=&quot;identity&quot;)+xlab(&quot;Proportion of Linked peaks&quot;)+ylab(&quot;Cell type&quot;)+theme_classic()+scale_fill_brewer(palette=&quot;Dark2&quot;)+theme(legend.position=&quot;right&quot;, axis.text=element_text(size=12),axis.title=element_text(size=15), legend.text=element_text(size=12))+facet_wrap(~variable)
 dev.off()</code></pre>
 <div id="enrichment" class="section level5">
 <h5>enrichment</h5>
-<pre class="r"><code>load(&quot;/cluster/home/broberts/Common_Data_Repository/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
+<pre class="r"><code>load(&quot;~/iCellGABA_CRE_ENCODEstyle_GR.Rvar&quot;)
 enc=full_annot_encode_cre_def_GR
 enc&lt;-enc[!grepl(&quot;iCell&quot;,enc$accesionLabel),]
 
@@ -4618,7 +4655,7 @@ df&lt;-rbind(Atab, Etab, Itab, Otab, Mtab)
 df$color&lt;-paste0(df$Specific,&quot;-&quot;,df$K27)
 df$color&lt;-ifelse(df$color==&quot;FALSE-FALSE&quot;,&quot;TRUE-FALSE&quot;, df$color)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Linked_peaks_olapk27_barPlot_filtered_XY.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Linked_peaks_olapk27_barPlot_filtered_XY.pdf&quot;)
 ggplot(df, aes(y=Freq/1000, x=Specific,  fill=K27))+geom_bar(stat=&quot;identity&quot;, color=&quot;grey40&quot;)+ theme_classic()+ylab(&quot;##  Linked peaks (x1,000)&quot;) + xlab(&quot;&quot;)+scale_x_discrete(labels=c(&quot;Shared&quot;, &quot;Specific&quot;))+
   theme(axis.text.x=element_text(angle=90, size=15), plot.title=element_text(hjust=0.5), legend.position=&quot;top&quot;, axis.title.y=element_text(size=17), legend.title=element_text(size=0), legend.text=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(~ct,  ncol=5,  strip.position=&quot;bottom&quot;) +scale_fill_manual(labels=c(&quot;No Overlap&quot;,&quot;Overlap H3K27ac&quot;),values=c(&quot;grey80&quot;,&quot;darkseagreen2&quot;))
 dev.off()
@@ -4627,7 +4664,7 @@ dev.off()
 
 df$ctSpec&lt;-ifelse(df$Specific==T, &quot;Specific&quot;,&quot;Shared&quot;)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Linked_peaks_olapk27_barPlot_filtered_split.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Linked_peaks_olapk27_barPlot_filtered_split.pdf&quot;)
 ggplot(df, aes(y=Freq/1000, x=ct,  fill=K27))+geom_bar(stat=&quot;identity&quot;, color=&quot;grey40&quot;)+ theme_classic()+ylab(&quot;##  Linked peaks (x1,000)&quot;) + xlab(&quot;&quot;)+
   theme(axis.text.x=element_text(angle=90, size=15), plot.title=element_text(hjust=0.5), legend.position=&quot;top&quot;, axis.title.y=element_text(size=17), legend.title=element_text(size=0), legend.text=element_text(size=15), axis.text.y=element_text(size=15))+scale_fill_manual(labels=c(&quot;No Overlap&quot;,&quot;Overlap H3K27ac&quot;),values=c(&quot;grey80&quot;,&quot;darkseagreen2&quot;))+facet_wrap(~ctSpec, scales=&quot;free&quot;)
 dev.off()
@@ -4736,13 +4773,13 @@ gene_plot&lt;-AnnotationPlot(data, region=region)
 
 p&lt;-CombineTracks(plotlist=list(cov_plot,link_plotA, bgp,gene_plot), heights=c(6,2,1,2))
 
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/&quot;,gene,&quot;_linkPlot.pdf&quot;), width=8, height=8)
+pdf(paste0(&quot;~/scMultiomics_AD/&quot;,gene,&quot;_linkPlot.pdf&quot;), width=8, height=8)
 p
 dev.off()
 
 
 kansl1&lt;-data.frame(kansl1=as.vector(data[[&quot;RNA&quot;]][&quot;KANSL1&quot;,]), celltype=data$predicted.id, Status=data$Status)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/KANSL1_boxplots.pdf&quot;, width=8,height=2)
+pdf(&quot;~/scMultiomics_AD/KANSL1_boxplots.pdf&quot;, width=8,height=2)
 ggplot(kansl1[!(kansl1$celltype %in% c(&quot;Endothelial&quot;,&quot;Pericytes&quot;)),], aes(x=Status,y=kansl1, fill=celltype))+geom_boxplot()+theme_classic()+facet_wrap(~celltype, ncol=6)+ylab(&quot;KANSL1 expr.&quot;)+scale_fill_manual(values=c(&quot;darkgoldenrod1&quot;,&quot;cornflowerblue&quot;,&quot;seagreen3&quot;,&quot;mediumorchid3&quot;,&quot;coral3&quot;,&quot;firebrick&quot;))+theme(legend.position=&quot;none&quot;)
 dev.off()</code></pre>
 </div>
@@ -4764,7 +4801,7 @@ stat.test &lt;- df %&gt;%
   add_significance(&quot;p.adj&quot;)
 stat.test &lt;- stat.test %&gt;% add_xy_position(x = &quot;Var2&quot;)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/ALL_CT_BOXPLOT_prop_tt.pdf&quot;, width=10,height=5)
+pdf(&quot;~/scMultiomics_AD/ALL_CT_BOXPLOT_prop_tt.pdf&quot;, width=10,height=5)
 ggboxplot(df, y=&quot;Freq&quot;,x=&quot;Var2&quot;, fill=&quot;Status&quot;, alpha=0.8)+stat_pvalue_manual(stat.test, label=&quot;p&quot;)+xlab(&quot;&quot;)+scale_fill_manual(values=c(&quot;red&quot;,&quot;blue&quot;))
 dev.off()</code></pre>
 </div>
@@ -4774,7 +4811,7 @@ dev.off()</code></pre>
 cells=rownames(md[which(md$subs !=&quot;Exc_10&quot;),])
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/All_subclusters_WNN.pdf&quot;, width=15, height=5)
+pdf(&quot;~/scMultiomics_AD/All_subclusters_WNN.pdf&quot;, width=15, height=5)
 p1&lt;-DimPlot(data, cells=cells,reduction=&quot;harmony.rna.umap&quot;,group.by=&quot;subs&quot;,  pt.size=0.1,cols=c(
       &quot;Ast_0&quot;=&quot;darkgoldenrod1&quot;,&quot;Ast_1&quot;=&quot;darkgoldenrod3&quot;, &quot;Ast_2&quot;=&quot;gold2&quot;,
       &quot;Ast_3&quot;=&quot;goldenrod&quot;,&quot;Ast_4&quot;=&quot;goldenrod1&quot;,
@@ -4832,7 +4869,7 @@ p4&lt;-FeaturePlot(data,cells=cells, features=&quot;ATAC.weight&quot;, reduction
 
 plot_grid(p1,p2,p3, ncol=3)
 dev.off()
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/All_subclusters_WNN_part2.pdf&quot;, width=10, height=10)
+pdf(&quot;~/scMultiomics_AD/All_subclusters_WNN_part2.pdf&quot;, width=10, height=10)
 p4
 p1+theme(legend.position=&quot;bottom&quot;)
 dev.off()</code></pre>
@@ -4867,7 +4904,7 @@ p5&lt;-DimPlot(data, cells=cells,reduction=&quot;wnn.umap&quot;, group.by=&quot;
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/WNN_diseasestat.pdf&quot;, width=6, height=6)
+pdf(&quot;~/scMultiomics_AD/WNN_diseasestat.pdf&quot;, width=6, height=6)
 
 p2
 
@@ -4889,15 +4926,15 @@ p1&lt;-FeaturePlot(data,cells=cells, reduction=&quot;wnn.umap&quot;, features=&q
 p2&lt;-FeaturePlot(data, cells=cells,reduction=&quot;wnn.umap&quot;, features=&quot;RIN&quot;, pt.size=0.1)&amp;ggtitle(&quot;RIN&quot;)&amp;scale_color_viridis(option=&quot;rocket&quot;
 )&amp; theme(legend.position=&quot;bottom&quot;)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/WNN_moreStats.pdf&quot;, width=6, height=6)
+pdf(&quot;~/scMultiomics_AD/WNN_moreStats.pdf&quot;, width=6, height=6)
 p1
 p2
 dev.off()</code></pre>
 </div>
 <div id="snp-olap" class="section level3">
 <h3>snp-olap</h3>
-<pre class="r"><code>GWAS_snps&lt;-import(&quot;~/myers/scAnalysis/FUMA_hg38_LD.bed&quot;, format=&quot;bed&quot;)
-snp_tmp&lt;-read.csv(&quot;/cluster/home/irodriguez/Myers_Lab/AD_supp/scRNAseq/FUMA/AD_Wightman/GWAS_AD_Wightman_SNPs_including_linkage_disequilibrium.csv&quot;)
+<pre class="r"><code>GWAS_snps&lt;-import(&quot;~//FUMA_hg38_LD.bed&quot;, format=&quot;bed&quot;)
+snp_tmp&lt;-read.csv(&quot;~/AD_Wightman/GWAS_AD_Wightman_SNPs_including_linkage_disequilibrium.csv&quot;)
 seqnames&lt;-paste(&quot;chr&quot;,sapply(strsplit(snp_tmp$uniqID,&quot;:&quot;), `[`, 1),sep=&quot;&quot;)
 start&lt;-sapply(strsplit(snp_tmp$uniqID,&quot;:&quot;), `[`, 2)
 start&lt;-as.numeric(start)
@@ -4905,7 +4942,7 @@ end&lt;-start+1
 df&lt;-data.frame(seqnames=seqnames, start=start, end=end)
 snp2&lt;-GRanges(df)
 snp2$rs&lt;-snp_tmp$rsID
-ch&lt;-import.chain(&quot;~/myers/liftover/hg19ToHg38.over.chain&quot;)
+ch&lt;-import.chain(&quot;~/hg19ToHg38.over.chain&quot;)
 snp38&lt;-liftOver(snp2, ch)
 snp38&lt;-unlist(snp38)  ## lost 7
 snp1_2&lt;-c(GWAS_snps,snp38)
@@ -4943,13 +4980,13 @@ df2&lt;-t(df2)
 frac&lt;-paste0(df2[,2],&quot;/&quot;,(df2[,1]+df2[,2]))
 
 df$frac&lt;-frac
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Peak_olap_ADsnp.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Peak_olap_ADsnp.pdf&quot;)
 ggplot(df, aes(y=ct, x=count*100, fill=ct))+geom_bar(stat=&quot;identity&quot;)+theme_classic()+ylab(&quot;&quot;)+xlab(&quot;% of Linked-Peaks Overlap AD SNPs&quot;)+scale_fill_manual(values=c(&quot;darkgoldenrod1&quot;,&quot;cornflowerblue&quot;,&quot;seagreen3&quot;,&quot;mediumorchid3&quot;,&quot;coral3&quot;,&quot;firebrick&quot;))+theme(legend.position=&quot;none&quot;)+geom_text(aes(label=frac), nudge_x=0.05)+xlim(0,0.5)
 dev.off()</code></pre>
 </div>
 <div id="s3-ab" class="section level3">
 <h3>S3 A,B)</h3>
-<pre class="r"><code>gtf&lt;-import(&quot;~/myers/quantseq/STAR/genes.gtf&quot;)
+<pre class="r"><code>gtf&lt;-import(&quot;~/STAR/genes.gtf&quot;)
 gtf&lt;-gtf[which(gtf$type==&quot;gene&quot;),]
 gtf$TSS&lt;-ifelse(strand(gtf)==&quot;+&quot;, start(gtf), end(gtf))
 TSS.df&lt;-data.frame(gene=gtf$gene_name, TSS=gtf$TSS)
@@ -4958,19 +4995,19 @@ tmp$p1&lt;-abs(tmp$start-tmp$TSS)
 tmp$p2&lt;-abs(tmp$end-tmp$TSS)
 tmp$distLinkedGene&lt;-ifelse(tmp$p1&lt;tmp$p2, tmp$p1, tmp$p2)
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Distance_LinkedTSS_byScore.pdf&quot;,width=4,height=4)
+pdf(&quot;~/scMultiomics_AD/Distance_LinkedTSS_byScore.pdf&quot;,width=4,height=4)
 ggplot(tmp[which(tmp$score&gt;0.2 &amp; tmp$distLinkedGene&lt;=500000),], aes(x=distLinkedGene, y=abs(score)))+geom_bin_2d(bins=100)+theme_classic()+xlab(&quot;Distance to Linked-Gene TSS&quot;)+ylab(&quot;Abs. Score&quot;)+scale_fill_continuous(type = &quot;viridis&quot;)
 dev.off()
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Distance_LinkedTSS_byScore_boxplot.pdf&quot;,width=4,height=4)
+pdf(&quot;~/scMultiomics_AD/Distance_LinkedTSS_byScore_boxplot.pdf&quot;,width=4,height=4)
 ggplot(tmp[which(tmp$score&gt;0.2 &amp; tmp$distLinkedGene&lt;=500000),], aes(y=distLinkedGene, x=bin))+geom_boxplot()+theme_classic()+ylab(&quot;Distance to Linked-Gene TSS&quot;)+xlab(&quot;Abs. Score&quot;)
 dev.off()
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ## size
-gtf&lt;-import(&quot;~/myers/quantseq/STAR/genes.gtf&quot;)
+gtf&lt;-import(&quot;~/STAR/genes.gtf&quot;)
 gtf&lt;-gtf[which(gtf$type==&quot;gene&quot;),]
 gtf$size&lt;-width(gtf)
 geneSize&lt;-data.frame(gene=gtf$gene_name, size=gtf$size)
@@ -5002,7 +5039,7 @@ t.test(mer3[which(mer3$bin40==&quot;&gt;=40&quot;),]$`abs(score)`, mer3[which(me
 t.test(mer3[which(mer3$bin40==&quot;other&quot;),]$`abs(score)`, mer3[which(mer3$bin40==&quot;&lt;=2&quot;),]$`abs(score)`)
 
 ## ## ## DON&#39;T INCLUDE OTHER
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Score_Expression_GeneSize_by_LinkPerGene.pdf&quot;, width=10, height=6)
+pdf(&quot;~/scMultiomics_AD/Score_Expression_GeneSize_by_LinkPerGene.pdf&quot;, width=10, height=6)
 p1&lt;-ggplot(mer[which(mer$bin40!=&quot;other&quot;),], aes(x=bin40, y=log10(size), color=bin40))+geom_boxplot()+theme_classic()+ylab(&quot;log10(Gene Length)&quot;)+ stat_compare_means(method = &quot;anova&quot;)+theme(legend.position=&quot;none&quot;)
 
 p2&lt;-ggplot(mer2[which(mer2$bin40!=&quot;other&quot; &amp; mer2$sumR&lt;12622522),], aes(x=bin40, y=log10(sumR), color=bin40))+geom_boxplot()+theme_classic()+ylab(&quot;log10(Total UMIs)&quot;)+ stat_compare_means(method = &quot;t.test&quot;)+theme(legend.position=&quot;none&quot;)
@@ -5016,7 +5053,7 @@ mer$bin40&lt;-factor(mer$bin40, levels=c(&quot;&lt;=2&quot;, &quot;other&quot;,&
 mer2$bin40&lt;-factor(mer2$bin40, levels=c(&quot;&lt;=2&quot;, &quot;other&quot;,&quot;&gt;=40&quot;))
 mer3$bin40&lt;-factor(mer3$bin40, levels=c(&quot;&lt;=2&quot;, &quot;other&quot;,&quot;&gt;=40&quot;))
 mycomp&lt;-list(c(&quot;&lt;=2&quot;, &quot;&gt;=40&quot;), c(&quot;other&quot;,&quot;&gt;=40&quot;), c(&quot;&lt;=2&quot;,&quot;other&quot;))
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Score_Expression_GeneSize_by_LinkPerGene.pdf&quot;, width=10, height=6)
+pdf(&quot;~/scMultiomics_AD/Score_Expression_GeneSize_by_LinkPerGene.pdf&quot;, width=10, height=6)
 p1&lt;-ggplot(mer, aes(x=bin40, y=log10(size), color=bin40))+geom_boxplot()+stat_compare_means(comparisons=mycomp,method=&quot;t.test&quot;, label=&quot;p.signif&quot;)+theme_classic()+theme(legend.position=&quot;none&quot;)
 
 p2&lt;-ggplot(mer2[which(mer2$sumR&lt;12622522),], aes(x=bin40, y=log10(sumR), color=bin40))+geom_boxplot()+theme_classic()+ylab(&quot;log10(Total UMIs)&quot;)+ stat_compare_means(comparisons=mycomp,method = &quot;t.test&quot;,label=&quot;p.signif&quot;)+theme(legend.position=&quot;none&quot;)
@@ -5044,7 +5081,7 @@ degs_down&lt;-degs[which(degs$cat==&quot;down&quot;),]
 jD$deg&lt;-ifelse(jD$Var1 %in% degs_up$gene, &quot;up&quot;,
                ifelse(jD$Var1 %in% degs_down$gene,&quot;down&quot;,&quot;NS&quot;))
 
-ad_related&lt;-read.csv(&quot;~/myers/scAnalysis/AD_gwas_genes_012822.csv&quot;)
+ad_related&lt;-read.csv(&quot;~/AD_gwas_genes_012822.csv&quot;)
 jD$label&lt;-ifelse(jD$Var1 %in% c(ad_related$Gene, &quot;MAPT&quot;), jD$deg, &quot;NS&quot;)## only keep degs that are know ad related
 jD$size&lt;-as.factor(ifelse(jD$label==&quot;NS&quot;, 0, 1))
 jD$alpha=as.factor(ifelse(jD$deg==&quot;NS&quot;, 0,
@@ -5059,7 +5096,7 @@ jD$stresiduals&lt;-rstandard(lmod)
 jD2&lt;-jD[which((jD$stresiduals&gt;3| jD$residuals&lt; -3)&amp; jD$deg !=&quot;NS&quot;),]
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Peaks_per_gene_wDEGs_80Perm_StRes3.pdf&quot;, width=4, height=4)
+pdf(&quot;~/scMultiomics_AD/Peaks_per_gene_wDEGs_80Perm_StRes3.pdf&quot;, width=4, height=4)
 ggplot(jD, aes(x=AD, y=Ctrl, color=deg))+geom_point(aes(color=deg, alpha=alpha),size=0.5)+ scale_color_manual(values=c(&quot;blue&quot;,&quot;grey50&quot;,&quot;red&quot;))+xlab(&quot;##  of connected Peaks (AD)&quot;)+ylab(&quot;##  of connected Peaks (Ctrl)&quot;)+theme_classic()+theme(legend.position=&quot;none&quot;, axis.text=element_text(size=12), axis.title=element_text(size=14))+geom_text_repel(data=jD[which(jD$alpha==1&amp;jD$deg!=&quot;NS&quot;),], aes(x=AD,y=Ctrl,label=Var1), box.padding=1,point.padding=0,label.padding=1,segment.colour=&quot;black&quot;, size=3, min.segment.length=0, max.overlaps=60)+geom_abline(slope=1.092114,intercept=0)+geom_abline(slope=1.092114, intercept=24.33, linetype=&quot;dashed&quot;)+geom_abline(slope=1.092114, intercept=-19.9523, linetype=&quot;dashed&quot;)+scale_alpha_discrete(range=c(0.1,1))
 dev.off()
 
@@ -5072,7 +5109,7 @@ jD$fitted.values&lt;-lmod$fitted.values
 jD&lt;-jD[order(jD$residuals),]
 jD$Rank&lt;-seq(1,nrow(jD))
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Peaks_per_gene_Residuals.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Peaks_per_gene_Residuals.pdf&quot;)
 ggplot(jD, aes(x=Rank, y=residuals, color=deg))+geom_jitter(width=6)+theme_classic()+scale_color_manual(values=c(&quot;blue&quot;,&quot;grey60&quot;,&quot;red&quot;))+theme(legend.position=&quot;none&quot;)+facet_wrap(~deg)+geom_text_repel(data=jD[which(jD$residuals&gt;30 | jD$residuals&lt; -30),], aes(x=Rank, y=residuals, label=Var1),box.padding=1,point.padding=0.3,segment.colour=&quot;black&quot;, size=2, min.segment.length=0, max.overlaps=80)
 dev.off()
 
@@ -5089,7 +5126,7 @@ saveWidget(as_widget(ggplotly(p)), file=&quot;plotly_Links_per_gene.html&quot;, 
 <h1>Revision</h1>
 <div id="gene-body" class="section level2">
 <h2>Gene body</h2>
-<pre class="r"><code>gtf&lt;-import(&quot;~/myers/quantseq/pool/STAR/genes.gtf&quot;)
+<pre class="r"><code>gtf&lt;-import(&quot;~/STAR/genes.gtf&quot;)
 gtf&lt;-gtf[which(gtf$type==&quot;gene&quot;),]
 
 c2&lt;-GRanges(c2)
@@ -5265,7 +5302,7 @@ gene_plot&lt;-AnnotationPlot(data, region=region)
 
 
 p&lt;-CombineTracks(plotlist=list(cov_plot,link_plotA,dap_plot,gene_plot), heights=c(4,2, 1,2))
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/&quot;,gene,&quot;_linkPlot_w_DAP_&quot;,CT,&quot;.pdf&quot;), width=8, height=5)
+pdf(paste0(&quot;~/scMultiomics_AD/&quot;,gene,&quot;_linkPlot_w_DAP_&quot;,CT,&quot;.pdf&quot;), width=8, height=5)
 p
 dev.off()</code></pre>
 </div>
@@ -5370,14 +5407,14 @@ ht2=Heatmap(go, cluster_rows=T,show_row_dend=F,cluster_columns=T,col=colorRamp2(
     ))
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/CellType-specific_linked_genes_GO.pdf&quot;, width=8, height=5)
+pdf(&quot;~/scMultiomics_AD/CellType-specific_linked_genes_GO.pdf&quot;, width=8, height=5)
 ht2
 dev.off()</code></pre>
 </div>
 </div>
 <div id="mic-links" class="section level2">
 <h2>Mic links</h2>
-<pre class="r"><code>part1&lt;-import(&quot;/cluster/home/aanderson/scMultiomics_AD/reanalyze_Microglia2/outs/analysis/feature_linkage/feature_linkage.bedpe&quot;, format=&quot;bedpe&quot;)
+<pre class="r"><code>part1&lt;-import(&quot;~/Microglia/outs/analysis/feature_linkage/feature_linkage.bedpe&quot;, format=&quot;bedpe&quot;)
 
 
 
@@ -5452,7 +5489,7 @@ signac.gr$group2&lt;-ifelse(signac.gr$group==&quot;AD&quot;,0,
                          ifelse(signac.gr$group==&quot;common&quot;,1,2))
 
 
-snps&lt;-read.table(&quot;/cluster/projects/ADFTD/Colombia/2019.12.20_Escaper-Arrays/PLINK_060420_1223/2021.11.30-E280A-340/mac3_mac1_EPACTS.txt&quot;, header=F)
+snps&lt;-read.table(&quot;~/mac3_mac1_EPACTS.txt&quot;, header=F)
 colnames(snps)[1:3]&lt;-c(&quot;chr&quot;,&quot;start&quot;,&quot;end&quot;)
 snps$chr&lt;-paste0(&quot;chr&quot;,snps$chr)
 snps.gr&lt;-GRanges(snps)
@@ -5488,7 +5525,7 @@ gene_plot&lt;-AnnotationPlot(data, region=region)
 
 
 p&lt;-CombineTracks(plotlist=list(cov_plot,link_plotA, bgp,gene_plot), heights=c(4,2, 1,2))
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/&quot;,gene,&quot;_linkPlot_w_snp.pdf&quot;), width=8, height=8)
+pdf(paste0(&quot;~/scMultiomics_AD/&quot;,gene,&quot;_linkPlot_w_snp.pdf&quot;), width=8, height=8)
 p
 dev.off()</code></pre>
 </div>
@@ -5517,7 +5554,7 @@ write.csv(df_test, paste0(&quot;~/scMultiomics_AD/LinkPerm/Ctrl.barcodes.&quot;,
 ##Call Links with cellranger arc
 
 ##bring perms in and reformat
-files=as.list(readLines(&quot;/cluster/home/aanderson/scMultiomics_AD/LinkPerm/random7/Linkages.txt&quot;))
+files=as.list(readLines(&quot;~/scMultiomics_AD/LinkPerm/random7/Linkages.txt&quot;))
 
 FT_list=lapply(files,function(x){
   FT=import(con=x,format=&quot;bedpe&quot;)
@@ -5566,7 +5603,7 @@ ll&lt;-ll[-1,]
 ll$propSpec&lt;-(ll[,3]+ll[,5])/(ll[,3]+ll[,4]+ll[,5])
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/LinkPerm_propSpec_allCombinations_221118.pdf&quot;, width=5,height=4)
+pdf(&quot;~/scMultiomics_AD/LinkPerm_propSpec_allCombinations_221118.pdf&quot;, width=5,height=4)
 ggplot(ll, aes(x=propSpec))+geom_histogram(bins=50)+theme_classic()+geom_vline(xintercept=0.359041, color=&quot;red&quot;, )+xlab(&quot;Proportion group-specific&quot;)
 dev.off()
 
@@ -5665,7 +5702,7 @@ sum(me$link %in% c2$link)/nrow(me)
 
 
 df&lt;-data.frame(PDE10A=AD@assays$RNA@data[&quot;PDE10A&quot;,], peak=AD@assays$ATAC@data[&quot;chr6-165694243-165694700&quot;,], ct=AD$ct,id=AD$id)
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Cor_psuedobulk_links_PDE10A.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Cor_psuedobulk_links_PDE10A.pdf&quot;)
 ggplot(df, aes(x=PDE10A,y=peak, color=id, shape=ct))+geom_point()
 dev.off()</code></pre>
 <pre><code>                       10X</code></pre>
@@ -5674,7 +5711,6 @@ dev.off()</code></pre>
   AD       4066  15585   1513  36953</code></pre>
 pBulk common 1525 15698 1071 10501 Ctrl 403 4482 1746 20136 NA 34837 169281 69698 0</li>
 </ul>
-<p>We additionally evaluated the effect of cell-individual membership by calling links on counts that were pseudobulked by individual and cell type. A total of 16,421 links were identified, of which, 60% were found in the full link set. Additionally, 63% of shared links that we identified as AD-specific in our original analysis were also called as AD-specific in the pseudobulk analysis, showing that our approach has high concordance with methods that account for cell-individual membership. However, we find that a pseudobulk link analysis is not well suited for our study given its small sample size, and that permutation analyses better address the question of an individual’s contribution to link calling. Pseudobulking with a small sample size decreases the dynamic range across observations and leads to decreased sensitivity and fewer links called, but this approach could be more appropriate for studies with a larger sample size. Through our permutation analysis, we can assess the contribution of an AD individual to a link call. We identified a portion of our links that are only present in AD and not detectable across any individual controls (not detectable in any permutation where control individuals were included).</p>
 </div>
 </div>
 <div id="lit-search-validation" class="section level1">
@@ -5684,7 +5720,7 @@ pBulk common 1525 15698 1071 10501 Ctrl 403 4482 1746 20136 NA 34837 169281 6969
 <p><a href="https://www-science-org.ezproxy3.lhl.uab.edu/doi/full/10.1126/science.aay0793" class="uri">https://www-science-org.ezproxy3.lhl.uab.edu/doi/full/10.1126/science.aay0793</a></p>
 <div id="neu" class="section level4">
 <h4>neu</h4>
-<pre class="r"><code>neu&lt;-read.table(&quot;/cluster/home/aanderson/myers/scAnalysis/NOTT_hg38_neu_interactome.bed&quot;)
+<pre class="r"><code>neu&lt;-read.table(&quot;~/NOTT_hg38_neu_interactome.bed&quot;)
 
 colnames(neu)&lt;-neu[1,]
 neu&lt;-neu[-1,]
@@ -5763,7 +5799,7 @@ c2$PLACseq_mic&lt;-ifelse(c2$link %in% link_keep, T,F)</code></pre>
 </div>
 <div id="olig" class="section level4">
 <h4>olig</h4>
-<pre class="r"><code>olig&lt;-read.table(&quot;/cluster/home/aanderson/myers/scAnalysis/NOTT_hg38_olig_interactome.bed&quot;)
+<pre class="r"><code>olig&lt;-read.table(&quot;~/NOTT_hg38_olig_interactome.bed&quot;)
 
 colnames(olig)&lt;-olig[1,]
 olig&lt;-olig[-1,]
@@ -5807,11 +5843,11 @@ c2$PLACseq_olig&lt;-ifelse(c2$link %in% link_keep, T,F)</code></pre>
 </div>
 <div id="kampmann-mpra" class="section level2">
 <h2>Kampmann MPRA</h2>
-<pre class="r"><code>mpra&lt;-read.csv(&quot;~/myers/scAnalysis/lit_search_validation/Full_Cooper_MPRA_sumStats.csv&quot;)
+<pre class="r"><code>mpra&lt;-read.csv(&quot;~/lit_search_validation/Full_Cooper_MPRA_sumStats.csv&quot;)
 mpra$start&lt;-mpra$pos
 mpra$end&lt;-mpra$start+1
 mpra&lt;-GRanges(mpra)
-ch&lt;-import.chain(&quot;~/myers/liftover/hg19ToHg38.over.chain&quot;)
+ch&lt;-import.chain(&quot;~/liftover/hg19ToHg38.over.chain&quot;)
 mpra&lt;-liftOver(mpra, ch)
 mpra&lt;-unlist(mpra)  
 
@@ -5846,7 +5882,7 @@ fisher.test(mat)</code></pre>
 <p>95 percent confidence interval: 1.459384 4.029969 sample estimates: odds ratio 2.417484</p>
 <div id="crispr-validated" class="section level4">
 <h4>crispr validated</h4>
-<pre class="r"><code>crispr&lt;-read.csv(&quot;~/myers/scAnalysis/lit_search_validation/Cooper_CRISPR_validated.csv&quot;)
+<pre class="r"><code>crispr&lt;-read.csv(&quot;~/lit_search_validation/Cooper_CRISPR_validated.csv&quot;)
 mp&lt;-as.data.frame(mpra)[,c(1,2,3,7)]
 crispr.pos&lt;-merge(crispr,mp,by.y=&quot;rsID&quot;,by.x=&quot;snp&quot;) ## get liftover positions from mpra grange
 ## add crispr-ex
@@ -5872,7 +5908,7 @@ c2.mic&lt;-c2.mic[which(c2.mic$Microglia==T),]
 
 cn$index&lt;-seq(1,length(cn))
 ## Doesn&#39;t have CLU/ other snp selected ones
-toTest&lt;-readRDS(&quot;~/myers/scAnalysis/22_restart/Links_toTest.rds&quot;)
+toTest&lt;-readRDS(&quot;~/22_restart/Links_toTest.rds&quot;)
 olap&lt;-findOverlaps(c2,cn)
 c2.neu&lt;-c2[queryHits(olap)]
 c2.neu$crispr.gene&lt;-cn[subjectHits(olap)]$gene
@@ -5912,7 +5948,7 @@ s[!duplicated(s$snp_target),]</code></pre>
 all&lt;-GRanges(all)
  all$peak&lt;-paste0(start(all),&quot;-&quot;,end(all))
 
- NPC&lt;-read.csv(&quot;~/myers/scAnalysis/lit_search_validation/Weiss_NPC_MPRA.csv&quot;)
+ NPC&lt;-read.csv(&quot;~/lit_search_validation/Weiss_NPC_MPRA.csv&quot;)
 NPC&lt;-NPC[,4:13]
 colnames(NPC)[c(6,7)]&lt;-c(&quot;start&quot;,&quot;end&quot;)
 NPC&lt;-NPC[is.na(NPC$start)==F,]
@@ -5945,7 +5981,7 @@ fisher.test(mat)</code></pre>
 </div>
 <div id="esc" class="section level3">
 <h3>ESC</h3>
-<pre class="r"><code>ESC&lt;-read.csv(&quot;~/myers/scAnalysis/lit_search_validation/Weiss_ESC_MPRA.csv&quot;)
+<pre class="r"><code>ESC&lt;-read.csv(&quot;~/lit_search_validation/Weiss_ESC_MPRA.csv&quot;)
 ESC&lt;-ESC[,4:13]
 colnames(ESC)[c(6,7)]&lt;-c(&quot;start&quot;,&quot;end&quot;)
 ESC&lt;-ESC[is.na(ESC$start)==F,]
@@ -5978,10 +6014,10 @@ fisher.test(mat)</code></pre>
 </div>
 <div id="uebbing-npc" class="section level2">
 <h2>Uebbing NPC</h2>
-<pre class="r"><code>uebbing&lt;-read.csv(&quot;~/myers/scAnalysis/lit_search_validation/Uebbing_NPC_MPRA.csv&quot;)
+<pre class="r"><code>uebbing&lt;-read.csv(&quot;~/lit_search_validation/Uebbing_NPC_MPRA.csv&quot;)
 uebbing&lt;-uebbing[,1:20]
 uebbing&lt;-GRanges(uebbing)
-ch&lt;-import.chain(&quot;~/myers/liftover/hg19ToHg38.over.chain&quot;)
+ch&lt;-import.chain(&quot;~/liftover/hg19ToHg38.over.chain&quot;)
 uebbing38&lt;-liftOver(uebbing, ch)
 uebbing&lt;-unlist(uebbing38)  ## lost 7
 
@@ -6010,13 +6046,13 @@ fisher.test(mat)</code></pre>
 </div>
 <div id="sure-hepg2-k562" class="section level2">
 <h2>SuRE Hepg2/ K562</h2>
-<pre class="r"><code>sure&lt;-read.table(&quot;/cluster/projects/ADFTD/SuRE/SuRE_SNP_table_181029.txt&quot;, sep=&quot;\t&quot;)
+<pre class="r"><code>sure&lt;-read.table(&quot;~/SuRE_SNP_table_181029.txt&quot;, sep=&quot;\t&quot;)
 colnames(sure)&lt;-sure[1,]
 sure&lt;-sure[-1,]
 colnames(sure)[3]&lt;-&quot;start&quot;
 sure$end&lt;-as.numeric(sure$start)+1
 sure&lt;-GRanges(sure)
-ch&lt;-import.chain(&quot;~/myers/liftover/hg19ToHg38.over.chain&quot;)
+ch&lt;-import.chain(&quot;~/liftover/hg19ToHg38.over.chain&quot;)
 sure38&lt;-liftOver(sure, ch)
 sure&lt;-unlist(sure38)  ## lost 7
 ## sure$sig&lt;-sure$k562.wilcox.p.value &lt;0.006192715 | sure$hepg2.wilcox.p.value &lt;0.00173121
@@ -6076,7 +6112,7 @@ fisher.test(mat)
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/lit_search_validation_OR.pdf&quot;, width=6, height=4)
+pdf(&quot;~/scMultiomics_AD/lit_search_validation_OR.pdf&quot;, width=6, height=4)
 ggplot(df[!(df$source %in% c(&quot;Bryois_eQTL_2022&quot;,&quot;GTEx_Brain_FC&quot;)),])+geom_bar(stat=&quot;identity&quot;,aes(y=source,x=OR), fill=&quot;slategray3&quot;)+geom_errorbar(aes(y=source,xmin=ymin,xmax=ymax))+theme_classic()+ylab(&quot;&quot;)+ggtitle(&quot;Enrichment in linked-peaks&quot;)
 dev.off()</code></pre>
 </div>
@@ -6087,7 +6123,7 @@ dev.off()</code></pre>
 <h3>background</h3>
 <pre class="r"><code>peaks&lt;-read.csv(&quot;~/scMultiomics_AD/CTpeaks_annotated.csv&quot;)
 peaks&lt;-GRanges(peaks)
-gtf&lt;-import(&quot;~/myers/quantseq/STAR/genes.gtf&quot;)
+gtf&lt;-import(&quot;~/quantseq/STAR/genes.gtf&quot;)
 gtf&lt;-gtf[which(gtf$type==&quot;start_codon&quot;),]
 gtf&lt;-gtf[!duplicated(gtf$gene_name),]
  rs&lt;-rowSums(data[[&quot;RNA&quot;]])
@@ -6100,8 +6136,7 @@ allPossible$link&lt;-paste0(seqnames(allPossible),&quot;:&quot;,start(allPossibl
 </div>
 <div id="gtex" class="section level3">
 <h3>GTEx</h3>
-<p>from: /cluster/home/lrizzardi/GTEx/GTEx_Analysis_v8_eQTL/Brain_Frontal_Cortex_BA9.v8.egenes.txt.gz</p>
-<pre class="r"><code> gtex&lt;-read.table(&quot;~/myers/scAnalysis/lit_search_validation/Brain_Frontal_Cortex_BA9.v8.egenes.txt&quot;, sep=&quot;\t&quot;)
+<pre class="r"><code> gtex&lt;-read.table(&quot;~/lit_search_validation/Brain_Frontal_Cortex_BA9.v8.egenes.txt&quot;, sep=&quot;\t&quot;)
 colnames(gtex)&lt;-gtex[1,]
 gtex&lt;-gtex[-1,]
 colnames(gtex)[15]&lt;-&quot;start&quot;
@@ -6140,8 +6175,8 @@ fisher.test(mat)
 </div>
 <div id="bryois-eqtl" class="section level3">
 <h3>Bryois eQTL</h3>
-<pre class="r"><code>qtl&lt;-read.csv(&quot;~/myers/scAnalysis//lit_search_validation/eQTL_Bryois.csv&quot;)
-pos&lt;-read.csv(&quot;~/myers/scAnalysis//lit_search_validation/eQTL_Bryois_snpPos.csv&quot;) ## this is 5% FDR filtered
+<pre class="r"><code>qtl&lt;-read.csv(&quot;~//lit_search_validation/eQTL_Bryois.csv&quot;)
+pos&lt;-read.csv(&quot;~//lit_search_validation/eQTL_Bryois_snpPos.csv&quot;) ## this is 5% FDR filtered
 colnames(pos)[c(5,6)]&lt;-c(&quot;seqnames&quot;,&quot;start&quot;)
 pos$end&lt;-pos$start+1
 pos&lt;-GRanges(pos)
@@ -6167,7 +6202,7 @@ nrow(t[which(t$True&gt;0),])/nrow(t) ## of the peaks that overlap eQTLs. 50% are
 
 
 library(SNPlocs.Hsapiens.dbSNP151.GRCh38)
-qtl&lt;-read.csv(&quot;~/myers/scAnalysis/eQTL_Bryois.csv&quot;)
+qtl&lt;-read.csv(&quot;~/eQTL_Bryois.csv&quot;)
 qtl&lt;-qtl[,c(1,2,4,10)]
 qtl&lt;-qtl[grepl(&quot;rs&quot;,qtl$SNP),]
 snps&lt;-SNPlocs.Hsapiens.dbSNP151.GRCh38
@@ -6216,7 +6251,7 @@ t&lt;-table(qtl.sig$olap, qtl.sig$link)</code></pre>
 <pre class="r"><code>qtl&lt;-read.csv(&quot;~/scMultiomics_AD/Link_overlap_Bryois_eQTLs.csv&quot;)
 
 
-guides&lt;-read.csv(&quot;~/myers/scrnaseq_cellranger/220729/feature_ref3.csv&quot;)
+guides&lt;-read.csv(&quot;~/feature_ref3.csv&quot;)
 
 c2&lt;-readRDS(&quot;~/scMultiomics_AD/AD_Ctrl_links_filt0.02_wPerm_wQval.rds&quot;)
 
@@ -6234,10 +6269,10 @@ atest&lt;-test[queryHits(olap)]
 atest$guide&lt;-guide
 atest$score&lt;-ifelse(atest$group==&quot;AD&quot;, atest$score.x, atest$score.y)
 atest&lt;-atest[order(abs(atest$score),decreasing=T),]
-rna&lt;-read.table(&quot;~/myers/scAnalysis/HEK/tpms.tsv&quot;, sep=&quot;\t&quot;, header=T)
+rna&lt;-read.table(&quot;~/HEK/tpms.tsv&quot;, sep=&quot;\t&quot;, header=T)
 rna&lt;-rna[,c(1,2,75)] ## nucleus 3&#39; HEK
 
-k27&lt;-import(&quot;~/myers/scAnalysis/HEK/H3k27ac_HEK.bb&quot;) ## it is hg38
+k27&lt;-import(&quot;~/HEK/H3k27ac_HEK.bb&quot;) ## it is hg38
 
 over&lt;-findOverlaps(atest, k27)
 atest$HEK_k27olap&lt;-&quot;None&quot;
@@ -6254,13 +6289,13 @@ doubleGood&lt;-good[which(good$link %in% agree$link),]</code></pre>
 </div>
 <div id="geschwin-hic" class="section level3">
 <h3>Geschwin HiC</h3>
-<pre class="r"><code>hic&lt;-read.xlsx(&quot;/cluster/home/lrizzardi/BrainTF-ADSupp/Hu_Geschwind_2021_HiC_NeuN.xlsx&quot;)
+<pre class="r"><code>hic&lt;-read.xlsx(&quot;~/Hu_Geschwind_2021_HiC_NeuN.xlsx&quot;)
 
 colnames(hic)&lt;-hic[2,]
 hic&lt;-hic[-c(1,2),]
 colnames(hic)[2:3]&lt;-c(&quot;start&quot;,&quot;end&quot;)
 hic&lt;-GRanges(hic)
-ch&lt;-import.chain(&quot;~/myers/liftover/hg19ToHg38.over.chain&quot;)
+ch&lt;-import.chain(&quot;~/liftover/hg19ToHg38.over.chain&quot;)
 hic38&lt;-liftOver(hic, ch)
 hic38&lt;-unlist(hic38) 
 
@@ -6302,7 +6337,7 @@ fisher.test(mat)
 
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/lit_search_validation_eQTL_HiC.pdf&quot;, width=6, height=4)
+pdf(&quot;~/scMultiomics_AD/lit_search_validation_eQTL_HiC.pdf&quot;, width=6, height=4)
 ggplot(df)+geom_bar(stat=&quot;identity&quot;,aes(y=source,x=OR, fill=as.factor(type)))+geom_errorbar(aes(y=source,xmin=ymin,xmax=ymax))+theme_classic()+ylab(&quot;&quot;)+theme(legend.position=&quot;none&quot;)+ggtitle(&quot;Enrichment in Links&quot;)
 dev.off()</code></pre>
 </div>
@@ -6338,7 +6373,7 @@ nrow(df[which(df$MPRA == F &amp; df$eQTL == T &amp; df$Geschwin_HiC == F),]) ##4
 </div>
 <div id="overlap-morabito" class="section level2">
 <h2>Overlap Morabito</h2>
-<pre class="r"><code> mor&lt;-read.table(&quot;/cluster/home/lrizzardi/Morabito_Sup4.txt&quot;)
+<pre class="r"><code> mor&lt;-read.table(&quot;~/Morabito_Sup4.txt&quot;)
 colnames(mor)&lt;-mor[1,]
 mor&lt;-mor[-1,]
 
@@ -6406,7 +6441,7 @@ expr_plot &lt;- ExpressionPlot(object = data,features = gene,assay = &quot;RNA&q
 DefaultAssay(data)&lt;-&quot;ATAC&quot;
 gene_plot&lt;-AnnotationPlot(data, region=region)
 p&lt;-CombineTracks(plotlist=list(cov_plot,link_plotA, gene_plot), heights=c(6,2,2))
-pdf(paste0(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/APP_linkPlot_olap_Luciferase.pdf&quot;), width=8, height=8)
+pdf(paste0(&quot;~/scMultiomics_AD/APP_linkPlot_olap_Luciferase.pdf&quot;), width=8, height=8)
 p
 dev.off()</code></pre>
 </div>
@@ -6428,7 +6463,7 @@ colnames(p)&lt;-c(&quot;Var1&quot;,&quot;AD&quot;,&quot;Ctrl&quot;)
 p&lt;-melt(p)
 
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/AD_linksPerGene_patch.pdf&quot;, height=5,width=7)
+pdf(&quot;~/scMultiomics_AD/AD_linksPerGene_patch.pdf&quot;, height=5,width=7)
 a=ggplot(t, aes(x=value, color=variable,fill=variable))+geom_density(aes(y = ..count..), alpha=0.2, adjust=2)+xlab(&quot;Links per Gene&quot;)+theme_classic()+
   scale_fill_manual(values=c(&quot;red&quot;,&quot;blue&quot;))+scale_color_manual(values=c(&quot;red&quot;,&quot;blue&quot;))+
   theme(axis.text=element_text(size=8), legend.position=&quot;none&quot;)+ylab(&quot;counts&quot;)
@@ -6456,7 +6491,7 @@ biny2&lt;-biny2[order(abs(biny2$score), decreasing=T),] ## order on score
 biny2&lt;-biny2[!duplicated(biny2$gene),]
 biny2$bin&lt;-factor(biny2$bin, levels=c(&quot;0-0.2&quot;,&quot;0.2-0.4&quot;,&quot;0.4-0.6&quot;,&quot;&gt;0.6&quot;), ordered=T)
 
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/Gene_var_by_bin.pdf&quot;)
+pdf(&quot;~/22_restart/Gene_var_by_bin.pdf&quot;)
 ggplot(biny2, aes(x=bin, y=log(var)))+geom_boxplot()+theme_classic()+ylim(-8,3)
 dev.off()
 
@@ -6481,7 +6516,7 @@ biny2&lt;-biny2[order(abs(biny2$score), decreasing=T),] ## order on score
 biny2&lt;-biny2[!duplicated(biny2$gene),]
 biny2$bin&lt;-factor(biny2$bin, levels=c(&quot;0-0.2&quot;,&quot;0.2-0.4&quot;,&quot;0.4-0.6&quot;,&quot;&gt;0.6&quot;), ordered=T)
 
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/Gene_var_by_bin_mic.pdf&quot;)
+pdf(&quot;~/22_restart/Gene_var_by_bin_mic.pdf&quot;)
 ggplot(biny2, aes(x=bin, y=log(var)))+geom_boxplot()+theme_classic()+ylim(-8,10)
 dev.off()</code></pre>
 </div>
@@ -6501,7 +6536,7 @@ colnames(both)[c(2,4)]&lt;-c(&quot;AD_var&quot;,&quot;Ctrl_var&quot;)
 both&lt;-both[order(both$AD_var),]
 
 
-pdf(&quot;~/myers/scAnalysis/plots/22_restart/Links_score_var.pdf&quot;)
+pdf(&quot;~/22_restart/Links_score_var.pdf&quot;)
 ggplot(both, aes(x=AD_var,y=Ctrl_var))+geom_point()
 dev.off()
 
@@ -6519,7 +6554,7 @@ both2&lt;-both2[is.na(both2$var)==F,]
 both2$var&lt;-as.numeric(both2$var)
 both2&lt;-both2[order(-both2$mean, -both2$var),]
 
-pdf(&quot;~/myers/scAnalysis/plots/scMultiomics_AD/Links_score_var_byMean.pdf&quot;)
+pdf(&quot;~/scMultiomics_AD/Links_score_var_byMean.pdf&quot;)
 ggplot(both2, aes(x=mean, y=var))+geom_point()+xlab(&quot;Mean |score|&quot;)+ylab(&quot;Var |score|&quot;)+theme_classic()+geom_smooth()+geom_text_repel(data=subset(both2, var&gt;0.06 | mean&gt;0.52), aes(x=mean,y=var, label=gene), color=&quot;firebrick&quot;)+theme(axis.text=element_text(size=10),axis.title=element_text(size=15))
 dev.off()</code></pre>
 </div>

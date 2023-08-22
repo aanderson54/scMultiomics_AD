@@ -268,8 +268,10 @@ pre code {
 <ul>
 <li><a href="#processing">processing</a>
 <ul>
+<li><a href="#distance-to-linked-gene">Distance to linked gene</a></li>
+<li><a href="#call-motifs">Call Motifs</a></li>
 <li><a href="#motif-score">motif score</a></li>
-<li><a href="#metacell">metacell</a></li>
+<li><a href="#meta-cell">Meta cell</a></li>
 <li><a href="#parallel">parallel</a></li>
 <li><a href="#format">Format</a></li>
 </ul></li>
@@ -3556,42 +3558,76 @@ write.table(as.data.frame(unique(c2[which(c2$OPCs==T &amp; c2$group==&quot;Ctrl&
 </div>
 <div id="trios" class="section level1">
 <h1>TRIOS</h1>
-<ul>
-<li>input links already formatted for cor calculation</li>
-<li>ad and control correlation sep</li>
-<li>take all ad/ctrl links and filter:
+<ol style="list-style-type: decimal">
+<li>Call motifs in linked-peaks</li>
+<li>Filter links
 <ul>
 <li>100kb of TSS</li>
 <li>exclude links to peaks w/ &gt;100 motifs</li>
-<li>do one row per tf-gene-peak link</li>
+<li>Motif Score &gt; 12</li>
+<li>overlaps H3K27ac</li>
 </ul></li>
-</ul>
+<li>Split cells into AD and control</li>
+<li>Create meta cells with high resolution clustering</li>
+<li>Get average expression and accessibility for each meta cell</li>
+<li>Correlate TF expression - gene expression and TF expression - peak accessibility using meta cells</li>
+<li>Define a significant trio as
+<ul>
+<li>significant and positive Peak-TF cor</li>
+<li>significant Gene-TF cor</li>
+</ul></li>
+</ol>
 <div id="processing" class="section level2">
 <h2>processing</h2>
-<pre class="r"><code>gtf&lt;-import(&quot;~/STAR/genes.gtf&quot;)
+<div id="distance-to-linked-gene" class="section level3">
+<h3>Distance to linked gene</h3>
+<pre class="r"><code># get distance to linked-gene TSS so that you can remove links greater than 100kb away from TSS
+gtf&lt;-import(&quot;~/STAR/genes.gtf&quot;)
 gtf&lt;-gtf[which(gtf$type==&quot;gene&quot;),]
 gtf$TSS&lt;-ifelse(strand(gtf)==&quot;+&quot;, start(gtf), end(gtf))
 TSS.df&lt;-data.frame(gene=gtf$gene_name, TSS=gtf$TSS)
-tmp&lt;-merge(c2.2, TSS.df, by=&quot;gene&quot;)
+tmp&lt;-merge(links, TSS.df, by=&quot;gene&quot;)
 tmp$p1&lt;-abs(tmp$start-tmp$TSS)
 tmp$p2&lt;-abs(tmp$end-tmp$TSS)
-tmp$distLinkedGene&lt;-ifelse(tmp$p1&lt;tmp$p2, tmp$p1, tmp$p2)
+tmp$distLinkedGene&lt;-ifelse(tmp$p1&lt;tmp$p2, tmp$p1, tmp$p2)</code></pre>
+</div>
+<div id="call-motifs" class="section level3">
+<h3>Call Motifs</h3>
+<pre class="r"><code>pfm&lt;-readJASPARMatrix(&quot;motifs.pfm&quot;, matrixClass=&quot;PFM&quot;)
+DefaultAssay(data)&lt;-&quot;CTpeaks&quot;
+peaks&lt;-granges(data)
+peaks&lt;-resize(peaks, width=500, fix=&quot;center&quot;) #resize peaks to 500bp before calling motifs
+counts&lt;-FeatureMatrix(fragments=Fragments(data), features=peaks,cells=colnames(data))
+data[[&quot;peaks500&quot;]]&lt;-CreateChromatinAssay(counts=macs2_counts,  fragments=Fragments(data))
 
+DefaultAssay(data)&lt;-&quot;ATAC&quot;
+annotation&lt;-Annotation(data)
+DefaultAssay(data)&lt;-&quot;peaks500&quot;
+Annotation(data)&lt;-annotation
+# add motif information
+data &lt;- AddMotifs(
+  object = data,
+  genome = BSgenome.Hsapiens.UCSC.hg38,
+  pfm = pfm
+)
 
-# nz is from motif-linked(500b and filtered peaks)
-# annot_peaks is from Perm. Has index
-olap&lt;-findOverlaps(nz, GRanges(annot_peaks), minoverlap=200) # bc recentered
+motifs&lt;-Motifs(data)
+
+tmp&lt;-motifs@data
+colnames(tmp)&lt;-sapply(strsplit(colnames(tmp), &quot; &quot;,fixed=T), `[`,1)
+nz&lt;- simplify2array(apply(tmp, 1,  function(x) paste(colnames(dummy)[x != 0], collapse = &quot;,&quot;) ))
+
+olap&lt;-findOverlaps(nz, GRanges(annot_peaks), minoverlap=200) # annot_peaks is indexed peaks
 nz$index&lt;-annot_peaks[subjectHits(olap),]$index
-nz.2&lt;-nz[which(nz$num&lt;=75),]
+nz.2&lt;-nz[which(nz$num&lt;=100),] #remove links with peaks that had more than 100 motif calls
 
-testing&lt;-tmp[which(tmp$Freq&gt;=80 &amp; (tmp$index %in% nz.2$index)  &amp; tmp$distLinkedGene&lt;100000),]
-
-
-# get motif-gene links
+#only keep links within 100kb and peaks with motif calls
+testing&lt;-tmp[which( (tmp$index %in% nz.2$index)  &amp; tmp$distLinkedGene&lt;100000),]</code></pre>
+<pre class="r"><code># format for motif-gene-peak links before correlation calculation
 mot&lt;-strsplit(nz.2$nz,&quot;,&quot;)
 mot2&lt;-unlist(mot)
 c&lt;-c()
-for (i in 147979:length(nz.2)){
+for (i in 1:length(nz.2)){
   c&lt;-c(c, rep(nz.2[i,]$index, nz.2[i,]$num)) # repeat index for number of motifs in peak
 }
 df&lt;-data.frame(motif=mot2, index=c)
@@ -3600,23 +3636,24 @@ testing$TF&lt;-sapply(strsplit(testing$motif,&quot;_&quot;), `[`,1) # remove mot
 testing$TF&lt;-sapply(strsplit(testing$TF,&quot;:&quot;), `[`,1) # if 2 tfs just take first
 testing$TF&lt;-toupper(testing$TF) # make all upper case
 testing&lt;-testing[which(testing$TF %in% rownames(data[[&quot;RNA&quot;]])),]
-testing$peak&lt;-paste0(testing$seqnames,&quot;-&quot;,testing$start,&quot;-&quot;,testing$end)# add peak name in same format as seurat object
-
-
-c10&lt;-testing[which(testing$group!=&quot;AD&quot;),]
-a10&lt;-testing[which(testing$group!=&quot;Ctrl&quot; ),]
-
-saveRDS(c10,&quot;~/scMultiomics_AD/GRN/c10.rds&quot;)
-saveRDS(a10,&quot;~/scMultiomics_AD/GRN/a10.rds&quot;)</code></pre>
+testing$peak&lt;-paste0(testing$seqnames,&quot;-&quot;,testing$start,&quot;-&quot;,testing$end)# add peak name in same format as seurat object</code></pre>
+</div>
 <div id="motif-score" class="section level3">
 <h3>motif score</h3>
 <ul>
-<li>motif score from signac wrapper of motifmatchr</li>
-<li>max accessibility is the max average accessibility for any subcluster</li>
+<li>pull motif score from signac wrapper of motifmatchr</li>
+<li>Filter trios before correlation:
+<ul>
+<li>motif score &gt;12</li>
+<li>Abs(correlation of peak-gene link) &gt; 0.3</li>
+<li>Qval of peak-gene link &gt; 20</li>
+<li>linked-peak overlaps H3K27ac</li>
+</ul></li>
+<li>save AD and control trios to test separately</li>
 </ul>
-<pre class="r"><code>m=motifs@positions
+<pre class="r"><code>m=motifs@positions #positions contains -log10(q-value) for each motif call
 
-for (i in 72:length(m)){
+for (i in 1:length(m)){
   m[[i]]$name&lt;-names(m[i])
 }
 # format motif as TF name
@@ -3626,7 +3663,7 @@ u&lt;-u[!duplicated(u$Peak_motif),]
 u$TF=sapply(strsplit(u$name,&quot;_&quot;),`[`,1)
 u$TF&lt;-sapply(strsplit(u$TF,&quot;:&quot;), `[`,1) # if 2 tfs just take first
 u$TF&lt;-toupper(u$TF)
-# olap with linked-peaks bc 500b recenter
+# overlap with indexed peaks. Will use peak index to determine which motif scores go with which peak
 olap&lt;-findOverlaps(u, GRanges(annot_peaks), type=&quot;within&quot;)
 u&lt;-u[queryHits(olap)]
 u$index&lt;-annot_peaks[subjectHits(olap),]$index
@@ -3634,7 +3671,7 @@ saveRDS(u, &quot;~/scMultiomics_AD/motif/Motif_Score_indexPeaks.rds&quot;)
 
 
 
-# max accessibility by cluster
+# max accessibility of linked-peak by cluster
 data&lt;-AddMetaData(data, fullmeta)
 data$subs&lt;-ifelse(is.na(data$subs),substr(data$predicted.id,start=1,stop=3),data$subs)
 Idents(data)&lt;-data$subs
@@ -3653,14 +3690,19 @@ testing2&lt;-merge(testing2, u2u, by=c(&quot;motif&quot;,&quot;TF&quot;,&quot;in
 testing2$GRN&lt;-paste0(testing2$index,&quot;-&quot;,testing2$motif,&quot;-&quot;, testing2$gene)
 
 
-
-testing3&lt;-testing2[which(testing2$Motif_score&gt;12 &amp; testing2$score&gt;0.3 &amp; testing2$Qval&gt;20 &amp; testing2$k27_num&gt;0),]
+testing3&lt;-testing2[which(testing2$Motif_score&gt;12 &amp; abs(testing2$score)&gt;0.3 &amp; testing2$Qval&gt;20 &amp; testing2$k27_num&gt;0),]
 
 saveRDS(testing3[which(testing3$group!=&quot;Ctrl&quot;),], &quot;~/scMultiomics_AD/GRN/a10.rds&quot;)
 saveRDS(testing3[which(testing3$group!=&quot;AD&quot;),], &quot;~/scMultiomics_AD/GRN/c10.rds&quot;)</code></pre>
 </div>
-<div id="metacell" class="section level3">
-<h3>metacell</h3>
+<div id="meta-cell" class="section level3">
+<h3>Meta cell</h3>
+<ul>
+<li>Split cells into AD and Control</li>
+<li>Cluster cells off of the WKNN (combined RNA+ATAC)</li>
+<li>Define meta cells by clustering at a high resolution so that you have average of approx 20 cells</li>
+<li>Take average expression and accessibility for each meta cell</li>
+</ul>
 <pre class="r"><code>ad&lt;-subset(data, subset=Status==&quot;AD&quot;)
 ad&lt;-FindMultiModalNeighbors(ad, reduction.list=list(&quot;harmony.rna&quot;,&quot;harmony.atac&quot;), dims.list=list(1:30,2:50), k.nn=50, return.intermediate=T)
 ad&lt;-FindClusters(ad, graph.name=&quot;wknn&quot;, resolution=100, group.singletons=T)
@@ -3674,20 +3716,30 @@ write.csv(avgAcc, &quot;~/scMultiomics_AD/GRN/AD_MetaCell_Accessibility.csv&quot
 
 
 
-ad&lt;-subset(data, subset=Status==&quot;Ctrl&quot;)
-ad&lt;-FindMultiModalNeighbors(ad, reduction.list=list(&quot;harmony.rna&quot;,&quot;harmony.atac&quot;), dims.list=list(1:30,2:50), k.nn=50, return.intermediate=T)
-ad&lt;-FindClusters(ad, graph.name=&quot;wknn&quot;, resolution=100, group.singletons=T)
+ctrl&lt;-subset(data, subset=Status==&quot;Ctrl&quot;)
+ctrl&lt;-FindMultiModalNeighbors(ctrl, reduction.list=list(&quot;harmony.rna&quot;,&quot;harmony.atac&quot;), dims.list=list(1:30,2:50), k.nn=50, return.intermediate=T)
+ctrl&lt;-FindClusters(ctrl, graph.name=&quot;wknn&quot;, resolution=100, group.singletons=T)
 
-ad&lt;-NormalizeData(ad)
-avgExp&lt;-as.data.frame(AverageExpression(ad, group.by=&quot;seurat_clusters&quot;, assay=&quot;RNA&quot;))
-avgAcc&lt;-as.data.frame(AverageExpression(ad, group.by=&quot;seurat_clusters&quot;,assay=&quot;CTpeaks&quot;))
-write.csv(avgExp, &quot;~/scMultiomics_AD/GRN/Ctrl_MetaCell_Expression.csv&quot;)
-write.csv(avgAcc, &quot;~/scMultiomics_AD/GRN/Ctrl_MetaCell_Accessibility.csv&quot;)</code></pre>
+ctrl&lt;-NormalizeData(ctrl)
+avgExp&lt;-as.data.frame(AverageExpression(ctrl, group.by=&quot;seurat_clusters&quot;, assay=&quot;RNA&quot;))
+avgAcc&lt;-as.data.frame(AverageExpression(ctrl, group.by=&quot;seurat_clusters&quot;,assay=&quot;CTpeaks&quot;))
+write.csv(avgExp, &quot;~/scMultiomics_ctrl/GRN/Ctrl_MetaCell_Expression.csv&quot;)
+write.csv(avgAcc, &quot;~/scMultiomics_ctrl/GRN/Ctrl_MetaCell_Accessibility.csv&quot;)</code></pre>
 </div>
 <div id="parallel" class="section level3">
 <h3>parallel</h3>
-<p>for each tf: max_access=maximum accessibility of peak with motif motif_score=list of motif scores for every peak with motif P-TF_cor=correlation score between TF exp and Peak acc G-TF_cor=correlation score between TF exp and gene exp</p>
-<p>Jobs were split into batches of 10,000 trios</p>
+<ul>
+<li>for each tf:
+<ul>
+<li>max_access=maximum accessibility of peak with motif</li>
+<li>motif_score=list of motif scores for every peak with motif</li>
+<li>P-TF_cor=correlation score between TF exp and Peak acc</li>
+<li>G-TF_cor=correlation score between TF exp and gene exp</li>
+<li>G-TF_pval= p-value for correlation between TF and gene</li>
+<li>P-TF_pval= p-value for correlation between TF and peak</li>
+</ul></li>
+</ul>
+<p><em>Jobs were split into batches of 10,000 trios</em></p>
 <pre class="r"><code># !/usr/bin/env Rscript
 
 library(Seurat)
@@ -3744,60 +3796,44 @@ write.csv(df, paste0(&quot;~/scMultiomics_AD/GRN/&quot;,group,&quot;_gene_tf_pea
 <div id="format" class="section level3">
 <h3>Format</h3>
 <ul>
-<li>add TF expression
-<ul>
-<li>correlated with peak acc. lowly expressed TFs will score lower bc of lower variance</li>
-<li>can be expressed in multiple cell types but not correlated with peak in all</li>
-</ul></li>
+<li>Trios were split into batches of 10k trios. These files need to be read in and combined.</li>
 </ul>
-<pre class="r"><code>files=as.list(readLines(&quot;~/scMultiomics_AD/GRN/AD_list.csv&quot;))
-files[[11]]&lt;-files[[1]]
-files[[1]]&lt;-NULL
+<pre class="r"><code># Trio correlations were split into batches of 10,000 trios. 
+# AD_list is list of AD trio batch outputs
+# Ctrl_list is list of Ctrl trio batch outputs
+
+
+files=as.list(readLines(&quot;~/scMultiomics_AD/GRN/AD_list.csv&quot;))
 AD_list=lapply(files,function(x){
   FT=read.csv(x)})
 
 files=as.list(readLines(&quot;~/scMultiomics_AD/GRN/Ctrl_list.csv&quot;))
-files[[11]]&lt;-files[[1]]
-files[[1]]&lt;-NULL
 Ctrl_list=lapply(files,function(x){
   FT=read.csv(x)})
 
-AD&lt;-c(1,1,1,1,1,1)
+AD&lt;-c(1,1,1,1,1,1) #dummy variable to combine data frames
 for (i in 1:length(AD_list)){
   AD&lt;-rbind(AD,AD_list[[i]])
 }
-AD&lt;-AD[-1,]
+AD&lt;-AD[-1,] # remove dummy 
 
 Ctrl&lt;-c(1,1,1,1,1,1)
 for (i in 1:length(Ctrl_list)){
   Ctrl&lt;-rbind(Ctrl,Ctrl_list[[i]])
 }
 Ctrl&lt;-Ctrl[-1,]
-a10.2&lt;-cbind(a10,AD)
-c10.2&lt;-cbind(c10,Ctrl)
-a10.2&lt;-a10.2[,c(49,51,52,53,54)]
-c10.2&lt;-c10.2[,c(49,51,52,53,54)]
-mer.2&lt;-merge(a10.2,c10.2, by=&quot;GRN&quot;,all=T)
-
-
-
-a10&lt;-readRDS(&quot;~/scMultiomics_AD/GRN/a10.rds&quot;)
-c10&lt;-readRDS(&quot;~/scMultiomics_AD/GRN/c10.rds&quot;)
-all&lt;-readRDS(&quot;~/scMultiomics_AD/GRN/ALL_wMotifScore_MaxAcc.rds&quot; )
-
 
 
 
 # add scores back to links
-AD2&lt;-AD[!duplicated(AD$grn),]
-Ctrl2&lt;-Ctrl[!duplicated(Ctrl$grn),]
-mer&lt;-merge(all, AD2,by.x=&quot;GRN&quot;,by.y=&quot;grn&quot;, all.x=T)
-mer&lt;-merge(mer, Ctrl2, by.x=&quot;GRN&quot;, by.y=&quot;grn&quot;,all.x=T)
+all&lt;-readRDS(&quot;~/scMultiomics_AD/GRN/ALL_wMotifScore_MaxAcc.rds&quot; ) #links with motif score and accessibility
+mer&lt;-merge(all, AD,by.x=&quot;GRN&quot;,by.y=&quot;grn&quot;, all.x=T)
+mer&lt;-merge(mer, Ctrl, by.x=&quot;GRN&quot;, by.y=&quot;grn&quot;,all.x=T)
 mer&lt;-mer[mer$GRN %in% c(AD2$grn, Ctrl2$grn),]
 mer2&lt;-mer
 
 
-# change motif scoring so that it&#39;s normalized for each motif instead of across all motifs. Because repetative motifs biased towards lower scoring
+# scale motif scoring so that it&#39;s normalized for each motif instead of across all motifs. Because repetitive motifs biased towards lower scoring
 maxs&lt;-aggregate(Motif_score~motif, mer2, max)
 colnames(maxs)[2]&lt;-&quot;Maxs&quot;
 mins&lt;-aggregate(Motif_score~motif, mer2, min)
@@ -3806,7 +3842,7 @@ mer2&lt;-merge(mer2, maxs, by=&quot;motif&quot;)
 mer2&lt;-merge(mer2, mins, by=&quot;motif&quot;)
 mer2$Z_Motif_score&lt;- (mer2$Motif_score-mer2$Mins)/(mer2$Maxs-mer2$Mins)
 
-# do count sum of accessibility
+# normalize accessibility
 rs&lt;-rowSums(data[[&quot;CTpeaks&quot;]])
 rs.df&lt;-as.data.frame(rs)
 rs.df$peak&lt;-rownames(rs.df)
@@ -3829,18 +3865,23 @@ mer2&lt;-merge(mer2,rs.df, by=&quot;peak&quot;)</code></pre>
 # Is Gene-TF cor significant?
 a$AD_sig&lt;-a$G.TF_pval.x&lt;0.001
 a$Ctrl_sig&lt;-a$G.TF_pval.y&lt;0.001
+
 # Is P-TF cor significant?
 a$AD_sigP&lt;-a$P.TF_pval.x&lt;0.001
 a$Ctrl_sigP&lt;-a$P.TF_pval.y&lt;0.001
+
 # restrict so that only get ones where P-TF and G-TF agree by status
 b&lt;-a[which((a$AD_sig==T &amp; a$AD_sigP==T &amp; a$P.TF_cor.x&gt;0.2) | (a$Ctrl_sig==T &amp; a$Ctrl_sigP==T &amp; a$P.TF_cor.y&gt;0.2)),]
+
 # ones that are significant in both
 c&lt;-b[which(b$AD_sig==T &amp; b$Ctrl_sig==T),] 
 c$sign&lt;-sign(c$G.TF_cor.x)==sign(c$G.TF_cor.y)
 c2&lt;-c[which(c$sign==F),] # 34 are different directions
+
 # Only significant in AD
 d&lt;-b[which(b$AD_sig==T &amp; b$Ctrl_sig==F),]
 d2&lt;-d[which(d$Ctrl_sigP==F),] # Peak-TF is also not significant in Ctrl
+
 # Only significant in Ctrl
 e&lt;-b[which(b$AD_sig==F &amp; b$Ctrl_sig==T),]
 e2&lt;-e[which(e$AD_sigP==F),] # Peak-TF is also not significant in AD

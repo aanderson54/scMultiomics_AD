@@ -3664,39 +3664,80 @@ write.table(as.data.frame(unique(c2[which(c2$OPCs==T & c2$group=="Ctrl"),]) )[,c
 
 
 # TRIOS
-- input links already formatted for cor calculation
-- ad and control correlation sep
-- take all ad/ctrl links and filter:
-  - 100kb of TSS
-  - exclude links to peaks w/ >100 motifs
-  - do one row per tf-gene-peak link
+
+1. Call motifs in linked-peaks
+2. Filter links
+    - 100kb of TSS
+    - exclude links to peaks w/ >100 motifs
+    - Motif Score > 12
+    - overlaps H3K27ac
+3. Split cells into AD and control
+4. Create meta cells with high resolution clustering
+5. Get average expression and accessibility for each meta cell
+6. Correlate TF expression - gene expression and TF expression - peak accessibility using meta cells
+7. Define a significant trio as
+    - significant and positive Peak-TF cor 
+    - significant Gene-TF cor
+
 
 ## processing
+
+### Distance to linked gene
 ```{r,eval=F}
+# get distance to linked-gene TSS so that you can remove links greater than 100kb away from TSS
 gtf<-import("~/STAR/genes.gtf")
 gtf<-gtf[which(gtf$type=="gene"),]
 gtf$TSS<-ifelse(strand(gtf)=="+", start(gtf), end(gtf))
 TSS.df<-data.frame(gene=gtf$gene_name, TSS=gtf$TSS)
-tmp<-merge(c2.2, TSS.df, by="gene")
+tmp<-merge(links, TSS.df, by="gene")
 tmp$p1<-abs(tmp$start-tmp$TSS)
 tmp$p2<-abs(tmp$end-tmp$TSS)
 tmp$distLinkedGene<-ifelse(tmp$p1<tmp$p2, tmp$p1, tmp$p2)
+```
 
 
-# nz is from motif-linked(500b and filtered peaks)
-# annot_peaks is from Perm. Has index
-olap<-findOverlaps(nz, GRanges(annot_peaks), minoverlap=200) # bc recentered
+### Call Motifs
+```{r, eval=F}
+pfm<-readJASPARMatrix("motifs.pfm", matrixClass="PFM")
+DefaultAssay(data)<-"CTpeaks"
+peaks<-granges(data)
+peaks<-resize(peaks, width=500, fix="center") #resize peaks to 500bp before calling motifs
+counts<-FeatureMatrix(fragments=Fragments(data), features=peaks,cells=colnames(data))
+data[["peaks500"]]<-CreateChromatinAssay(counts=macs2_counts,  fragments=Fragments(data))
+
+DefaultAssay(data)<-"ATAC"
+annotation<-Annotation(data)
+DefaultAssay(data)<-"peaks500"
+Annotation(data)<-annotation
+# add motif information
+data <- AddMotifs(
+  object = data,
+  genome = BSgenome.Hsapiens.UCSC.hg38,
+  pfm = pfm
+)
+
+motifs<-Motifs(data)
+
+tmp<-motifs@data
+colnames(tmp)<-sapply(strsplit(colnames(tmp), " ",fixed=T), `[`,1)
+nz<- simplify2array(apply(tmp, 1,  function(x) paste(colnames(dummy)[x != 0], collapse = ",") ))
+
+olap<-findOverlaps(nz, GRanges(annot_peaks), minoverlap=200) # annot_peaks is indexed peaks
 nz$index<-annot_peaks[subjectHits(olap),]$index
-nz.2<-nz[which(nz$num<=75),]
+nz.2<-nz[which(nz$num<=100),] #remove links with peaks that had more than 100 motif calls
 
-testing<-tmp[which(tmp$Freq>=80 & (tmp$index %in% nz.2$index)  & tmp$distLinkedGene<100000),]
+#only keep links within 100kb and peaks with motif calls
+testing<-tmp[which( (tmp$index %in% nz.2$index)  & tmp$distLinkedGene<100000),]
+```
 
 
-# get motif-gene links
+
+```{r, eval=F}
+# format for motif-gene-peak links before correlation calculation
 mot<-strsplit(nz.2$nz,",")
 mot2<-unlist(mot)
 c<-c()
-for (i in 147979:length(nz.2)){
+for (i in 1:length(nz.2)){
   c<-c(c, rep(nz.2[i,]$index, nz.2[i,]$num)) # repeat index for number of motifs in peak
 }
 df<-data.frame(motif=mot2, index=c)
@@ -3708,23 +3749,24 @@ testing<-testing[which(testing$TF %in% rownames(data[["RNA"]])),]
 testing$peak<-paste0(testing$seqnames,"-",testing$start,"-",testing$end)# add peak name in same format as seurat object
 
 
-c10<-testing[which(testing$group!="AD"),]
-a10<-testing[which(testing$group!="Ctrl" ),]
-
-saveRDS(c10,"~/scMultiomics_AD/GRN/c10.rds")
-saveRDS(a10,"~/scMultiomics_AD/GRN/a10.rds")
 
 ```
 
 
 
 ### motif score
-- motif score from signac wrapper of motifmatchr
-- max accessibility is the max average accessibility for any subcluster
-```{r,eval=F}
-m=motifs@positions
+- pull motif score from signac wrapper of motifmatchr
+- Filter trios before correlation:
+  - motif score >12
+  - Abs(correlation of peak-gene link) > 0.3
+  - Qval of peak-gene link > 20
+  - linked-peak overlaps H3K27ac
+- save AD and control trios to test separately 
 
-for (i in 72:length(m)){
+```{r,eval=F}
+m=motifs@positions #positions contains -log10(q-value) for each motif call
+
+for (i in 1:length(m)){
   m[[i]]$name<-names(m[i])
 }
 # format motif as TF name
@@ -3734,7 +3776,7 @@ u<-u[!duplicated(u$Peak_motif),]
 u$TF=sapply(strsplit(u$name,"_"),`[`,1)
 u$TF<-sapply(strsplit(u$TF,":"), `[`,1) # if 2 tfs just take first
 u$TF<-toupper(u$TF)
-# olap with linked-peaks bc 500b recenter
+# overlap with indexed peaks. Will use peak index to determine which motif scores go with which peak
 olap<-findOverlaps(u, GRanges(annot_peaks), type="within")
 u<-u[queryHits(olap)]
 u$index<-annot_peaks[subjectHits(olap),]$index
@@ -3742,7 +3784,7 @@ saveRDS(u, "~/scMultiomics_AD/motif/Motif_Score_indexPeaks.rds")
 
 
 
-# max accessibility by cluster
+# max accessibility of linked-peak by cluster
 data<-AddMetaData(data, fullmeta)
 data$subs<-ifelse(is.na(data$subs),substr(data$predicted.id,start=1,stop=3),data$subs)
 Idents(data)<-data$subs
@@ -3761,8 +3803,7 @@ testing2<-merge(testing2, u2u, by=c("motif","TF","index"))
 testing2$GRN<-paste0(testing2$index,"-",testing2$motif,"-", testing2$gene)
 
 
-
-testing3<-testing2[which(testing2$Motif_score>12 & testing2$score>0.3 & testing2$Qval>20 & testing2$k27_num>0),]
+testing3<-testing2[which(testing2$Motif_score>12 & abs(testing2$score)>0.3 & testing2$Qval>20 & testing2$k27_num>0),]
 
 saveRDS(testing3[which(testing3$group!="Ctrl"),], "~/scMultiomics_AD/GRN/a10.rds")
 saveRDS(testing3[which(testing3$group!="AD"),], "~/scMultiomics_AD/GRN/c10.rds")
@@ -3772,7 +3813,12 @@ saveRDS(testing3[which(testing3$group!="AD"),], "~/scMultiomics_AD/GRN/c10.rds")
 
 ```
 
-### metacell
+### Meta cell
+- Split cells into AD and Control
+- Cluster cells off of the WKNN (combined RNA+ATAC)
+- Define meta cells by clustering at a high resolution so that you have average of approx 20 cells
+- Take average expression and accessibility for each meta cell
+
 ```{r,eval=F}
 
 
@@ -3789,15 +3835,15 @@ write.csv(avgAcc, "~/scMultiomics_AD/GRN/AD_MetaCell_Accessibility.csv")
 
 
 
-ad<-subset(data, subset=Status=="Ctrl")
-ad<-FindMultiModalNeighbors(ad, reduction.list=list("harmony.rna","harmony.atac"), dims.list=list(1:30,2:50), k.nn=50, return.intermediate=T)
-ad<-FindClusters(ad, graph.name="wknn", resolution=100, group.singletons=T)
+ctrl<-subset(data, subset=Status=="Ctrl")
+ctrl<-FindMultiModalNeighbors(ctrl, reduction.list=list("harmony.rna","harmony.atac"), dims.list=list(1:30,2:50), k.nn=50, return.intermediate=T)
+ctrl<-FindClusters(ctrl, graph.name="wknn", resolution=100, group.singletons=T)
 
-ad<-NormalizeData(ad)
-avgExp<-as.data.frame(AverageExpression(ad, group.by="seurat_clusters", assay="RNA"))
-avgAcc<-as.data.frame(AverageExpression(ad, group.by="seurat_clusters",assay="CTpeaks"))
-write.csv(avgExp, "~/scMultiomics_AD/GRN/Ctrl_MetaCell_Expression.csv")
-write.csv(avgAcc, "~/scMultiomics_AD/GRN/Ctrl_MetaCell_Accessibility.csv")
+ctrl<-NormalizeData(ctrl)
+avgExp<-as.data.frame(AverageExpression(ctrl, group.by="seurat_clusters", assay="RNA"))
+avgAcc<-as.data.frame(AverageExpression(ctrl, group.by="seurat_clusters",assay="CTpeaks"))
+write.csv(avgExp, "~/scMultiomics_ctrl/GRN/Ctrl_MetaCell_Expression.csv")
+write.csv(avgAcc, "~/scMultiomics_ctrl/GRN/Ctrl_MetaCell_Accessibility.csv")
 
 ```
 
@@ -3813,16 +3859,19 @@ write.csv(avgAcc, "~/scMultiomics_AD/GRN/Ctrl_MetaCell_Accessibility.csv")
 
 
 ### parallel
-for each tf:
-  max_access=maximum accessibility of peak with motif
-  motif_score=list of motif scores for every peak with motif
-  P-TF_cor=correlation score between TF exp and Peak acc
-  G-TF_cor=correlation score between TF exp and gene exp
+- for each tf:
+  - max_access=maximum accessibility of peak with motif
+  - motif_score=list of motif scores for every peak with motif
+  - P-TF_cor=correlation score between TF exp and Peak acc
+  - G-TF_cor=correlation score between TF exp and gene exp
+  - G-TF_pval= p-value for correlation between TF and gene
+  - P-TF_pval= p-value for correlation between TF and peak
 
 
 
 
-Jobs were split into batches of 10,000 trios
+*Jobs were split into batches of 10,000 trios*
+
 ```{r,eval=F}
 
 # !/usr/bin/env Rscript
@@ -3888,60 +3937,45 @@ write.csv(df, paste0("~/scMultiomics_AD/GRN/",group,"_gene_tf_peak_score_",n,".c
 
 
 ### Format
- 
-- add TF expression
-  - correlated with peak acc. lowly expressed TFs will score lower bc of lower variance
-  - can be expressed in multiple cell types but not correlated with peak in all
-  
+- Trios were split into batches of 10k trios. These files need to be read in and combined.
+
 ```{r,eval=F}
+# Trio correlations were split into batches of 10,000 trios. 
+# AD_list is list of AD trio batch outputs
+# Ctrl_list is list of Ctrl trio batch outputs
+
+
 files=as.list(readLines("~/scMultiomics_AD/GRN/AD_list.csv"))
-files[[11]]<-files[[1]]
-files[[1]]<-NULL
 AD_list=lapply(files,function(x){
   FT=read.csv(x)})
 
 files=as.list(readLines("~/scMultiomics_AD/GRN/Ctrl_list.csv"))
-files[[11]]<-files[[1]]
-files[[1]]<-NULL
 Ctrl_list=lapply(files,function(x){
   FT=read.csv(x)})
 
-AD<-c(1,1,1,1,1,1)
+AD<-c(1,1,1,1,1,1) #dummy variable to combine data frames
 for (i in 1:length(AD_list)){
   AD<-rbind(AD,AD_list[[i]])
 }
-AD<-AD[-1,]
+AD<-AD[-1,] # remove dummy 
 
 Ctrl<-c(1,1,1,1,1,1)
 for (i in 1:length(Ctrl_list)){
   Ctrl<-rbind(Ctrl,Ctrl_list[[i]])
 }
 Ctrl<-Ctrl[-1,]
-a10.2<-cbind(a10,AD)
-c10.2<-cbind(c10,Ctrl)
-a10.2<-a10.2[,c(49,51,52,53,54)]
-c10.2<-c10.2[,c(49,51,52,53,54)]
-mer.2<-merge(a10.2,c10.2, by="GRN",all=T)
-
-
-
-a10<-readRDS("~/scMultiomics_AD/GRN/a10.rds")
-c10<-readRDS("~/scMultiomics_AD/GRN/c10.rds")
-all<-readRDS("~/scMultiomics_AD/GRN/ALL_wMotifScore_MaxAcc.rds" )
-
 
 
 
 # add scores back to links
-AD2<-AD[!duplicated(AD$grn),]
-Ctrl2<-Ctrl[!duplicated(Ctrl$grn),]
-mer<-merge(all, AD2,by.x="GRN",by.y="grn", all.x=T)
-mer<-merge(mer, Ctrl2, by.x="GRN", by.y="grn",all.x=T)
+all<-readRDS("~/scMultiomics_AD/GRN/ALL_wMotifScore_MaxAcc.rds" ) #links with motif score and accessibility
+mer<-merge(all, AD,by.x="GRN",by.y="grn", all.x=T)
+mer<-merge(mer, Ctrl, by.x="GRN", by.y="grn",all.x=T)
 mer<-mer[mer$GRN %in% c(AD2$grn, Ctrl2$grn),]
 mer2<-mer
 
 
-# change motif scoring so that it's normalized for each motif instead of across all motifs. Because repetative motifs biased towards lower scoring
+# scale motif scoring so that it's normalized for each motif instead of across all motifs. Because repetitive motifs biased towards lower scoring
 maxs<-aggregate(Motif_score~motif, mer2, max)
 colnames(maxs)[2]<-"Maxs"
 mins<-aggregate(Motif_score~motif, mer2, min)
@@ -3950,7 +3984,7 @@ mer2<-merge(mer2, maxs, by="motif")
 mer2<-merge(mer2, mins, by="motif")
 mer2$Z_Motif_score<- (mer2$Motif_score-mer2$Mins)/(mer2$Maxs-mer2$Mins)
 
-# do count sum of accessibility
+# normalize accessibility
 rs<-rowSums(data[["CTpeaks"]])
 rs.df<-as.data.frame(rs)
 rs.df$peak<-rownames(rs.df)
@@ -3984,18 +4018,23 @@ a<-mer2[!duplicated(mer2$GRN),]
 # Is Gene-TF cor significant?
 a$AD_sig<-a$G.TF_pval.x<0.001
 a$Ctrl_sig<-a$G.TF_pval.y<0.001
+
 # Is P-TF cor significant?
 a$AD_sigP<-a$P.TF_pval.x<0.001
 a$Ctrl_sigP<-a$P.TF_pval.y<0.001
+
 # restrict so that only get ones where P-TF and G-TF agree by status
 b<-a[which((a$AD_sig==T & a$AD_sigP==T & a$P.TF_cor.x>0.2) | (a$Ctrl_sig==T & a$Ctrl_sigP==T & a$P.TF_cor.y>0.2)),]
+
 # ones that are significant in both
 c<-b[which(b$AD_sig==T & b$Ctrl_sig==T),] 
 c$sign<-sign(c$G.TF_cor.x)==sign(c$G.TF_cor.y)
 c2<-c[which(c$sign==F),] # 34 are different directions
+
 # Only significant in AD
 d<-b[which(b$AD_sig==T & b$Ctrl_sig==F),]
 d2<-d[which(d$Ctrl_sigP==F),] # Peak-TF is also not significant in Ctrl
+
 # Only significant in Ctrl
 e<-b[which(b$AD_sig==F & b$Ctrl_sig==T),]
 e2<-e[which(e$AD_sigP==F),] # Peak-TF is also not significant in AD

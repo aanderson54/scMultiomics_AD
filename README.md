@@ -24,5 +24,7 @@ microglia, and previously identified active regulatory regions.
 
 **To view all analyses click [here](https://aanderson54.github.io/scMultiomics_AD/)**
 
+To access the **final.rds** Seurat object download [here](https://uab.box.com/s/0n0f8dox1mefn8us5jhjam5h4u9p2zpc)
+
 Additional pre-processing scripts can be found in the scripts directory. This includes scripts for sample demultiplexing using cellSNP and vireo, plotting functions, and LDSC.
 
